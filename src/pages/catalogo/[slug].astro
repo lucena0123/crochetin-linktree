@@ -23,6 +23,20 @@ interface Props {
 
 const { product } = Astro.props;
 
+const colorHex: Record<string, string> = {
+  nude: '#d4b896',
+  preta: '#1a1a1a',
+  cobre: '#b87333',
+  dourada: '#d4af37',
+  dourado: '#d4af37',
+  areia: '#c4a882',
+  caramelo: '#c68642',
+  offwhite: '#f5f0e8',
+  pink: '#f4a0b5',
+  verdemilitar: '#4a5e3a',
+  vermelha: '#c0392b',
+};
+
 const metaDescription = product.description.replace(/\s+/g, ' ').trim();
 const imageEntries = product.images.map((fileName) => ({
   fileName,
@@ -219,6 +233,27 @@ const jsonLd = {
           </details>
         </div>
 
+        <!-- Color Selector -->
+        {product.colors?.length > 0 && (
+          <div class="color-selector">
+            <p class="color-label">Escolha a cor:</p>
+            <div class="color-options">
+              {product.colors.map((color: string) => (
+                <button
+                  class="color-btn"
+                  data-color={color}
+                  style={`background-color: ${colorHex[color] ?? '#ccc'}`}
+                  aria-label={color}
+                  title={color}
+                />
+              ))}
+            </div>
+            <p id="color-error" class="color-error" hidden>
+              Selecione uma cor antes de continuar
+            </p>
+          </div>
+        )}
+
         <!-- WhatsApp Button -->
         <div class="actions-container">
           <WhatsAppButton product={product} />
@@ -226,6 +261,17 @@ const jsonLd = {
       </div>
     </div>
   </div>
+
+  <script is:inline>
+    document.querySelectorAll('.color-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.color-btn').forEach(function(b) { b.classList.remove('selected'); });
+        btn.classList.add('selected');
+        var errorEl = document.getElementById('color-error');
+        if (errorEl) errorEl.hidden = true;
+      });
+    });
+  </script>
 
   {hasMultipleImages && (
     <script is:inline>
@@ -749,5 +795,63 @@ const jsonLd = {
     bottom: 1rem;
     z-index: 100;
     margin-top: 0.5rem;
+  }
+
+  /* Color Selector */
+  .color-selector {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 0;
+  }
+
+  .color-label {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: #786552;
+    margin: 0 0 0.75rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  .color-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .color-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.2s, outline 0.2s;
+    padding: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  }
+
+  .color-btn:hover {
+    border-color: #be996f;
+  }
+
+  .color-btn.selected {
+    border-color: #be996f;
+    outline: 2px solid #be996f;
+    outline-offset: 2px;
+  }
+
+  .color-btn:focus-visible {
+    outline: 2px solid #3E2F25;
+    outline-offset: 3px;
+  }
+
+  .color-error {
+    color: #e53e3e;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    margin: 0.5rem 0 0 0;
   }
 </style>
