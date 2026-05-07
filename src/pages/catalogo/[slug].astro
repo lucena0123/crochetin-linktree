@@ -254,6 +254,14 @@ const jsonLd = {
           </div>
         )}
 
+        <!-- Buy Button -->
+        <button id="btn-comprar" class="btn-comprar" data-slug={product.slug}>
+          🛒 Comprar agora
+        </button>
+        <p id="comprar-error" class="comprar-error" hidden>
+          Erro ao iniciar pagamento. Tente novamente.
+        </p>
+
         <!-- WhatsApp Button -->
         <div class="actions-container">
           <WhatsAppButton product={product} />
@@ -271,6 +279,50 @@ const jsonLd = {
         if (errorEl) errorEl.hidden = true;
       });
     });
+
+    var btnComprar = document.getElementById('btn-comprar');
+    var comprarError = document.getElementById('comprar-error');
+
+    if (btnComprar) {
+      btnComprar.addEventListener('click', function() {
+        var slug = btnComprar.dataset.slug;
+        var hasColors = document.querySelector('.color-selector');
+        var selectedColorBtn = document.querySelector('.color-btn.selected');
+        var selectedColor = selectedColorBtn ? selectedColorBtn.dataset.color : undefined;
+        var colorError = document.getElementById('color-error');
+
+        if (hasColors && !selectedColor) {
+          if (colorError) colorError.hidden = false;
+          return;
+        }
+
+        btnComprar.textContent = '⏳ Aguarde...';
+        btnComprar.disabled = true;
+        if (comprarError) comprarError.hidden = true;
+
+        fetch('https://api.crochetin.com.br/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug: slug, color: selectedColor }),
+        })
+        .then(function(res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function(data) {
+          if (data.init_point) {
+            window.location.href = data.init_point;
+          } else {
+            throw new Error('sem init_point');
+          }
+        })
+        .catch(function() {
+          if (comprarError) comprarError.hidden = false;
+          btnComprar.textContent = '🛒 Comprar agora';
+          btnComprar.disabled = false;
+        });
+      });
+    }
   </script>
 
   {hasMultipleImages && (
@@ -853,5 +905,36 @@ const jsonLd = {
     font-family: var(--font-sans);
     font-size: 0.85rem;
     margin: 0.5rem 0 0 0;
+  }
+
+  /* Buy Button */
+  .btn-comprar {
+    width: 100%;
+    padding: 14px 24px;
+    background: #be996f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn-comprar:hover:not(:disabled) {
+    background: #a8845a;
+  }
+
+  .btn-comprar:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .comprar-error {
+    color: #e53e3e;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    text-align: center;
   }
 </style>
