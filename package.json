@@ -20,8 +20,10 @@
   "author": "Crochetin Ateliê",
   "license": "ISC",
   "dependencies": {
-    "@astrojs/check": "^0.9.6",
+    "@astrojs/check": "^0.9.9",
     "@astrojs/sitemap": "^3.6.0",
+    "@fontsource/outfit": "^5.2.8",
+    "@fontsource/playfair-display": "^5.2.8",
     "astro": "^5.16.6",
     "typescript": "^5.9.3"
   }

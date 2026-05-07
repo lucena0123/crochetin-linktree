@@ -1,6 +1,12 @@
 ---
 import config from '../data/config.json';
 import '../styles/global.css';
+import "@fontsource/outfit/400.css";
+import "@fontsource/outfit/500.css";
+import "@fontsource/outfit/600.css";
+import "@fontsource/outfit/700.css";
+import "@fontsource/playfair-display/600.css";
+import "@fontsource/playfair-display/700.css";
 
 interface Props {
   title: string;
@@ -62,11 +68,6 @@ gtag('config', '${analyticsId}', { anonymize_ip: true });`
   
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="/images/logo-crochetin.png">
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
   {shouldLoadAnalytics && (
     <>
