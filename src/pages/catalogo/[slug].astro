@@ -41,9 +41,29 @@ const defaultBenefits = [
 
 const benefits = product.benefits ?? defaultBenefits;
 const colorsLabel = formatColors(product.colors);
+
+const siteUrl = 'https://crochetin.com.br';
+const productUrl = `${siteUrl}/catalogo/${product.slug}`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": product.name,
+  "description": product.description,
+  "brand": { "@type": "Brand", "name": "Crochetin" },
+  "offers": {
+    "@type": "Offer",
+    "price": product.price,
+    "priceCurrency": "BRL",
+    "availability": product.inStock
+      ? "https://schema.org/InStock"
+      : "https://schema.org/OutOfStock",
+    "url": productUrl
+  }
+};
 ---
 
 <BaseLayout title={product.name} description={metaDescription} image={heroImageUrl}>
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <div class="product-detail-wrapper">
     <div class="product-detail-container">
       <!-- Header & Back Button Row -->

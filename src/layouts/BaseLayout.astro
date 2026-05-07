@@ -75,6 +75,7 @@ gtag('config', '${analyticsId}', { anonymize_ip: true });`
       <script is:inline set:html={analyticsScript}></script>
     </>
   )}
+  <slot name="head" />
 </head>
 <body>
   <div class={`container ${wide ? 'wide' : ''}`}>
