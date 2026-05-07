@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Pedido confirmado — Crochetin"
+  description="Obrigada pela sua compra! Sua bolsa artesanal está a caminho."
+>
+  <script is:inline slot="head">
+    if (typeof fbq === 'function') {
+      fbq('track', 'Purchase', { value: 0, currency: 'BRL' });
+    }
+  </script>
+
+  <main class="obrigada-main">
+    <div class="obrigada-icon">✅</div>
+    <h1 class="obrigada-titulo">Pagamento confirmado!</h1>
+    <p class="obrigada-texto">
+      Obrigada pela sua compra! Em breve você receberá os detalhes por mensagem.
+    </p>
+    <p class="obrigada-contato">
+      Dúvidas? Fale no <a href="https://wa.me/558296927755">WhatsApp</a>
+    </p>
+    <a href="/catalogo" class="obrigada-link">Ver mais bolsas →</a>
+  </main>
+</BaseLayout>
+
+<style>
+  .obrigada-main {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .obrigada-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .obrigada-titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #2d2d2d;
+    margin-bottom: 1rem;
+    margin-top: 0;
+  }
+
+  .obrigada-texto {
+    color: #555;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+
+  .obrigada-contato {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  .obrigada-contato a {
+    color: #be996f;
+    text-decoration: underline;
+  }
+
+  .obrigada-contato a:hover {
+    color: #a67d5a;
+  }
+
+  .obrigada-link {
+    display: inline-block;
+    padding: 12px 28px;
+    border: 1px solid #be996f;
+    color: #be996f;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .obrigada-link:hover {
+    background: #be996f;
+    color: #fff;
+  }
+
+  @media (max-width: 640px) {
+    .obrigada-main {
+      padding: 3rem 1.5rem;
+    }
+
+    .obrigada-icon {
+      font-size: 3rem;
+    }
+
+    .obrigada-titulo {
+      font-size: 1.5rem;
+    }
+  }
+</style>
