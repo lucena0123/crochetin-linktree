@@ -225,6 +225,56 @@
                 "versátil",
                 "trabalho"
             ]
+        },
+        {
+            "id": "bolsa-006",
+            "slug": "bag-tati",
+            "name": "Bag Tati",
+            "description": "Bolsa artesanal em crochê — disponível como aula avulsa",
+            "price": 0,
+            "lessonUrl": "https://pay.hotmart.com/M103664998T?bid=1767571051716",
+            "category": "bolsa-casual",
+            "images": [
+                "bag-tati.png"
+            ],
+            "colors": [],
+            "material": "Crochê",
+            "dimensions": {
+                "width": 0,
+                "height": 0,
+                "depth": 0
+            },
+            "benefits": [],
+            "inStock": false,
+            "featured": false,
+            "tags": [
+                "aula-avulsa"
+            ]
+        },
+        {
+            "id": "bolsa-007",
+            "slug": "bag-emy",
+            "name": "Bag Emy",
+            "description": "Bolsa artesanal em crochê — disponível como aula avulsa",
+            "price": 0,
+            "lessonUrl": "https://pay.hotmart.com/N103794966L?bid=1768094794890",
+            "category": "bolsa-casual",
+            "images": [
+                "bag-emy.png"
+            ],
+            "colors": [],
+            "material": "Crochê",
+            "dimensions": {
+                "width": 0,
+                "height": 0,
+                "depth": 0
+            },
+            "benefits": [],
+            "inStock": false,
+            "featured": false,
+            "tags": [
+                "aula-avulsa"
+            ]
         }
     ]
 }

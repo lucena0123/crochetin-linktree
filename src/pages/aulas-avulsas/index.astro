@@ -16,8 +16,8 @@ type LessonItem = {
 };
 
 const { products } = productsData as { products: Product[] };
-const lessonProductSlugs = ['bag-mari', 'bag-ariel', 'bag-atena'];
-const lessonProductItems = lessonProductSlugs
+const lessonProductSlugs = ['bag-mari', 'bag-ariel', 'bag-atena', 'bag-tati', 'bag-emy'];
+const lessonItems: LessonItem[] = lessonProductSlugs
   .map((slug) => products.find((product) => product.slug === slug))
   .filter((product): product is Product => Boolean(product))
   .map((product) => {
@@ -31,26 +31,6 @@ const lessonProductItems = lessonProductSlugs
       imageAlt: product.name
     };
   });
-
-const lessonItems: LessonItem[] = [
-  ...lessonProductItems,
-  {
-    title: 'Bag Tati',
-    description: 'Comprar aula avulsa',
-    url: 'https://pay.hotmart.com/M103664998T?bid=1767571051716',
-    isExternal: true,
-    image: getProductImage('bag-tati.png'),
-    imageAlt: 'Bag Tati'
-  },
-  {
-    title: 'Bag Emy',
-    description: 'Comprar aula avulsa',
-    url: 'https://pay.hotmart.com/N103794966L?bid=1768094794890',
-    isExternal: true,
-    image: getProductImage('bag-emy.png'),
-    imageAlt: 'Bag Emy'
-  }
-];
 ---
 
 <BaseLayout

@@ -3,8 +3,10 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import productsData from '../../data/products.json';
 import { getProductImage } from '../../utils/productImages';
+import type { Product } from '../../types/product';
 
-const { products } = productsData;
+const allProducts = (productsData.products as Product[]).filter((p: Product) => p.inStock !== false);
+const products = allProducts;
 ---
 
 <BaseLayout title="Catálogo de Bolsas - Crochetin" description="Confira nossas bolsas artesanais feitas à mão com muito carinho">

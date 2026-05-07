@@ -9,10 +9,12 @@ import type { Product } from '../../types/product';
 
 export async function getStaticPaths() {
   const { products } = productsData as { products: Product[] };
-  return products.map((product) => ({
-    params: { slug: product.slug },
-    props: { product }
-  }));
+  return products
+    .filter((p: Product) => p.inStock !== false)
+    .map((product) => ({
+      params: { slug: product.slug },
+      props: { product }
+    }));
 }
 
 interface Props {

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://crochetin.com.br/sitemap-index.xml
