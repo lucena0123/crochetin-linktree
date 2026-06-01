@@ -16,21 +16,16 @@ type LessonItem = {
 };
 
 const { products } = productsData as { products: Product[] };
-const lessonProductSlugs = ['bag-mari', 'bag-ariel', 'bag-atena', 'bag-tati', 'bag-emy'];
-const lessonItems: LessonItem[] = lessonProductSlugs
-  .map((slug) => products.find((product) => product.slug === slug))
-  .filter((product): product is Product => Boolean(product))
-  .map((product) => {
-    const linkUrl = product.lessonUrl ?? `/catalogo/${product.slug}`;
-    return {
-      title: product.name,
-      description: product.lessonUrl ? 'Comprar aula avulsa' : 'Ver detalhes da bolsa',
-      url: linkUrl,
-      isExternal: linkUrl.startsWith('http'),
-      image: getProductImage(product.images[0]),
-      imageAlt: product.name
-    };
-  });
+const lessonItems: LessonItem[] = products
+  .filter((product): product is Product => Boolean(product.lessonUrl))
+  .map((product) => ({
+    title: product.name,
+    description: 'Comprar aula avulsa',
+    url: product.lessonUrl!,
+    isExternal: true,
+    image: getProductImage(product.images[0]),
+    imageAlt: product.name
+  }));
 ---
 
 <BaseLayout

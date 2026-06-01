@@ -18,11 +18,12 @@ const separator = whatsappBaseUrl.includes('?') ? '&' : '?';
 const whatsappLink = `${whatsappBaseUrl}${separator}text=${encodeURIComponent(message)}`;
 ---
 
-<a 
-  href={whatsappLink} 
-  class="whatsapp-button" 
-  target="_blank" 
+<a
+  href={whatsappLink}
+  class="whatsapp-button"
+  target="_blank"
   rel="noopener noreferrer"
+  onclick="if(typeof fbq!=='undefined'){fbq('track','InitiateCheckout')}"
 >
   <span class="button-content">
     <svg class="whatsapp-icon" viewBox="0 0 24 24" fill="currentColor">

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import LeadCapture from '../components/LeadCapture.astro';
 import config from '../data/config.json';
 
 const { profile, links, social } = config;
@@ -18,6 +19,9 @@ const { profile, links, social } = config;
     <h1 class="profile-name">{profile.name}</h1>
     <p class="profile-bio">{profile.bio}</p>
   </div>
+
+  <!-- Lead Capture -->
+  <LeadCapture />
 
   <!-- Links Section -->
   <div class="links-section">

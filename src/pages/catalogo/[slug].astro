@@ -6,11 +6,12 @@ import productsData from '../../data/products.json';
 import { formatColors } from '../../utils/colorLabels';
 import { getProductImage } from '../../utils/productImages';
 import type { Product } from '../../types/product';
+import config from '../../data/config.json';
 
 export async function getStaticPaths() {
   const { products } = productsData as { products: Product[] };
   return products
-    .filter((p: Product) => p.inStock !== false)
+    .filter((p: Product) => p.inStock || p.lessonUrl)
     .map((product) => ({
       params: { slug: product.slug },
       props: { product }
@@ -44,6 +45,7 @@ const imageEntries = product.images.map((fileName) => ({
 }));
 const hasMultipleImages = imageEntries.length > 1;
 const heroImageUrl = imageEntries[0]?.image?.src ?? '';
+const isLessonOnly = !product.inStock && Boolean(product.lessonUrl);
 const priceBRL = product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const installmentBRL = (product.price / 3).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
@@ -93,7 +95,7 @@ const jsonLd = {
       <div class="product-content">
         <!-- Image Section -->
         <div class="image-card">
-          <div class="badge-limitada">✨ Edição Limitada</div>
+          {product.limited && <div class="badge-limitada">✨ Edição Limitada</div>}
           <div class="image-carousel" data-carousel tabindex="0" aria-label="Galeria de imagens">
             <div class="image-stage">
               <div class="image-track" data-carousel-track>
@@ -158,29 +160,27 @@ const jsonLd = {
         </div>
 
         <!-- Price & Trust Compact Section -->
-        <div class="price-trust-section">
-          <div class="price-container">
-            <div class="price-value">
-              {priceBRL}
+        {!isLessonOnly && (
+          <div class="price-trust-section">
+            <div class="price-container">
+              <div class="price-value">
+                {priceBRL}
+              </div>
+              <div class="price-installments">
+                3x de {installmentBRL} sem juros
+              </div>
             </div>
-            <div class="price-installments">
-              3x de {installmentBRL} sem juros
-            </div>
-          </div>
-          
-          <!-- Compact Trust Badges -->
-          <div class="trust-badges-compact">
-            <div class="trust-item">
-              <span class="trust-icon">⭐</span> 5.0
-            </div>
-            <div class="trust-item">
-              <span class="trust-icon">🛡️</span> 30 dias
-            </div>
-            <div class="trust-item">
-              <span class="trust-icon">🚚</span> Rápida
+
+            <!-- Compact Trust Badges -->
+            <div class="trust-badges-compact">
+              {config.trustBadges.map((badge) => (
+                <div class="trust-item">
+                  <span class="trust-icon">{badge.icon}</span> {badge.label}
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
 
         <!-- Accordions for Details -->
         <div class="accordions-container">
@@ -233,42 +233,71 @@ const jsonLd = {
           </details>
         </div>
 
-        <!-- Color Selector -->
-        {product.colors?.length > 0 && (
-          <div class="color-selector">
-            <p class="color-label">Escolha a cor:</p>
-            <div class="color-options">
-              {product.colors.map((color: string) => (
-                <button
-                  class="color-btn"
-                  data-color={color}
-                  style={`background-color: ${colorHex[color] ?? '#ccc'}`}
-                  aria-label={color}
-                  title={color}
-                />
-              ))}
-            </div>
-            <p id="color-error" class="color-error" hidden>
-              Selecione uma cor antes de continuar
-            </p>
+        {isLessonOnly ? (
+          <!-- Lesson CTA -->
+          <div class="actions-container">
+            <a
+              href={product.lessonUrl}
+              class="btn-aula"
+              target="_blank"
+              rel="noopener noreferrer"
+              onclick="if(typeof fbq!=='undefined'){fbq('track','InitiateCheckout')}"
+            >
+              🎓 Comprar aula avulsa
+            </a>
           </div>
+        ) : (
+          <>
+            <!-- Color Selector -->
+            {product.colors?.length > 0 && (
+              <div class="color-selector">
+                <p class="color-label">Escolha a cor:</p>
+                <div class="color-options">
+                  {product.colors.map((color: string) => (
+                    <button
+                      class="color-btn"
+                      data-color={color}
+                      style={`background-color: ${colorHex[color] ?? '#ccc'}`}
+                      aria-label={color}
+                      title={color}
+                    />
+                  ))}
+                </div>
+                <p id="color-error" class="color-error" hidden>
+                  Selecione uma cor antes de continuar
+                </p>
+              </div>
+            )}
+
+            <!-- Buy Button -->
+            <button id="btn-comprar" class="btn-comprar" data-slug={product.slug}>
+              🛒 Comprar agora
+            </button>
+            <p id="comprar-error" class="comprar-error" hidden>
+              Erro ao iniciar pagamento. Tente novamente.
+            </p>
+
+            <!-- WhatsApp Button -->
+            <div class="actions-container">
+              <WhatsAppButton product={product} />
+            </div>
+          </>
         )}
-
-        <!-- Buy Button -->
-        <button id="btn-comprar" class="btn-comprar" data-slug={product.slug}>
-          🛒 Comprar agora
-        </button>
-        <p id="comprar-error" class="comprar-error" hidden>
-          Erro ao iniciar pagamento. Tente novamente.
-        </p>
-
-        <!-- WhatsApp Button -->
-        <div class="actions-container">
-          <WhatsAppButton product={product} />
-        </div>
       </div>
     </div>
   </div>
+
+  <script is:inline set:html={`
+    if (typeof fbq !== 'undefined') {
+      fbq('track', 'ViewContent', {
+        content_name: '${product.name}',
+        content_ids: ['${product.slug}'],
+        content_type: 'product',
+        value: ${product.price},
+        currency: 'BRL'
+      });
+    }
+  `} />
 
   <script is:inline>
     document.querySelectorAll('.color-btn').forEach(function(btn) {
@@ -936,5 +965,24 @@ const jsonLd = {
     font-size: 0.85rem;
     margin-top: 6px;
     text-align: center;
+  }
+
+  .btn-aula {
+    display: block;
+    width: 100%;
+    padding: 14px 24px;
+    background: #be996f;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .btn-aula:hover {
+    background: #a8845a;
   }
 </style>

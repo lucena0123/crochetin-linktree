@@ -18,6 +18,7 @@ export interface Product {
     dimensions: ProductDimensions;
     inStock: boolean;
     featured: boolean;
+    limited?: boolean;
     tags: string[];
     benefits?: string[];
 }

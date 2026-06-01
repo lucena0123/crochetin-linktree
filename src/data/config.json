@@ -23,9 +23,10 @@
         {
             "title": "Materiais Crochetin",
             "description": "Kits e materiais para seus projetos",
-            "url": "https://collshp.com/crochetin?share_channel_code=1&view=storefront",
+            "url": "/materiais",
             "icon": "/images/materiais.png",
-            "isImage": true
+            "isImage": true,
+            "internal": true
         },
         {
             "title": "Aulas Avulsas",
@@ -40,8 +41,20 @@
         "instagram": "https://instagram.com/crochetinatelie",
         "whatsapp": "https://wa.me/558296927755"
     },
+    "leadCapture": {
+        "enabled": false,
+        "brevoApiKey": "SEU_BREVO_API_KEY_AQUI",
+        "brevoListId": 0,
+        "leadMagnet": "Baixe grátis: 5 pontos essenciais para sua primeira bolsa de crochê"
+    },
+    "trustBadges": [
+        { "icon": "✋", "label": "100% artesanal" },
+        { "icon": "🛡️", "label": "7 dias CDC" },
+        { "icon": "💎", "label": "Fio Premium" }
+    ],
     "analytics": {
         "enabled": true,
-        "googleAnalyticsId": "G-HY5TK2QTEX"
+        "googleAnalyticsId": "G-HY5TK2QTEX",
+        "metaPixelId": "SEU_PIXEL_ID_AQUI"
     }
 }
