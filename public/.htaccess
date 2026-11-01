@@ -1,0 +1,4 @@
+# Bloqueia o arquivo de controle do deploy FTP (SamKirkland/FTP-Deploy-Action)
+<Files ".ftp-deploy-sync-state.json">
+  Require all denied
+</Files>
