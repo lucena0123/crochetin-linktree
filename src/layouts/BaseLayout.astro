@@ -11,11 +11,12 @@ import "@fontsource/playfair-display/700.css";
 interface Props {
   title: string;
   description?: string;
+  noindex?: boolean;
   wide?: boolean;
   image?: string;
 }
 
-const { title, description = "✨Há 7 anos transformando o crochê em estilo, dicas e inspiração", wide = false, image } = Astro.props;
+const { title, description = "✨Há 7 anos transformando o crochê em estilo, dicas e inspiração", wide = false, image, noindex = false } = Astro.props;
 const siteUrl = Astro.site ?? 'https://crochetin.com.br';
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const imageUrl = image
@@ -48,7 +49,7 @@ const shouldLoadPixel = Boolean(config.analytics?.enabled && metaPixelId && meta
   <meta name="description" content={description}>
   <meta name="keywords" content="crochê, crochetin, curso de crochê, bolsas artesanais, materiais de crochê, Maceió">
   <meta name="author" content="Crochetin Ateliê">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"}>
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">

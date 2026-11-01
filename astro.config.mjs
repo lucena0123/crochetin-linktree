@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
     site: 'https://crochetin.com.br',
-    integrations: [sitemap()],
+    integrations: [sitemap({ filter: (page) => !page.includes('/obrigada') })],
     output: 'static',
     build: {
         assets: 'assets'
