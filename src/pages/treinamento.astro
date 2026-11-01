@@ -1,0 +1,359 @@
+---
+/**
+ * Página de vendas do Treinamento Crochetin — PROTÓTIPO (branch, não publicado).
+ * Base: "Crochetin — Briefing da nova página de vendas do Treinamento" (01/11/2026).
+ * Trechos marcados com class="placeholder" aguardam material real
+ * (depoimentos, fotos de alunas, fotos da Rosália e da Pochete Copa, oferta de upgrade).
+ */
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProductImage } from '../utils/productImages';
+import { withHotmartSource } from '../utils/tracking';
+
+const CHECKOUT = 'https://pay.hotmart.com/T101474588W?off=dliwfsqx';
+const checkout = (sck: string) => withHotmartSource(CHECKOUT, `treinamento_${sck}`);
+const whatsapp =
+  'https://wa.me/5582996927755?text=' +
+  encodeURIComponent('Olá! Tenho uma dúvida sobre o Treinamento Crochetin.');
+
+// Aulas por bolsa = páginas de cada módulo na área de membros (Hotmart, 01/11/2026)
+const bags = [
+  { name: 'Liêta', lessons: 5, img: 'bag-lieta-nude.jpg' },
+  { name: 'Cherry', lessons: 4, img: 'bag-cherry-nude.jpg' },
+  { name: 'Mari', lessons: 5, img: 'bag-mari-nude.jpg' },
+  { name: 'Atena', lessons: 4, img: 'bag-atena-nude.jpg' },
+  { name: 'Ariel', lessons: 3, img: 'bag-ariel-areia.jpg' },
+  { name: 'Tati', lessons: 3, img: 'bag-tati.png' },
+  { name: 'Emy Colors', lessons: 6, img: 'bag-emy.png' },
+  { name: 'Rosália', lessons: 6, img: null },
+  { name: 'Pochete Copa', lessons: 9, img: null },
+].map((b) => ({ ...b, image: b.img ? getProductImage(b.img) : undefined }));
+
+const totalLessons = bags.reduce((s, b) => s + b.lessons, 0);
+const hero = getProductImage('bag-lieta-nude.jpg');
+---
+
+<BaseLayout
+  title="Treinamento Crochetin — 9 bolsas de alto padrão para fazer e vender"
+  description="Aprenda a fazer 9 bolsas de crochê de alto padrão e a precificar, embalar e enviar para vender. Para quem já sabe o básico do crochê."
+  wide
+  noindex
+>
+  <main class="tr">
+    <!-- Topo -->
+    <header class="tr-hero">
+      <div class="tr-hero-text">
+        <p class="tr-brand">Treinamento Crochetin</p>
+        <h1>Nove bolsas de alto padrão, da primeira carreira à etiqueta de preço.</h1>
+        <p class="tr-lead">
+          Você aprende a fazer as bolsas que a Crochetin vende e o que vem depois:
+          quanto cobrar, como embalar e como enviar para qualquer lugar do Brasil.
+        </p>
+        <div class="tr-cta-row">
+          <a class="tr-btn" href={checkout('topo')} target="_blank" rel="noopener">Quero o Treinamento</a>
+          <p class="tr-price-inline">R$ 197 à vista ou 12x de R$ 20,37</p>
+        </div>
+        <p class="tr-prereq">Para quem já faz correntinha, ponto baixo e ponto alto.</p>
+      </div>
+      {hero && (
+        <figure class="tr-hero-figure">
+          <Image src={hero} alt="Bag Liêta em fio náutico nude, com alça de mão e fecho dourado" widths={[480, 800, 1280]} sizes="(max-width: 860px) 100vw, 50vw" loading="eager" />
+        </figure>
+      )}
+    </header>
+
+    <!-- As 9 bolsas -->
+    <section class="tr-section" aria-labelledby="bolsas">
+      <h2 id="bolsas">As 9 bolsas que você vai fazer</h2>
+      <p class="tr-sub">{totalLessons} aulas divididas por bolsa, com a receita escrita de cada uma em e-book.</p>
+      <ul class="tr-bags">
+        {bags.map((b) => (
+          <li class="tr-bag">
+            <div class="tr-bag-photo">
+              {b.image ? (
+                <Image src={b.image} alt={`Bag ${b.name}`} widths={[360, 640]} sizes="(max-width: 600px) 100vw, 33vw" />
+              ) : (
+                <span class="placeholder">Foto da {b.name} a enviar</span>
+              )}
+            </div>
+            <p class="tr-bag-name">{b.name}</p>
+            <p class="tr-bag-meta">{b.lessons} aulas</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- Além da bolsa -->
+    <section class="tr-section tr-business" aria-labelledby="vender">
+      <h2 id="vender">O que transforma a bolsa em venda</h2>
+      <div class="tr-cols">
+        <div>
+          <h3>Precificação</h3>
+          <p>Como definir o preço de uma bolsa para o mercado de alto padrão.</p>
+        </div>
+        <div>
+          <h3>Como embalar</h3>
+          <p>Como embalar com capricho para encantar quem compra.</p>
+        </div>
+        <div>
+          <h3>Como enviar</h3>
+          <p>Como mandar para todo o Brasil pagando menos no frete.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Para quem é -->
+    <section class="tr-section" aria-labelledby="para-quem">
+      <h2 id="para-quem">Para quem é o Treinamento</h2>
+      <div class="tr-fit">
+        <div>
+          <h3>É para você se</h3>
+          <ul>
+            <li>já sabe fazer correntinha, ponto baixo e ponto alto;</li>
+            <li>quer fazer bolsas com acabamento de loja;</li>
+            <li>pensa em vender o que faz, ou já vende e quer cobrar mais.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Ainda não é para você se</h3>
+          <ul>
+            <li>nunca pegou numa agulha de crochê;</li>
+            <li>procura receitas de roupas, amigurumi ou peças de casa.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quem ensina -->
+    <section class="tr-section tr-teacher" aria-labelledby="quem-ensina">
+      <h2 id="quem-ensina">Quem ensina</h2>
+      <p>
+        Marília Lucena é arquiteta e fundadora da Crochetin, ateliê de bolsas de crochê de alto padrão.
+        As bolsas do Treinamento são as mesmas que a Crochetin vende, e as aulas mostram o processo
+        que ela usa no ateliê.
+      </p>
+      <p class="placeholder">Foto ou vídeo curto da Marília a enviar.</p>
+    </section>
+
+    <!-- Provas -->
+    <section class="tr-section" aria-labelledby="alunas">
+      <h2 id="alunas">Bolsas feitas por alunas</h2>
+      <div class="tr-proof">
+        <p class="placeholder">Depoimento real de aluna, com nome e autorização.</p>
+        <p class="placeholder">Depoimento real de aluna, com nome e autorização.</p>
+        <p class="placeholder">Foto de bolsa feita por aluna.</p>
+      </div>
+    </section>
+
+    <!-- Oferta -->
+    <section class="tr-section tr-offer" aria-labelledby="oferta">
+      <h2 id="oferta">O que está incluído</h2>
+      <ul class="tr-included">
+        <li>9 bolsas completas, em {totalLessons} aulas</li>
+        <li>Módulo Método Crochetin</li>
+        <li>Precificação, embalagem e envio</li>
+        <li>E-books com as receitas escritas de cada bolsa</li>
+        <li>Suporte para tirar dúvidas</li>
+        <li>Certificado digital ao final</li>
+      </ul>
+      <div class="tr-compare">
+        <p><span>Aulas avulsas das 9 bolsas, compradas uma a uma</span><s>R$ 333</s></p>
+        <p class="tr-compare-main"><span>Treinamento completo</span><strong>R$ 197</strong></p>
+        <p class="tr-compare-note">ou 12x de R$ 20,37 no cartão</p>
+      </div>
+      <a class="tr-btn" href={checkout('oferta')} target="_blank" rel="noopener">Quero o Treinamento</a>
+      <p class="tr-guarantee">
+        Garantia de 7 dias: se não for para você, peça o reembolso pela Hotmart dentro desse prazo.
+      </p>
+      <p class="tr-upgrade placeholder">
+        Já comprou uma aula avulsa? Leve o Treinamento pagando a diferença: R$ 160.
+        [link da oferta de upgrade a criar na Hotmart]
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section class="tr-section" aria-labelledby="duvidas">
+      <h2 id="duvidas">Perguntas frequentes</h2>
+      <details>
+        <summary>Sou iniciante. Consigo acompanhar?</summary>
+        <p>O Treinamento parte do princípio de que você já faz correntinha, ponto baixo e ponto alto. Se ainda não sabe, vale aprender esses pontos antes.</p>
+      </details>
+      <details>
+        <summary>Qual a diferença para as aulas avulsas?</summary>
+        <p>As aulas avulsas são as mesmas do Treinamento, vendidas por bolsa. No Treinamento você leva as 9 bolsas e os módulos de precificação, embalagem e envio.</p>
+      </details>
+      <details>
+        <summary>Quais materiais preciso?</summary>
+        <p class="placeholder">Lista de fios, agulhas e ferragens por bolsa, a confirmar com a Marília.</p>
+      </details>
+      <details>
+        <summary>Por quanto tempo tenho acesso?</summary>
+        <p class="placeholder">Tempo de acesso a confirmar na Hotmart.</p>
+      </details>
+      <details>
+        <summary>Como funciona o suporte?</summary>
+        <p class="placeholder">Formato e horário do suporte a confirmar.</p>
+      </details>
+      <details>
+        <summary>E se eu não gostar?</summary>
+        <p>Você tem 7 dias para pedir o reembolso pela Hotmart.</p>
+      </details>
+      <p class="tr-help">Ficou alguma dúvida? <a href={whatsapp} target="_blank" rel="noopener">Fale com a Crochetin no WhatsApp</a>.</p>
+    </section>
+
+    <!-- Entrada -->
+    <section class="tr-section tr-entry" aria-labelledby="uma-bolsa">
+      <h2 id="uma-bolsa">Prefere começar por uma bolsa só?</h2>
+      <p>Cada bolsa também tem aula avulsa por R$ 37.</p>
+      <a class="tr-link" href="/aulas-avulsas">Ver as aulas avulsas</a>
+    </section>
+
+    <footer class="tr-footer">
+      <p class="placeholder">Crochetin · CNPJ, razão social e endereço a incluir · Política de privacidade · Política de reembolso</p>
+    </footer>
+  </main>
+</BaseLayout>
+
+<style>
+  .tr {
+    --ink: #3e2f25;
+    --ink-soft: #6b5642;
+    --linen: #f4efe7;
+    --sand: #e4dcd0;
+    --caramel: #9a7448;
+    --white: #ffffff;
+    color: var(--ink);
+    font-family: var(--font-sans);
+  }
+
+  .tr h1, .tr h2 {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+  .tr h1 { font-size: clamp(2.1rem, 4.6vw, 3.4rem); margin-bottom: 1.25rem; }
+  .tr h2 { font-size: clamp(1.6rem, 3vw, 2.25rem); margin-bottom: 0.75rem; }
+  .tr h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .tr p, .tr li { font-size: 1.05rem; line-height: 1.65; max-width: 62ch; }
+
+  /* Topo */
+  .tr-hero {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 2.5rem;
+    align-items: center;
+    padding: 2.5rem 0 3.5rem;
+  }
+  .tr-brand { font-weight: 600; color: var(--ink-soft); margin-bottom: 0.75rem; }
+  .tr-lead { color: var(--ink-soft); margin-bottom: 1.75rem; }
+  .tr-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.25rem; margin-bottom: 1rem; }
+  .tr-price-inline { font-weight: 600; margin: 0; }
+  .tr-prereq { font-size: 0.95rem; color: var(--ink-soft); }
+  .tr-hero-figure { margin: 0; }
+  .tr-hero-figure :global(img) {
+    width: 100%; height: auto; display: block;
+    border-radius: 200px 200px 16px 16px;
+    aspect-ratio: 1 / 1; object-fit: cover; object-position: 50% 50%;
+  }
+
+  .tr-btn {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 1.05rem;
+    padding: 0.95rem 1.75rem;
+    border-radius: 999px;
+    text-decoration: none;
+  }
+  .tr-btn:hover { background: #2a1f18; }
+  .tr-btn:focus-visible, .tr a:focus-visible, .tr summary:focus-visible {
+    outline: 3px solid var(--caramel); outline-offset: 3px;
+  }
+
+  /* Seções */
+  .tr-section { padding: 3rem 0; border-top: 1px solid rgba(62, 47, 37, 0.15); }
+  .tr-sub { color: var(--ink-soft); margin-bottom: 1.75rem; }
+
+  /* Bolsas */
+  .tr-bags {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem 1.25rem;
+  }
+  .tr-bag-photo {
+    aspect-ratio: 4 / 3;
+    background: var(--sand);
+    border-radius: 12px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+  .tr-bag-photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .tr-bag-name { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; margin-top: 0.6rem; }
+  .tr-bag-meta { color: var(--ink-soft); font-size: 0.95rem; }
+
+  /* Negócio */
+  .tr-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem 2rem; margin-top: 1.25rem; }
+
+  /* Para quem */
+  .tr-fit { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem; }
+  .tr-fit ul { padding-left: 1.1rem; }
+  .tr-fit li { margin-bottom: 0.35rem; }
+
+  /* Provas */
+  .tr-proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+
+  /* Oferta */
+  .tr-offer {
+    background: var(--linen);
+    border-radius: 24px;
+    padding: 3rem clamp(1.25rem, 4vw, 3rem);
+    border-top: none;
+    margin-top: 1rem;
+  }
+  .tr-included { padding-left: 1.1rem; margin: 1rem 0 2rem; }
+  .tr-included li { margin-bottom: 0.3rem; }
+  .tr-compare { max-width: 520px; margin-bottom: 1.75rem; }
+  .tr-compare p { display: flex; justify-content: space-between; gap: 1rem; max-width: none; margin: 0.25rem 0; }
+  .tr-compare s { color: var(--ink-soft); }
+  .tr-compare-main { font-size: 1.25rem; padding-top: 0.5rem; border-top: 1px solid rgba(62, 47, 37, 0.2); }
+  .tr-compare-main strong { font-family: var(--font-serif); font-size: 2rem; }
+  .tr-compare-note { color: var(--ink-soft); justify-content: flex-end !important; font-size: 0.95rem; }
+  .tr-guarantee { margin-top: 1.25rem; color: var(--ink-soft); }
+  .tr-upgrade { margin-top: 1.5rem; }
+
+  /* FAQ */
+  .tr details { border-bottom: 1px solid rgba(62, 47, 37, 0.15); padding: 0.9rem 0; max-width: 760px; }
+  .tr summary { cursor: pointer; font-weight: 600; font-size: 1.05rem; }
+  .tr details p { margin-top: 0.6rem; color: var(--ink-soft); }
+  .tr-help { margin-top: 1.5rem; }
+  .tr-help a, .tr-link { color: var(--ink); font-weight: 600; }
+
+  .tr-entry p { margin-bottom: 0.75rem; }
+  .tr-footer { padding: 2.5rem 0 1rem; font-size: 0.9rem; }
+
+  /* Marcadores de conteúdo pendente (só no protótipo) */
+  .placeholder {
+    background: repeating-linear-gradient(45deg, rgba(154, 116, 72, 0.08) 0 10px, rgba(154, 116, 72, 0.16) 10px 20px);
+    border: 1px dashed var(--caramel);
+    border-radius: 10px;
+    padding: 1rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+  .tr-bag-photo .placeholder { border: none; border-radius: 0; width: 100%; height: 100%; display: grid; place-items: center; text-align: center; }
+
+  @media (max-width: 860px) {
+    .tr-hero { grid-template-columns: 1fr; gap: 1.5rem; padding-top: 1rem; }
+    .tr-hero-figure { order: -1; max-width: 420px; }
+    .tr-bags { grid-template-columns: repeat(2, 1fr); }
+    .tr-cols, .tr-fit, .tr-proof { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .tr-bags { grid-template-columns: 1fr 1fr; gap: 1.25rem 0.75rem; }
+    .tr-bag-name { font-size: 1.1rem; }
+  }
+</style>
