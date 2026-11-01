@@ -52,9 +52,13 @@
         { "icon": "🛡️", "label": "7 dias CDC" },
         { "icon": "💎", "label": "Fio Premium" }
     ],
+    "checkout": {
+        "enabled": false,
+        "apiUrl": "https://api.crochetin.com.br/checkout"
+    },
     "analytics": {
         "enabled": true,
         "googleAnalyticsId": "G-HY5TK2QTEX",
-        "metaPixelId": "SEU_PIXEL_ID_AQUI"
+        "metaPixelId": "192178057298181"
     }
 }

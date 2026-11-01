@@ -23,6 +23,8 @@ interface Props {
 }
 
 const { product } = Astro.props;
+const checkoutEnabled = Boolean(config.checkout?.enabled);
+const checkoutApiUrl = config.checkout?.apiUrl ?? '';
 
 const colorHex: Record<string, string> = {
   nude: '#d4b896',
@@ -269,13 +271,17 @@ const jsonLd = {
               </div>
             )}
 
-            <!-- Buy Button -->
-            <button id="btn-comprar" class="btn-comprar" data-slug={product.slug}>
-              🛒 Comprar agora
-            </button>
-            <p id="comprar-error" class="comprar-error" hidden>
-              Erro ao iniciar pagamento. Tente novamente.
-            </p>
+            {checkoutEnabled && (
+              <>
+                <!-- Buy Button (desligado por config.checkout.enabled) -->
+                <button id="btn-comprar" class="btn-comprar" data-slug={product.slug} data-api={checkoutApiUrl}>
+                  🛒 Comprar agora
+                </button>
+                <p id="comprar-error" class="comprar-error" hidden>
+                  Erro ao iniciar pagamento. Tente novamente.
+                </p>
+              </>
+            )}
 
             <!-- WhatsApp Button -->
             <div class="actions-container">
@@ -329,7 +335,7 @@ const jsonLd = {
         btnComprar.disabled = true;
         if (comprarError) comprarError.hidden = true;
 
-        fetch('https://api.crochetin.com.br/checkout', {
+        fetch(btnComprar.dataset.api, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ slug: slug, color: selectedColor }),

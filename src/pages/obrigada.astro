@@ -7,9 +7,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Obrigada pela sua compra! Sua bolsa artesanal está a caminho."
 >
   <script is:inline slot="head">
-    if (typeof fbq === 'function') {
-      fbq('track', 'Purchase', { value: 0, currency: 'BRL' });
-    }
+    // Purchase só é enviado com valor real vindo da URL de retorno
+    // (?value=279.90&slug=bag-mari). Sem valor válido, não envia:
+    // um Purchase de R$ 0 distorce ROAS e otimização de campanhas.
+    (function () {
+      if (typeof fbq !== 'function') return;
+      var params = new URLSearchParams(window.location.search);
+      var value = parseFloat(params.get('value') || '');
+      if (!isFinite(value) || value <= 0) return;
+      var data = { value: value, currency: 'BRL' };
+      var slug = params.get('slug');
+      if (slug) { data.content_ids = [slug]; data.content_type = 'product'; }
+      fbq('track', 'Purchase', data);
+    })();
   </script>
 
   <main class="obrigada-main">
