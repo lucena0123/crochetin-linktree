@@ -7,6 +7,7 @@ import { formatColors } from '../../utils/colorLabels';
 import { getProductImage } from '../../utils/productImages';
 import type { Product } from '../../types/product';
 import config from '../../data/config.json';
+import { withHotmartSource } from '../../utils/tracking';
 
 export async function getStaticPaths() {
   const { products } = productsData as { products: Product[] };
@@ -239,7 +240,7 @@ const jsonLd = {
           <!-- Lesson CTA -->
           <div class="actions-container">
             <a
-              href={product.lessonUrl}
+              href={withHotmartSource(product.lessonUrl, `produto_${product.slug}`)}
               class="btn-aula"
               target="_blank"
               rel="noopener noreferrer"

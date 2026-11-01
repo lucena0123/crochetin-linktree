@@ -53,3 +53,14 @@ Abra `http://localhost:4321` (porta padrão do Astro) para ver a landing e catá
 - **CTA do WhatsApp**: `src/components/social/WhatsAppButton.astro` (número e template de mensagem).
 - **Preço/parcelamento**: `src/pages/catalogo/[slug].astro` (lógica de exibição) e `products.json` (valores).
 - **Lista de produtos**: `src/pages/catalogo/index.astro` (badges, grid e CTA "Ver detalhes").
+
+## Rastreamento (atualizado em 01/11/2026)
+
+- **Meta Pixel oficial:** `287225047648624` (Business crochetinatelie), em `src/data/config.json`. O mesmo Pixel está configurado nos 8 produtos da Hotmart.
+- **GA4:** `G-HY5TK2QTEX`. Eventos de clique enviados pelo site: `click_whatsapp`, `click_hotmart` e `click_instagram` (parâmetros `link_url` e `page_path`).
+- **Origem nas vendas da Hotmart:** todo link do site que leva à Hotmart recebe `src=site_crochetin` e `sck=<ponto do clique>` (`home`, `aulas_<slug>`, `produto_<slug>`), via `src/utils/tracking.ts`. Esses valores aparecem no relatório de vendas da Hotmart.
+- **Links externos para o site** (fora do código, configurar onde o link é publicado):
+  - Bio do Instagram: `https://crochetin.com.br/?utm_source=instagram&utm_medium=bio`
+  - Stories: `?utm_source=instagram&utm_medium=stories&utm_campaign=<tema>`
+  - Anúncios Meta: `?utm_source=meta&utm_medium=paid&utm_campaign={{campaign.name}}&utm_content={{ad.name}}`
+  - WhatsApp (status/listas): `?utm_source=whatsapp&utm_medium=<status|lista>`

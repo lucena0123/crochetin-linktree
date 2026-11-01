@@ -21,11 +21,12 @@ const lessonItems: LessonItem[] = products
   .map((product) => ({
     title: product.name,
     description: 'Comprar aula avulsa',
-    url: product.lessonUrl!,
+    url: withHotmartSource(product.lessonUrl, `aulas_${product.slug}`),
     isExternal: true,
     image: getProductImage(product.images[0]),
     imageAlt: product.name
   }));
+import { withHotmartSource } from '../../utils/tracking';
 ---
 
 <BaseLayout
