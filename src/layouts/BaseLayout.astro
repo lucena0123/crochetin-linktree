@@ -28,7 +28,16 @@ const analyticsScript = shouldLoadAnalytics
   ? `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${analyticsId}', { anonymize_ip: true });`
+gtag('config', '${analyticsId}', { anonymize_ip: true });
+document.addEventListener('click', function (e) {
+  var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+  if (!a) return;
+  var href = a.href || '';
+  var name = /wa\\.me|whatsapp\\.com/.test(href) ? 'click_whatsapp'
+    : /hotmart\\.(com|host)/.test(href) ? 'click_hotmart'
+    : /instagram\\.com/.test(href) ? 'click_instagram' : null;
+  if (name) gtag('event', name, { link_url: href.split('?')[0], page_path: location.pathname, transport_type: 'beacon' });
+}, true);`
   : '';
 
 const metaPixelId = config.analytics?.metaPixelId;

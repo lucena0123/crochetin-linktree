@@ -4,6 +4,7 @@ import LeadCapture from '../components/LeadCapture.astro';
 import config from '../data/config.json';
 
 const { profile, links, social } = config;
+import { withHotmartSource } from '../utils/tracking';
 ---
 
 <BaseLayout
@@ -27,7 +28,7 @@ const { profile, links, social } = config;
   <div class="links-section">
     {links.map((link) => (
       <a 
-        href={link.url} 
+        href={withHotmartSource(link.url, 'home')} 
         class="link-card"
         target={link.internal ? '_self' : '_blank'}
         rel={link.internal ? '' : 'noopener noreferrer'}
