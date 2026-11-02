@@ -355,11 +355,11 @@
             "category": "clutch",
             "material": "Fio de Malha e Viscose Premium",
             "colors": [
-                "offwhite",
-                "preta"
+                "offwhitedourado",
+                "pretadourado"
             ],
             "images": [
-                "bag-pri-offwhite.jpg"
+                "bag-pri-offwhitedourado.jpg"
             ],
             "dimensions": {
                 "width": 25,
