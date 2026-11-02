@@ -4,7 +4,7 @@
             "id": "bolsa-001",
             "slug": "bag-mari",
             "name": "Bag Mari",
-            "description": "Totalmente feita à mão\nDesign sofisticado\nConfeccionada com a técnica do crochê moderno\nMaterial da estrutura da bolsa: fio náutico premium\nDetalhes em metal dourado ou prateado\nCrochê exclusivo na alça de ombro\nTamanho perfeito para o essencial: celular, chaves e documentos\nAlça removível",
+            "description": "Bolsa de crochê moderno em fio náutico premium, com design sofisticado e detalhes em metal dourado ou prateado. A alça de ombro em crochê é removível, e o tamanho é o certo para o essencial: celular, chaves e documentos.",
             "price": 279.9,
             "lessonUrl": "https://pay.hotmart.com/R102977095X",
             "category": "bolsa-fashionista",
@@ -42,13 +42,14 @@
                 "elegante",
                 "festa",
                 "corrente"
-            ]
+            ],
+            "lessons": 5
         },
         {
             "id": "bolsa-002",
             "slug": "bag-ariel",
             "name": "Bag Ariel",
-            "description": "Bolsa vibrante em turquesa com pingente decorativo. Fio grosso e textura marcante, ideal para looks despojados.",
+            "description": "Bolsa com pingente decorativo, fio grosso e textura marcante. Ideal para looks despojados.",
             "price": 149.9,
             "lessonUrl": "https://pay.hotmart.com/C102900214P",
             "category": "casual",
@@ -90,13 +91,14 @@
                 "colorida",
                 "verão",
                 "casual"
-            ]
+            ],
+            "lessons": 3
         },
         {
             "id": "bolsa-003",
             "slug": "bag-atena",
             "name": "Bag Atena",
-            "description": "Bolsa estilo envelope em tom vinho elegante. Alça de crochê trançada e design moderno, perfeita para eventos noturnos.",
+            "description": "Bolsa estilo envelope, com alça de crochê trançada e design moderno. Perfeita para eventos à noite.",
             "price": 259.9,
             "lessonUrl": "https://pay.hotmart.com/G102895388T",
             "category": "bolsa-fashionista",
@@ -136,13 +138,14 @@
                 "elegante",
                 "envelope",
                 "noite"
-            ]
+            ],
+            "lessons": 4
         },
         {
             "id": "bolsa-004",
             "slug": "bag-lieta",
-            "name": "Bag Lieta",
-            "description": "Bolsa em tom caramelo com trançado sofisticado e alça de mão. Acabamento premium com pingente e fecho dourado.",
+            "name": "Bag Liêta",
+            "description": "Bolsa com trançado sofisticado e alça de mão. Acabamento premium, com pingente e fecho dourado.",
             "price": 279.9,
             "category": "bolsa-casual",
             "images": [
@@ -183,13 +186,14 @@
                 "trançada",
                 "premium",
                 "sofisticada"
-            ]
+            ],
+            "lessons": 5
         },
         {
             "id": "bolsa-005",
             "slug": "bag-cherry",
             "name": "Bag Cherry",
-            "description": "Bolsa clássica em terracota com textura uniforme e alça de mão. Design atemporal e versátil para o dia a dia.",
+            "description": "Bolsa clássica de textura uniforme e alça de mão. Design atemporal e versátil para o dia a dia.",
             "price": 299.9,
             "category": "bolsa-classica",
             "images": [
@@ -224,7 +228,8 @@
                 "clássica",
                 "versátil",
                 "trabalho"
-            ]
+            ],
+            "lessons": 4
         },
         {
             "id": "bolsa-006",
@@ -249,7 +254,8 @@
             "featured": false,
             "tags": [
                 "aula-avulsa"
-            ]
+            ],
+            "lessons": 3
         },
         {
             "id": "bolsa-007",
@@ -274,7 +280,8 @@
             "featured": false,
             "tags": [
                 "aula-avulsa"
-            ]
+            ],
+            "lessons": 6
         }
     ]
 }

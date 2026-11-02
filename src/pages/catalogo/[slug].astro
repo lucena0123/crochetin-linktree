@@ -1,995 +1,276 @@
 ---
+/**
+ * Página de cada bolsa (v2, estilo da página do Treinamento).
+ * Escolher a cor troca a foto e entra na mensagem do WhatsApp.
+ * O botão "Comprar agora" (API própria) continua desligado em config.checkout.enabled
+ * e foi retirado desta versão; o pedido é pelo WhatsApp.
+ */
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import WhatsAppButton from '../../components/social/WhatsAppButton.astro';
+import BrandChrome from '../../components/BrandChrome.astro';
 import productsData from '../../data/products.json';
-import { formatColors } from '../../utils/colorLabels';
+import { formatColor, colorHex } from '../../utils/colorLabels';
 import { getProductImage } from '../../utils/productImages';
-import type { Product } from '../../types/product';
-import config from '../../data/config.json';
 import { withHotmartSource } from '../../utils/tracking';
+import type { Product } from '../../types/product';
+import '../../styles/brand.css';
 
 export async function getStaticPaths() {
   const { products } = productsData as { products: Product[] };
   return products
-    .filter((p: Product) => p.inStock !== false)
-    .map((product) => ({
-      params: { slug: product.slug },
-      props: { product }
-    }));
+    .filter((p) => p.inStock !== false)
+    .map((product) => ({ params: { slug: product.slug }, props: { product } }));
 }
 
-interface Props {
-  product: Product;
-}
-
+interface Props { product: Product }
 const { product } = Astro.props;
-const checkoutEnabled = Boolean(config.checkout?.enabled);
-const checkoutApiUrl = config.checkout?.apiUrl ?? '';
+const all = (productsData.products as Product[]).filter((p) => p.inStock !== false);
 
-const colorHex: Record<string, string> = {
-  nude: '#d4b896',
-  preta: '#1a1a1a',
-  cobre: '#b87333',
-  dourada: '#d4af37',
-  dourado: '#d4af37',
-  areia: '#c4a882',
-  caramelo: '#c68642',
-  offwhite: '#f5f0e8',
-  pink: '#f4a0b5',
-  verdemilitar: '#4a5e3a',
-  vermelha: '#c0392b',
-};
+const brl = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const priceBRL = brl(product.price);
+const installmentBRL = brl(product.price / 3);
 
-const metaDescription = product.description.replace(/\s+/g, ' ').trim();
-const imageEntries = product.images.map((fileName) => ({
-  fileName,
-  image: getProductImage(fileName)
+// Foto de cada cor: o arquivo traz a cor no nome (bag-mari-preta.png)
+const images = product.images.map((file) => ({
+  file,
+  img: getProductImage(file),
+  color: product.colors.find((c) => file.includes(`-${c}.`)) ?? null,
 }));
-const hasMultipleImages = imageEntries.length > 1;
-const heroImageUrl = imageEntries[0]?.image?.src ?? '';
-const isLessonOnly = !product.inStock && Boolean(product.lessonUrl);
-const priceBRL = product.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-const installmentBRL = (product.price / 3).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const firstColor = images[0]?.color ?? product.colors[0] ?? null;
 
-const defaultBenefits = [
-  "Feita 100% à mão",
-  "Fio Náutico Premium",
-  "Alça em metal dourado ou prata",
-  "Tamanho ideal do dia a dia",
-  "Design exclusivo e moderno"
-];
+const waBase = 'https://wa.me/5582996927755?text=';
+const waMessage = (color: string | null) =>
+  `Olá! Tenho interesse na *${product.name}* (${priceBRL})` + (color ? `, na cor *${formatColor(color)}*.` : '.');
+const waHref = waBase + encodeURIComponent(waMessage(firstColor));
 
-const benefits = product.benefits ?? defaultBenefits;
-const colorsLabel = formatColors(product.colors);
+const d = product.dimensions;
+const fmt = (n: number) => n.toLocaleString('pt-BR');
+const measures = d && d.width ? `${fmt(d.width)} × ${fmt(d.height)} × ${fmt(d.depth)} cm` : null;
 
-const siteUrl = 'https://crochetin.com.br';
-const productUrl = `${siteUrl}/catalogo/${product.slug}`;
+const others = all.filter((p) => p.slug !== product.slug).slice(0, 4);
+
+const heroSrc = images[0]?.img?.src ?? '';
 const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": product.name,
-  "description": product.description,
-  "brand": { "@type": "Brand", "name": "Crochetin" },
-  "offers": {
-    "@type": "Offer",
-    "price": product.price,
-    "priceCurrency": "BRL",
-    "availability": product.inStock
-      ? "https://schema.org/InStock"
-      : "https://schema.org/OutOfStock",
-    "url": productUrl
-  }
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: product.name,
+  description: product.description,
+  image: heroSrc ? `https://crochetin.com.br${heroSrc}` : undefined,
+  brand: { '@type': 'Brand', name: 'Crochetin' },
+  offers: {
+    '@type': 'Offer',
+    price: product.price,
+    priceCurrency: 'BRL',
+    availability: 'https://schema.org/InStock',
+    url: `https://crochetin.com.br/catalogo/${product.slug}`,
+  },
 };
 ---
 
-<BaseLayout title={product.name} description={metaDescription} image={heroImageUrl}>
+<BaseLayout title={`${product.name} | Crochetin`} description={product.description} image={heroSrc} wide>
   <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-  <div class="product-detail-wrapper">
-    <div class="product-detail-container">
-      <!-- Header & Back Button Row -->
-      <div class="header-row">
-        <a href="/catalogo" class="back-button" aria-label="Voltar ao catálogo">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        </a>
-        <h1 class="product-title">{product.name}</h1>
+  <main class="b pd">
+    <BrandChrome part="top" current="catalogo" />
+
+    <div class="pd-main">
+      <div class="pd-media">
+        <div class="pd-arch">
+          {images.map((e, i) => e.img && (
+            <Image
+              class={i === 0 ? 'is-on' : ''}
+              data-color={e.color ?? ''}
+              src={e.img}
+              alt={`${product.name}${e.color ? ` na cor ${formatColor(e.color)}` : ''}`}
+              widths={[480, 720, 960]}
+              sizes="(max-width: 860px) 92vw, 50vw"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+            />
+          ))}
+        </div>
       </div>
 
-      <div class="product-content">
-        <!-- Image Section -->
-        <div class="image-card">
-          {product.limited && <div class="badge-limitada">✨ Edição Limitada</div>}
-          <div class="image-carousel" data-carousel tabindex="0" aria-label="Galeria de imagens">
-            <div class="image-stage">
-              <div class="image-track" data-carousel-track>
-            {imageEntries.map(({ fileName, image }, index) => (
-              <div class="image-slide" aria-hidden={index === 0 ? 'false' : 'true'}>
-                {image && (
-                  <Image
-                    src={image}
-                    alt={`${product.name} - imagem ${index + 1}`}
-                    class="main-image"
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    decoding="async"
-                    fetchpriority={index === 0 ? 'high' : 'auto'}
-                    sizes="(max-width: 640px) 90vw, (max-width: 1024px) 70vw, 560px"
-                    widths={[480, 640, 800, 960]}
-                    draggable="false"
-                    transition:name={`image-${product.slug}-${index}`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-              {hasMultipleImages && (
-                <div class="carousel-arrows">
-                  <button type="button" class="carousel-arrow is-prev" data-carousel-prev aria-label="Imagem anterior">
-                    &lt;
-                  </button>
-                  <button type="button" class="carousel-arrow is-next" data-carousel-next aria-label="Proxima imagem">
-                    &gt;
-                  </button>
-                </div>
-              )}
-            </div>
-            {hasMultipleImages && (
-              <div class="image-thumbs" role="tablist" aria-label="Miniaturas">
-                {imageEntries.map(({ fileName, image }, index) => (
-                  <button
-                    type="button"
-                    class={`thumb-button ${index === 0 ? 'is-active' : ''}`}
-                    data-carousel-dot={index}
-                    aria-label={`Ver imagem ${index + 1}`}
-                    aria-pressed={index === 0 ? 'true' : 'false'}
-                  >
-                    {image && (
-                      <Image
-                        src={image}
-                        alt={`${product.name} - miniatura ${index + 1}`}
-                        class="thumb-image"
-                        loading="lazy"
-                        decoding="async"
-                        width={120}
-                        height={90}
-                        sizes="120px"
-                        draggable="false"
-                      />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <!-- Price & Trust Compact Section -->
-        {!isLessonOnly && (
-          <div class="price-trust-section">
-            <div class="price-container">
-              <div class="price-value">
-                {priceBRL}
-              </div>
-              <div class="price-installments">
-                3x de {installmentBRL} sem juros
-              </div>
-            </div>
-
-            <!-- Compact Trust Badges -->
-            <div class="trust-badges-compact">
-              {config.trustBadges.map((badge) => (
-                <div class="trust-item">
-                  <span class="trust-icon">{badge.icon}</span> {badge.label}
-                </div>
+      <div class="pd-info">
+        <h1>{product.name}</h1>
+        <p class="pd-price">{priceBRL} <span>ou 3x de {installmentBRL} sem juros</span></p>
+        {product.colors.length > 0 && (
+          <fieldset class="pd-colors">
+            <legend>Cor: <strong data-color-label>{firstColor ? formatColor(firstColor) : ''}</strong></legend>
+            <div class="pd-swatches">
+              {product.colors.map((c) => (
+                <button
+                  type="button"
+                  class="pd-swatch"
+                  data-color={c}
+                  data-label={formatColor(c)}
+                  aria-pressed={c === firstColor ? 'true' : 'false'}
+                  aria-label={formatColor(c)}
+                  title={formatColor(c)}
+                >
+                  <span style={`background:${colorHex(c)}`}></span>
+                </button>
               ))}
             </div>
-          </div>
+          </fieldset>
         )}
 
-        <!-- Accordions for Details -->
-        <div class="accordions-container">
-          <!-- Benefits Accordion -->
-          <details class="accordion-item" open>
-            <summary class="accordion-header">
-              <h3>Por que escolher?</h3>
-              <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-            </summary>
-            <div class="accordion-content">
-              <ul class="benefits-list">
-                {benefits.map(benefit => (
-                  <li>
-                    <span class="check-icon">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </span>
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </details>
+        <a
+          class="b-arch-btn pd-cta"
+          href={waHref}
+          target="_blank"
+          rel="noopener"
+          data-wa-base={waBase}
+          data-wa-name={product.name}
+          data-wa-price={priceBRL}
+        >Pedir pelo WhatsApp</a>
+        <p class="pd-note">A cor, o prazo e o frete você combina direto com a Marília.</p>
+        <p class="pd-desc">{product.description}</p>
 
-          <!-- Specs Accordion -->
-          <details class="accordion-item">
-            <summary class="accordion-header">
-              <h3>✨ Especificações</h3>
-              <svg class="accordion-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-            </summary>
-            <div class="accordion-content">
-              <div class="specs-list">
-                <div class="spec-row">
-                  <span class="spec-label">Dimensões</span>
-                  <span class="spec-value">{product.dimensions.width}x{product.dimensions.height}x{product.dimensions.depth}cm</span>
-                </div>
-                <div class="spec-row">
-                  <span class="spec-label">Material</span>
-                  <span class="spec-value">{product.material ?? 'Fio Náutico Premium'}</span>
-                </div>
-                <div class="spec-row">
-                  <span class="spec-label">Cor</span>
-                  <span class="spec-value">{colorsLabel}</span>
-                </div>
-                <div class="spec-row">
-                  <span class="spec-label">Categoria</span>
-                  <span class="spec-value capitalize">{product.category.replaceAll('-', ' ')}</span>
-                </div>
-              </div>
-            </div>
-          </details>
-        </div>
-
-        {isLessonOnly ? (
-          <!-- Lesson CTA -->
-          <div class="actions-container">
-            <a
-              href={withHotmartSource(product.lessonUrl, `produto_${product.slug}`)}
-              class="btn-aula"
-              target="_blank"
-              rel="noopener noreferrer"
-              onclick="if(typeof fbq!=='undefined'){fbq('track','InitiateCheckout')}"
-            >
-              🎓 Comprar aula avulsa
-            </a>
-          </div>
-        ) : (
-          <>
-            <!-- Color Selector -->
-            {product.colors?.length > 0 && (
-              <div class="color-selector">
-                <p class="color-label">Escolha a cor:</p>
-                <div class="color-options">
-                  {product.colors.map((color: string) => (
-                    <button
-                      class="color-btn"
-                      data-color={color}
-                      style={`background-color: ${colorHex[color] ?? '#ccc'}`}
-                      aria-label={color}
-                      title={color}
-                    />
-                  ))}
-                </div>
-                <p id="color-error" class="color-error" hidden>
-                  Selecione uma cor antes de continuar
-                </p>
-              </div>
-            )}
-
-            {checkoutEnabled && (
-              <>
-                <!-- Buy Button (desligado por config.checkout.enabled) -->
-                <button id="btn-comprar" class="btn-comprar" data-slug={product.slug} data-api={checkoutApiUrl}>
-                  🛒 Comprar agora
-                </button>
-                <p id="comprar-error" class="comprar-error" hidden>
-                  Erro ao iniciar pagamento. Tente novamente.
-                </p>
-              </>
-            )}
-
-            <!-- WhatsApp Button -->
-            <div class="actions-container">
-              <WhatsAppButton product={product} />
-            </div>
-          </>
-        )}
+        <dl class="pd-specs">
+          {measures && <div><dt>Medidas</dt><dd>{measures} <small>(largura × altura × profundidade)</small></dd></div>}
+          {product.material && <div><dt>Material</dt><dd>{product.material}</dd></div>}
+          <div><dt>Feita</dt><dd>100% à mão, no ateliê da Crochetin</dd></div>
+          <div><dt>Troca</dt><dd>7 dias para troca ou devolução</dd></div>
+        </dl>
       </div>
     </div>
-  </div>
+
+    <section class="pd-learn reveal" aria-labelledby="learn-h">
+      <div class="pd-learn-text">
+        <h2 id="learn-h">Aprenda a fazer a {product.name.replace(/^Bag /, '')}</h2>
+        <p>
+          {product.lessons
+            ? `Ela tem ${product.lessons} aulas no Treinamento Crochetin, do início ao acabamento.`
+            : 'Ela faz parte do Treinamento Crochetin, do início ao acabamento.'}
+        </p>
+      </div>
+      <div class="pd-learn-options">
+        {product.lessonUrl && (
+          <a class="pd-option" href={withHotmartSource(product.lessonUrl, `produto_${product.slug}`)} target="_blank" rel="noopener">
+            <span class="pd-option-name">Só esta aula</span>
+            <span class="pd-option-price">R$ 37</span>
+          </a>
+        )}
+        <a class="pd-option is-main" href="/treinamento">
+          <span class="pd-option-name">Treinamento com as 9 bolsas</span>
+          <span class="pd-option-price">R$ 197</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="pd-more" aria-labelledby="more-h">
+      <h2 id="more-h">Outras bolsas</h2>
+      <ul class="pd-more-grid" role="list">
+        {others.map((p) => {
+          const img = getProductImage(p.images[0]);
+          return (
+            <li>
+              <a class="reveal" href={`/catalogo/${p.slug}`}>
+                <div class="pd-more-arch">{img && <Image src={img} alt={p.name} widths={[300, 480]} sizes="(max-width: 700px) 45vw, 22vw" />}</div>
+                <span class="pd-more-name">{p.name}</span>
+                <span class="pd-more-price">{brl(p.price)}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+
+    <BrandChrome part="foot" />
+  </main>
 
   <script is:inline set:html={`
     if (typeof fbq !== 'undefined') {
-      fbq('track', 'ViewContent', {
-        content_name: '${product.name}',
-        content_ids: ['${product.slug}'],
-        content_type: 'product',
-        value: ${product.price},
-        currency: 'BRL'
-      });
+      fbq('track', 'ViewContent', { content_name: ${JSON.stringify(product.name)}, content_ids: [${JSON.stringify(product.slug)}], content_type: 'product', value: ${product.price}, currency: 'BRL' });
     }
   `} />
-
   <script is:inline>
-    document.querySelectorAll('.color-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('.color-btn').forEach(function(b) { b.classList.remove('selected'); });
-        btn.classList.add('selected');
-        var errorEl = document.getElementById('color-error');
-        if (errorEl) errorEl.hidden = true;
-      });
-    });
-
-    var btnComprar = document.getElementById('btn-comprar');
-    var comprarError = document.getElementById('comprar-error');
-
-    if (btnComprar) {
-      btnComprar.addEventListener('click', function() {
-        var slug = btnComprar.dataset.slug;
-        var hasColors = document.querySelector('.color-selector');
-        var selectedColorBtn = document.querySelector('.color-btn.selected');
-        var selectedColor = selectedColorBtn ? selectedColorBtn.dataset.color : undefined;
-        var colorError = document.getElementById('color-error');
-
-        if (hasColors && !selectedColor) {
-          if (colorError) colorError.hidden = false;
-          return;
-        }
-
-        btnComprar.textContent = '⏳ Aguarde...';
-        btnComprar.disabled = true;
-        if (comprarError) comprarError.hidden = true;
-
-        fetch(btnComprar.dataset.api, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slug: slug, color: selectedColor }),
-        })
-        .then(function(res) {
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          return res.json();
-        })
-        .then(function(data) {
-          if (data.init_point) {
-            window.location.href = data.init_point;
-          } else {
-            throw new Error('sem init_point');
+    (function () {
+      var root = document.querySelector('.pd');
+      if (!root) return;
+      var imgs = root.querySelectorAll('.pd-arch img');
+      var label = root.querySelector('[data-color-label]');
+      var cta = root.querySelector('.pd-cta');
+      root.querySelectorAll('.pd-swatch').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var color = btn.dataset.color;
+          root.querySelectorAll('.pd-swatch').forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+          if (label) label.textContent = btn.dataset.label;
+          var match = null;
+          imgs.forEach(function (im) { if (im.dataset.color === color) match = im; });
+          if (match) imgs.forEach(function (im) { im.classList.toggle('is-on', im === match); });
+          if (cta) {
+            var msg = 'Olá! Tenho interesse na *' + cta.dataset.waName + '* (' + cta.dataset.waPrice + '), na cor *' + btn.dataset.label + '*.';
+            cta.href = cta.dataset.waBase + encodeURIComponent(msg);
           }
-        })
-        .catch(function() {
-          if (comprarError) comprarError.hidden = false;
-          btnComprar.textContent = '🛒 Comprar agora';
-          btnComprar.disabled = false;
         });
       });
-    }
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+        root.classList.add('js');
+        var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -10% 0px' });
+        root.querySelectorAll('.reveal').forEach(function (el, i) { el.style.setProperty('--d', (i % 4) * 80 + 'ms'); el.classList.add('will-in'); io.observe(el); });
+      }
+      if (cta) cta.addEventListener('click', function () {
+        if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout');
+      });
+    })();
   </script>
-
-  {hasMultipleImages && (
-    <script is:inline>
-      (() => {
-  const carousels = Array.from(document.querySelectorAll('[data-carousel]'));
-  carousels.forEach((carousel) => {
-    const track = carousel.querySelector('[data-carousel-track]');
-    const stage = carousel.querySelector('.image-stage');
-    if (!track) return;
-    const slides = Array.from(track.querySelectorAll('.image-slide'));
-    const dots = Array.from(carousel.querySelectorAll('[data-carousel-dot]'));
-    const prevButton = carousel.querySelector('[data-carousel-prev]');
-    const nextButton = carousel.querySelector('[data-carousel-next]');
-    const slideCount = slides.length;
-    if (slideCount === 0) return;
-
-    const updateDots = (index) => {
-      dots.forEach((dot, dotIndex) => {
-        const isActive = dotIndex === index;
-        dot.classList.toggle('is-active', isActive);
-        dot.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-        if (isActive) {
-          dot.setAttribute('aria-current', 'true');
-        } else {
-          dot.removeAttribute('aria-current');
-        }
-      });
-    };
-
-    const clampIndex = (index) => Math.max(0, Math.min(slideCount - 1, index));
-    const setActive = (index) => {
-      const nextIndex = clampIndex(index);
-      track.style.transform = `translateX(-${nextIndex * 100}%)`;
-      slides.forEach((slide, slideIndex) => {
-        slide.setAttribute('aria-hidden', slideIndex === nextIndex ? 'false' : 'true');
-      });
-      updateDots(nextIndex);
-      currentIndex = nextIndex;
-    };
-
-    let currentIndex = 0;
-    setActive(currentIndex);
-
-    prevButton?.addEventListener('click', () => {
-      setActive(currentIndex - 1);
-    });
-
-    nextButton?.addEventListener('click', () => {
-      setActive(currentIndex + 1);
-    });
-
-    dots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-        setActive(index);
-      });
-    });
-
-    carousel.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        setActive(currentIndex - 1);
-      }
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        setActive(currentIndex + 1);
-      }
-    });
-
-    let startX = 0;
-    let startY = 0;
-    let pointerActive = false;
-    const swipeThreshold = 50;
-
-    stage?.addEventListener('pointerdown', (event) => {
-      pointerActive = true;
-      startX = event.clientX;
-      startY = event.clientY;
-      carousel.classList.add('is-dragging');
-    });
-
-    stage?.addEventListener('pointerup', (event) => {
-      if (!pointerActive) return;
-      const deltaX = event.clientX - startX;
-      const deltaY = event.clientY - startY;
-      pointerActive = false;
-      carousel.classList.remove('is-dragging');
-      if (Math.abs(deltaX) < swipeThreshold) return;
-      if (Math.abs(deltaX) < Math.abs(deltaY)) return;
-      if (deltaX < 0) {
-        setActive(currentIndex + 1);
-      } else {
-        setActive(currentIndex - 1);
-      }
-    });
-
-    stage?.addEventListener('pointercancel', () => {
-      pointerActive = false;
-      carousel.classList.remove('is-dragging');
-    });
-  });
-})();
-    </script>
-  )}
 </BaseLayout>
 
 <style>
-  .product-detail-wrapper {
-    min-height: 100vh;
-    padding: 1rem 0;
-    background: transparent;
-  }
-
-  .product-detail-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    position: relative;
-  }
-
-  /* Header Row */
-  .header-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0 0.5rem;
-  }
-
-  .back-button {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-taupe);
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-normal);
-    border: none;
-    flex-shrink: 0;
-  }
-
-  .back-button:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-md);
-  }
-
-  .product-title {
-    font-family: var(--font-sans);
-    font-size: 2rem;
-    font-weight: 700;
-    color: #3E2F25;
-    margin: 0;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-
-  .product-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  /* Image Card */
-  .image-card {
-    background: white;
-    border-radius: 1.5rem;
-    padding: 0.5rem;
-    position: relative;
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .image-carousel {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    user-select: none;
-  }
-
-  .image-carousel.is-dragging .image-stage {
-    cursor: grabbing;
-  }
-
-  .image-carousel:focus-visible {
-    outline: 2px solid #3E2F25;
-    outline-offset: 3px;
-  }
-
-  .image-stage {
-    position: relative;
-    border-radius: 1rem;
-    overflow: hidden;
-    aspect-ratio: 4/3;
-    background: #f5f2ed;
-    cursor: grab;
-    touch-action: pan-y;
-  }
-
-  .image-track {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.45s ease;
-    will-change: transform;
-  }
-
-  .image-slide {
-    flex: 0 0 100%;
-    height: 100%;
-    display: flex;
-  }
-
-  .main-image {
-    width: 100%;
-    display: block;
-    height: 100%;
-    object-fit: cover;
-    pointer-events: none;
-  }
-
-  .carousel-arrows {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 0.5rem;
-    pointer-events: none;
-  }
-
-  .carousel-arrow {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(245, 242, 237, 0.95);
-    color: #3E2F25;
-    font-size: 1.25rem;
-    cursor: pointer;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    pointer-events: auto;
-  }
-
-  .carousel-arrow:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.16);
-  }
-
-  .carousel-arrow:focus-visible {
-    outline: 2px solid #3E2F25;
-    outline-offset: 2px;
-  }
-
-  .image-thumbs {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(64px, 1fr);
-    gap: 0.5rem;
-    overflow-x: auto;
-    padding: 0 0.25rem 0.25rem;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-  }
-
-  .image-thumbs::-webkit-scrollbar {
-    display: none;
-  }
-
-  .thumb-button {
-    border: 1px solid #e7ded2;
-    border-radius: 0.75rem;
-    padding: 0;
-    background: white;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
-    scroll-snap-align: start;
-  }
-
-  .thumb-button:not(.is-active):hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-  }
-
-  .thumb-button.is-active {
-    border-color: #e7ded2;
-    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.9);
-    transform: translateY(-1px);
-  }
-
-  .thumb-button:focus-visible {
-    outline: none;
-    box-shadow: inset 0 0 0 3px rgba(255,255,255,0.95);
-  }
-
-  .thumb-image {
-    width: 100%;
-    display: block;
-    aspect-ratio: 4/3;
-    object-fit: cover;
-    pointer-events: none;
-  }
-
-  .badge-limitada {
-    position: absolute;
-    top: 1rem;
-    right: 0;
-    background: #2EB897;
-    color: white;
-    padding: 0.25rem 1rem 0.25rem 0.75rem;
-    border-radius: 100px 0 0 100px;
-    font-family: var(--font-sans);
-    font-weight: 600;
-    font-size: 0.75rem;
-    box-shadow: 0 4px 12px rgba(46, 184, 151, 0.3);
-    z-index: 10;
-  }
-
-  /* Price & Trust Section */
-  .price-trust-section {
-    background: #3E2F25;
-    border-radius: 1.5rem;
-    padding: 1.25rem;
-    color: white;
-    box-shadow: var(--shadow-md);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .price-container {
-    text-align: center;
-  }
-
-  .price-value {
-    font-family: var(--font-sans);
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1;
-    margin-bottom: 0.25rem;
-    letter-spacing: -0.02em;
-  }
-
-  .currency {
-    font-size: 1.25rem;
-    vertical-align: super;
-    margin-right: 0.25rem;
-  }
-
-  .price-installments {
-    font-family: var(--font-sans);
-    font-size: 0.85rem;
-    opacity: 0.9;
-  }
-
-  .trust-badges-compact {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255,255,255,0.1);
-  }
-
-  .trust-item {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    font-family: var(--font-sans);
-  }
-
-  .trust-icon {
-    font-size: 1rem;
-  }
-
-  /* Accordions */
-  .accordions-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .accordion-item {
-    background: white;
-    border-radius: 1rem;
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-  }
-
-  .accordion-header {
-    padding: 1rem 1.25rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    list-style: none;
-    transition: background 0.2s;
-  }
-
-  .accordion-header:hover {
-    background: #f9f9f9;
-  }
-
-  .accordion-header::-webkit-details-marker {
-    display: none;
-  }
-
-  .accordion-header h3 {
-    margin: 0;
-    font-family: var(--font-sans);
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #3E2F25;
-  }
-
-  .accordion-icon {
-    color: var(--color-taupe);
-    transition: transform 0.3s ease;
-  }
-
-  details[open] .accordion-icon {
-    transform: rotate(180deg);
-  }
-
-  .accordion-content {
-    padding: 0 1.25rem 1.25rem 1.25rem;
-    border-top: 1px solid #f0f0f0;
-    animation: slideDown 0.3s ease-out;
-  }
-
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Benefits List */
-  .benefits-list {
-    list-style: none;
-    padding: 1rem 0 0 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .benefits-list li {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: var(--font-sans);
-    color: #3E2F25;
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-
-  .check-icon {
-    background: #2EB897;
-    color: white;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .check-icon svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  /* Specs List */
-  .specs-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding-top: 1rem;
-  }
-
-  .spec-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .spec-row:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-
-  .spec-label {
-    font-family: var(--font-sans);
-    color: #786552;
-    font-size: 0.85rem;
-  }
-
-  .spec-value {
-    font-family: var(--font-sans);
-    color: #3E2F25;
-    font-weight: 600;
-    font-size: 0.85rem;
-  }
-
-  .capitalize {
-    text-transform: capitalize;
-  }
-
-  /* Actions */
-  .actions-container {
-    position: sticky;
-    bottom: 1rem;
-    z-index: 100;
-    margin-top: 0.5rem;
-  }
-
-  /* Color Selector */
-  .color-selector {
-    background: white;
-    border-radius: 1rem;
-    padding: 1rem 1.25rem;
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 0;
-  }
-
-  .color-label {
-    font-family: var(--font-sans);
-    font-size: 0.85rem;
-    color: #786552;
-    margin: 0 0 0.75rem 0;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 600;
-  }
-
-  .color-options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .color-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: border-color 0.2s, outline 0.2s;
-    padding: 0;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-  }
-
-  .color-btn:hover {
-    border-color: #be996f;
-  }
-
-  .color-btn.selected {
-    border-color: #be996f;
-    outline: 2px solid #be996f;
-    outline-offset: 2px;
-  }
-
-  .color-btn:focus-visible {
-    outline: 2px solid #3E2F25;
-    outline-offset: 3px;
-  }
-
-  .color-error {
-    color: #e53e3e;
-    font-family: var(--font-sans);
-    font-size: 0.85rem;
-    margin: 0.5rem 0 0 0;
-  }
-
-  /* Buy Button */
-  .btn-comprar {
-    width: 100%;
-    padding: 14px 24px;
-    background: #be996f;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 8px;
-  }
-
-  .btn-comprar:hover:not(:disabled) {
-    background: #a8845a;
-  }
-
-  .btn-comprar:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-
-  .comprar-error {
-    color: #e53e3e;
-    font-size: 0.85rem;
-    margin-top: 6px;
-    text-align: center;
-  }
-
-  .btn-aula {
-    display: block;
-    width: 100%;
-    padding: 14px 24px;
-    background: #be996f;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    transition: background 0.2s;
-  }
-
-  .btn-aula:hover {
-    background: #a8845a;
+  .pd-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 80px); padding-top: clamp(16px, 3vw, 48px); align-items: start; }
+  .pd-media { position: sticky; top: 24px; }
+  .pd-arch { position: relative; aspect-ratio: 1 / 1; background: var(--sand); border-radius: 999px 999px 0 0; overflow: hidden; }
+  .pd-arch :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s ease; }
+  .pd-arch :global(img.is-on) { opacity: 1; }
+
+  .pd-info { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding-top: 8px; }
+  .pd-price { font: 700 var(--t-m)/1.2 var(--font-sans); }
+  .pd-price span { display: block; font-size: var(--t-s); font-weight: 400; color: var(--muted); margin-top: 4px; }
+  .pd-desc { max-width: 46ch; }
+
+  .pd-colors { border: 0; padding: 0; margin: 0; }
+  .pd-colors legend { padding: 0; margin-bottom: 10px; font-size: var(--t-s); }
+  .pd-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pd-swatch { width: 48px; height: 52px; padding: 4px; border: 0; background: transparent; cursor: pointer; border-radius: 999px 999px 0 0; display: flex; }
+  .pd-swatch span { flex: 1; border-radius: 999px 999px 0 0; outline: 1px solid rgba(62, 47, 37, .18); outline-offset: -1px; }
+  .pd-swatch[aria-pressed="true"] { background: var(--ink); }
+  .pd-swatch:hover:not([aria-pressed="true"]) { background: var(--pale); }
+
+  .pd-cta { margin-top: 8px; }
+  .pd-note { font-size: var(--t-s); color: var(--muted); margin-top: -8px; }
+
+  .pd-specs { width: 100%; margin: 12px 0 0; display: grid; gap: 4px; }
+  .pd-specs div { display: grid; grid-template-columns: 110px 1fr; gap: 16px; padding: 14px 18px; background: var(--sand); }
+  .pd-specs dt { font-weight: 600; font-size: var(--t-s); }
+  .pd-specs dd { margin: 0; font-size: var(--t-s); }
+  .pd-specs small { display: block; font-size: inherit; color: var(--muted); }
+
+  .pd-learn { margin-top: clamp(96px, 12vw, 180px); background: var(--accent); padding: clamp(28px, 4vw, 56px); display: grid; grid-template-columns: 6fr 6fr; gap: 24px 48px; align-items: end; }
+  .pd-learn-text { display: flex; flex-direction: column; gap: 12px; }
+  .pd-learn-text p { max-width: 38ch; }
+  .pd-learn-options { display: grid; gap: 8px; }
+  .pd-option { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 64px; padding: 0 24px; background: var(--pale); text-decoration: none; font-weight: 600; transition: background-color .25s ease; }
+  .pd-option:hover { background: var(--sand); }
+  .pd-option.is-main { background: var(--ink); color: var(--ground); }
+  .pd-option.is-main:hover { background: #2b2019; }
+  .pd-option-price { font: 700 var(--t-m)/1 var(--font-serif); white-space: nowrap; }
+
+  .pd-more { margin-top: clamp(72px, 9vw, 140px); }
+  .pd-more h2 { margin-bottom: 32px; }
+  .pd-more-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--m); }
+  .pd-more-grid a { display: flex; flex-direction: column; gap: 8px; text-decoration: none; }
+  .pd-more-arch { aspect-ratio: 4 / 5; background: var(--sand); border-radius: 999px 999px 0 0; overflow: hidden; }
+  .pd-more-arch :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+  .pd-more-grid a:hover :global(img) { transform: scale(1.04); }
+  .pd-more-name { font: 700 var(--t-m)/1.15 var(--font-serif); }
+  .pd-more-price { font-size: var(--t-s); }
+
+  @media (max-width: 860px) {
+    .pd-main { grid-template-columns: minmax(0, 1fr); }
+    .pd-media { position: static; }
+    .pd-learn { grid-template-columns: minmax(0, 1fr); }
+    .pd-more-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pd-cta { align-self: stretch; }
   }
 </style>
