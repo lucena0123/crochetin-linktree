@@ -29,6 +29,7 @@ import ariel from '../assets/treinamento/bolsa-ariel-turquesa.png';
 import tati from '../assets/treinamento/bolsa-tati.png';
 import emy from '../assets/treinamento/bolsa-emy-colors.png';
 import rosalia from '../assets/treinamento/bolsa-rosalia.png';
+import pochete from '../assets/treinamento/bolsa-pochete-copa.png';
 
 const CHECKOUT = 'https://pay.hotmart.com/T101474588W?off=dliwfsqx';
 const checkout = (sck: string) => withHotmartSource(CHECKOUT, `treinamento_${sck}`);
@@ -46,7 +47,7 @@ const bagList = [
   { name: 'Tati', lessons: 3, img: tati, tone: '#a67d4f' },
   { name: 'Emy Colors', lessons: 6, img: emy, tone: '#c09a6b' },
   { name: 'Rosália', lessons: 6, img: rosalia, tone: '#d9c7ad' },
-  { name: 'Pochete Copa', lessons: 9, img: null, tone: '#a67d4f' },
+  { name: 'Pochete Copa', lessons: 9, img: pochete, tone: '#a67d4f' },
 ];
 const bags = await Promise.all(
   bagList.map(async (b) => ({
