@@ -1,11 +1,12 @@
 ---
 /**
- * Página de vendas do Treinamento Crochetin — PROTÓTIPO v3 (branch, não publicado).
+ * Página de vendas do Treinamento Crochetin (v3, layout aprovado em 02/11/2026).
  * Direção de arte: taste-skill v2, direção "One motif" (seed 1971043266), paleta e tipos da marca.
  * Ideia: o arco da alça de uma bolsa Crochetin vira a máscara das fotos, o botão,
  * o marcador das listas e a faixa que divide a página.
  * Imagens: as da página de vendas atual no Hotmart Pages (próprias da Crochetin).
- * Trechos com class="pending" aguardam material ou confirmação da Crochetin.
+ * class="pending" marca, se reaparecer, conteúdo que ainda aguarda material da Crochetin.
+ * Upgrade (R$ 160) é pedido pelo WhatsApp: a Marília confere a compra da aula avulsa e envia o link.
  */
 import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -75,6 +76,9 @@ const faq = [
   { q: 'Por quanto tempo terei acesso?', a: 'Você tem 1 ano de acesso a todas as aulas e bônus, contado a partir da data da compra.' },
   { q: 'E se eu não gostar?', a: 'Você tem 7 dias para pedir o reembolso pela Hotmart.' },
 ];
+const upgradeWhatsapp =
+  'https://wa.me/5582996927755?text=' +
+  encodeURIComponent('Olá! Já comprei uma aula avulsa da Crochetin e quero fazer o upgrade para o Treinamento completo por R$ 160.');
 const wordmark = 'Crochetin'.split('');
 const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
 ---
@@ -83,7 +87,6 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
   title="Treinamento Crochetin — aprenda a fazer as 9 bolsas da Crochetin"
   description="Curso online com 45 aulas: 9 bolsas de crochê de alto padrão, do acabamento à venda."
   wide
-  noindex
 >
   <main class="tr">
     <!-- Topo: cartão listrado ao lado da foto -->
@@ -224,7 +227,7 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
             <p class="plan-price">R$ 160</p>
             <ul role="list"><li>O Treinamento completo pagando só a diferença</li><li>Para quem já comprou uma aula avulsa</li></ul>
           </div>
-          <p class="plan-btn pending">Link da oferta a criar na Hotmart</p>
+          <a class="plan-btn" href={upgradeWhatsapp} target="_blank" rel="noopener">Pedir pelo WhatsApp</a>
         </article>
         <article class="plan plan-3 reveal">
           <div class="plan-top">
@@ -519,6 +522,7 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
   .plan-1 .plan-btn { background: #ddd2c2; }
   .plan-1 .plan-btn:hover { background: #d0c3b0; }
   .plan-2 .plan-btn { background: #cbb596; }
+  .plan-2 .plan-btn:hover { background: #bfa683; }
   .plan-3 .plan-btn { background: var(--ink); color: var(--ground); }
   .plan-3 .plan-btn:hover { background: #2b2019; }
   .guarantee { display: flex; align-items: center; gap: 28px; margin-top: 48px; max-width: 760px; }
