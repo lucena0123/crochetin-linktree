@@ -585,21 +585,25 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     .hero-card { margin-top: -24px; position: relative; }
     .stitch { height: 40px; }
     .hero h1 { font-size: 9vw; }
-    .hero-links { flex-wrap: wrap; gap: 16px 24px; }
+    .hero-links { flex-wrap: wrap; gap: 0 20px; padding-bottom: 12px; }
+    .hero-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; }
 
     .video { grid-template-columns: minmax(0, 1fr); }
+    .tr section { margin-top: 72px; }
+    .foot { margin-top: 72px; }
     .video-icon { width: 84px; height: 64px; left: 16px; }
     .showcase { grid-template-columns: minmax(0, 1fr); min-height: 0; }
     .showcase-stage, .showcase-list { grid-column: 1; grid-row: auto; }
     .showcase-arch { width: 86vw; }
     .showcase-list ul { display: flex; flex-wrap: wrap; gap: 4px 20px; }
-    .bag-name { font-size: var(--t-m); white-space: nowrap; }
+    .bag-name { font-size: var(--t-m); white-space: nowrap; min-height: 44px; }
+    .showcase-list ul { gap: 0 20px; }
     .showcase-fact { align-self: flex-start; }
 
     .method-intro { grid-template-columns: 1fr; gap: 16px; }
     .method-intro p { grid-column: 1; }
     .stages { flex-direction: column; height: auto; }
-    .stage { min-width: 0; }
+    .stage { min-width: 0; flex: none; }
     .stage summary { position: static; height: auto; min-height: 64px; display: flex; align-items: center; padding: 0 20px; }
     .stage summary span { position: static; transform: none; }
     .stage[open] summary { padding: 24px 20px 0; }
@@ -610,7 +614,7 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     .proof-board { grid-template-columns: 1fr 1fr; gap: 6px; }
     .proof-head { grid-column: 1 / -1; grid-row: auto; min-height: 0; gap: 16px; }
 
-    .about-panel { margin: 0 10px; grid-template-columns: 1fr; min-height: 0; padding-bottom: 72vw; }
+    .about-panel { margin: 0 10px; grid-template-columns: 1fr; min-height: 0; padding-bottom: 96vw; }
     .about-left { padding: 32px 20px 0; position: static; }
     
     .about-right { padding: 32px 20px; gap: 32px; }
@@ -635,6 +639,7 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
 
     .foot-mark { height: 22svh; }
     .foot-cols { grid-template-columns: 1fr; }
-    .foot-cols nav { grid-template-columns: 1fr 1fr; }
+    .foot-cols nav { grid-template-columns: 1fr 1fr; gap: 0 24px; }
+    .foot-cols nav a { display: flex; align-items: center; min-height: 44px; }
   }
 </style>
