@@ -113,6 +113,20 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
       </div>
     </header>
 
+    <!-- Vídeo da Marília (o mesmo da página atual na Hotmart); carrega só no clique -->
+    <section class="video" aria-labelledby="video-h">
+      <div class="video-text reveal">
+        <h2 id="video-h">Assista antes de decidir</h2>
+        <p>A Marília mostra as bolsas e como o crochê vira faturamento.</p>
+      </div>
+      <div class="video-frame">
+        <button type="button" class="video-play" data-id="uR5hVjrdMW4" aria-label="Assistir ao vídeo da Marília sobre o Treinamento">
+          <img src="https://i.ytimg.com/vi/uR5hVjrdMW4/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" />
+          <span class="video-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </section>
+
     <!-- Vitrine: escolha uma bolsa -->
     <section class="showcase" id="bolsas" aria-labelledby="bolsas-h">
       <div class="showcase-stage">
@@ -305,6 +319,18 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
       if (fact) fact.innerHTML = `<strong>${btn.dataset.name}</strong><br>${btn.dataset.lessons} aulas e a receita em e-book`;
     }));
 
+    // Vídeo: troca a capa pelo player do YouTube (modo de privacidade) só quando a pessoa clica
+    const play = root.querySelector('.video-play');
+    if (play) play.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + play.dataset.id + '?autoplay=1&rel=0&playsinline=1';
+      f.title = 'Vídeo da Marília sobre o Treinamento Crochetin';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      play.replaceWith(f);
+      if (typeof window.gtag === 'function') window.gtag('event', 'play_video', { video_id: play.dataset.id });
+    });
+
     // Movimento de assinatura: troca lenta das fotos do topo
     const fades = root.querySelectorAll('.hero-arch .fade');
     if (!reduce && fades.length > 1) {
@@ -404,6 +430,19 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
   .hero-arch :global(img) { position: absolute; inset: auto 0 0 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; opacity: 0; transition: opacity 1.6s ease; }
   .hero-arch :global(img.is-on) { opacity: 1; animation: drift 14s ease-in-out infinite alternate; }
   @keyframes drift { from { transform: scale(1); } to { transform: scale(1.045); } }
+
+  /* Vídeo */
+  .video { display: grid; grid-template-columns: 4fr 8fr; gap: var(--m); align-items: end; }
+  .video-text h2 { margin-bottom: 16px; }
+  .video-text p { max-width: 30ch; }
+  .video-frame { position: relative; aspect-ratio: 16 / 9; background: var(--ink); overflow: hidden; }
+  .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-play { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; cursor: pointer; background: var(--ink); }
+  .video-play img { width: 100%; height: 100%; object-fit: cover; opacity: .85; transition: opacity .3s ease, transform .6s var(--ease); }
+  .video-play:hover img { opacity: 1; transform: scale(1.02); }
+  .video-icon { position: absolute; left: 32px; bottom: 0; width: 112px; height: 84px; background: var(--accent); border-radius: 999px 999px 0 0; transition: background-color .25s ease, transform .3s var(--ease); }
+  .video-icon::after { content: ''; position: absolute; left: 50%; top: 56%; transform: translate(-38%, -50%); border-style: solid; border-width: 14px 0 14px 24px; border-color: transparent transparent transparent var(--ink); }
+  .video-play:hover .video-icon { background: var(--pale); transform: translateY(-4px); }
 
   /* Vitrine */
   .showcase { display: grid; grid-template-columns: 5fr 7fr; gap: var(--m); align-items: end; min-height: 90svh; }
@@ -548,6 +587,8 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     .hero h1 { font-size: 9vw; }
     .hero-links { flex-wrap: wrap; gap: 16px 24px; }
 
+    .video { grid-template-columns: minmax(0, 1fr); }
+    .video-icon { width: 84px; height: 64px; left: 16px; }
     .showcase { grid-template-columns: minmax(0, 1fr); min-height: 0; }
     .showcase-stage, .showcase-list { grid-column: 1; grid-row: auto; }
     .showcase-arch { width: 86vw; }
