@@ -1,166 +1,141 @@
 ---
+/**
+ * Aulas avulsas (v2, estilo da página do Treinamento).
+ * Cada aula vem de products.json (lessonUrl, lessonPrice, lessons).
+ * Preços conferidos na Hotmart em 02/11/2026.
+ */
 import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import BrandChrome from '../../components/BrandChrome.astro';
 import productsData from '../../data/products.json';
 import { getProductImage } from '../../utils/productImages';
-import type { Product } from '../../types/product';
-
-type LessonItem = {
-  title: string;
-  description: string;
-  url: string;
-  isExternal: boolean;
-  image?: ImageMetadata | string;
-  imageAlt: string;
-};
-
-const { products } = productsData as { products: Product[] };
-const lessonItems: LessonItem[] = products
-  .filter((product): product is Product => Boolean(product.lessonUrl))
-  .map((product) => ({
-    title: product.name,
-    description: 'Comprar aula avulsa',
-    url: withHotmartSource(product.lessonUrl, `aulas_${product.slug}`),
-    isExternal: true,
-    image: getProductImage(product.images[0]),
-    imageAlt: product.name
-  }));
 import { withHotmartSource } from '../../utils/tracking';
+import type { Product } from '../../types/product';
+import mariliaVerde from '../../assets/treinamento/marilia-bolsa-verde.png';
+import '../../styles/brand.css';
+
+const lessons = (productsData.products as Product[]).filter((p) => p.lessonUrl && p.lessonPrice);
+const brl = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).replace(',00', '');
+const minPrice = Math.min(...lessons.map((p) => p.lessonPrice as number));
+const tones = ['#e8dfd2', '#d9c7ad', '#c09a6b'];
+const upgradeWhatsapp =
+  'https://wa.me/5582996927755?text=' +
+  encodeURIComponent('Olá! Já comprei uma aula avulsa da Crochetin e quero fazer o upgrade para o Treinamento completo, descontando o valor da aula.');
 ---
 
 <BaseLayout
-  title="Aulas Avulsas - Crochetin"
-  description="Escolha uma bolsa para a aula avulsa"
+  title="Aulas avulsas | Crochetin"
+  description={`Aprenda a fazer uma bolsa Crochetin por vez. Aulas avulsas a partir de ${brl(minPrice)}, as mesmas do Treinamento.`}
+  wide
 >
-  <div class="page-header">
-    <a href="/" class="back-button" aria-label="Voltar ao inicio">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    </a>
-    <div class="header-text">
-      <h1 class="page-title">Aulas Avulsas</h1>
-      <p class="page-subtitle">Escolha uma bolsa para a aula individual</p>
+  <main class="b aa">
+    <BrandChrome part="top" current="aulas" />
+
+    <div class="aa-head">
+      <h1>Aulas avulsas</h1>
+      <p>Aprenda uma bolsa por vez, do início ao acabamento, com a receita em e-book. São as mesmas aulas do Treinamento Crochetin.</p>
     </div>
-    <div class="header-spacer" aria-hidden="true"></div>
-  </div>
 
-  <div class="links-section lessons-links">
-    {lessonItems.map((item, index) => (
-      <a
-        href={item.url}
-        class="link-card"
-        target={item.isExternal ? '_blank' : '_self'}
-        rel={item.isExternal ? 'noopener noreferrer' : ''}
-        style={`animation-delay: ${0.1 + index * 0.05}s;`}
-      >
-        <div class="link-icon">
-          {typeof item.image === 'string' ? (
-            <img
-              src={item.image}
-              alt={item.imageAlt}
-              loading="lazy"
-              width="96"
-              height="96"
-              style="width: 100%; height: 100%; object-fit: cover;"
-            />
-          ) : item.image ? (
-            <Image
-              src={item.image}
-              alt={item.imageAlt}
-              loading="lazy"
-              decoding="async"
-              sizes="96px"
-              widths={[96, 144, 192, 240]}
-              quality={95}
-              style="width: 100%; height: 100%; object-fit: cover;"
-            />
-          ) : (
-            <span>{item.title.slice(0, 1)}</span>
-          )}
-        </div>
+    <ul class="aa-grid" role="list">
+      {lessons.map((p, i) => {
+        const img = getProductImage(p.images[0]);
+        const short = p.name.replace(/^Bag /, '');
+        return (
+          <li class="aa-card reveal">
+            <div class="aa-arch" style={`--tone:${tones[i % tones.length]}`}>
+              {img && (
+                <Image
+                  src={img}
+                  alt={`${p.name} de crochê`}
+                  widths={[360, 540, 720]}
+                  sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 30vw"
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                />
+              )}
+            </div>
+            <div class="aa-info">
+              <h2>Aula {short}</h2>
+              <p class="aa-price">{brl(p.lessonPrice as number)}</p>
+            </div>
+            <p class="aa-meta">{p.lessons ? `${p.lessons} aulas` : 'Aula completa'} e a receita em e-book</p>
+            <div class="aa-actions">
+              <a class="b-arch-btn" href={withHotmartSource(p.lessonUrl, `aulas_${p.slug}`)} target="_blank" rel="noopener">Comprar a aula</a>
+              <a class="aa-bag" href={`/catalogo/${p.slug}`}>Ver a bolsa pronta</a>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
 
-        <div class="link-content">
-          <div class="link-title">{item.title}</div>
-          <div class="link-description">{item.description}</div>
-        </div>
+    <section class="aa-more" aria-labelledby="more-h">
+      <div class="aa-more-text reveal">
+        <h2 id="more-h">Quer aprender todas?</h2>
+        <p>O Treinamento Crochetin tem 9 bolsas em 45 aulas, o Método em 3 níveis, os e-books e o módulo de precificação, embalagem e envio.</p>
+        <p class="aa-more-price">R$ 197 ou 12x de R$ 20,37</p>
+        <a class="b-arch-btn is-light" href="/treinamento">Conhecer o Treinamento</a>
+        <p class="aa-upgrade">Já comprou uma aula? <a href={upgradeWhatsapp} target="_blank" rel="noopener">Peça o upgrade pelo WhatsApp</a> e pague o Treinamento descontando o valor da aula.</p>
+      </div>
+      <div class="aa-more-photo" aria-hidden="true">
+        <Image src={mariliaVerde} alt="" widths={[400, 700]} sizes="(max-width: 860px) 70vw, 32vw" />
+      </div>
+    </section>
 
-        <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 5l7 7-7 7"/>
-        </svg>
-      </a>
-    ))}
-  </div>
+    <BrandChrome part="foot" />
+  </main>
 </BaseLayout>
 
+<script is:inline>
+  (function () {
+    var root = document.querySelector('.b');
+    if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+    root.classList.add('js');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -10% 0px' });
+    root.querySelectorAll('.reveal').forEach(function (el, i) {
+      el.style.setProperty('--d', (i % 3) * 80 + 'ms');
+      el.classList.add('will-in');
+      io.observe(el);
+    });
+  })();
+</script>
+
 <style>
-  .page-header {
-    display: grid;
-    grid-template-columns: 48px 1fr 48px;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: var(--spacing-xl);
+  .aa-head { display: grid; grid-template-columns: 5fr 1fr 6fr; align-items: end; padding: clamp(24px, 4vw, 56px) 0 clamp(32px, 4vw, 56px); }
+  .aa-head h1 { grid-column: 1; }
+  .aa-head p { grid-column: 3; max-width: 46ch; }
+
+  .aa-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(40px, 5vw, 64px) var(--m); }
+  .aa-card { display: flex; flex-direction: column; gap: 12px; }
+  .aa-arch { aspect-ratio: 4 / 5; background: var(--tone); border-radius: 999px 999px 0 0; overflow: hidden; }
+  .aa-arch :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+  .aa-card:hover .aa-arch :global(img) { transform: scale(1.04); }
+  .aa-info { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 4px; }
+  .aa-info h2 { font-size: var(--t-m); }
+  .aa-price { font: 700 var(--t-m)/1 var(--font-serif); white-space: nowrap; }
+  .aa-meta { font-size: var(--t-s); color: var(--muted); }
+  .aa-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+  .aa-bag { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--t-s); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--accent); }
+
+  .aa-more { margin-top: clamp(96px, 12vw, 200px); background: var(--ink); color: var(--ground); display: grid; grid-template-columns: 7fr 5fr; align-items: end; overflow: hidden; }
+  .aa-more-text { padding: clamp(32px, 5vw, 72px); align-self: center; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+  .aa-more-text h2 { color: var(--pale); }
+  .aa-more-text p { max-width: 42ch; }
+  .aa-more-price { font-weight: 700; font-size: var(--t-m) !important; }
+  .aa-upgrade { font-size: var(--t-s); color: var(--pale); }
+  .aa-upgrade a { color: var(--ground); text-underline-offset: 3px; }
+  .aa-more-photo { align-self: end; background: var(--accent); border-radius: 999px 999px 0 0; margin: 48px 48px 0 0; aspect-ratio: 4 / 5; overflow: hidden; }
+  .aa-more-photo :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 10%; }
+
+  @media (max-width: 1024px) {
+    .aa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-
-  .back-button {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-beige), var(--color-taupe));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-normal);
-    border: none;
-  }
-
-  .back-button:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-md);
-    color: white;
-    opacity: 0.95;
-  }
-
-  .header-text {
-    text-align: center;
-  }
-
-  .page-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--color-black);
-    margin: 0 0 0.25rem;
-    line-height: 1.2;
-  }
-
-  .page-subtitle {
-    color: var(--text-secondary);
-    font-size: 1.05rem;
-    margin: 0;
-  }
-
-  .lessons-links .link-icon {
-    width: 96px;
-    height: 96px;
-  }
-
-  @media (max-width: 640px) {
-    .page-header {
-      grid-template-columns: 40px 1fr 40px;
-    }
-
-    .page-title {
-      font-size: 1.5rem;
-    }
-
-    .page-subtitle {
-      font-size: 0.95rem;
-    }
-
-    .lessons-links .link-icon {
-      width: 72px;
-      height: 72px;
-    }
+  @media (max-width: 700px) {
+    .aa-head { grid-template-columns: 1fr; gap: 16px; }
+    .aa-head p { grid-column: 1; }
+    .aa-grid { grid-template-columns: minmax(0, 1fr); }
+    .aa-actions .b-arch-btn { flex: 1; }
+    .aa-more { grid-template-columns: 1fr; }
+    .aa-more-photo { margin: 0 24px; }
   }
 </style>
