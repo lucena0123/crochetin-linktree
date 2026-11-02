@@ -374,6 +374,35 @@
                 "festa",
                 "corrente"
             ]
+        },
+        {
+            "id": "bolsa-010",
+            "slug": "bag-paete",
+            "name": "Bag Paetê",
+            "description": "Clutch coberta de paetês, de crochê moderno em fio náutico premium, com detalhes em metal dourado ou prata e alça de corrente regulável e removível. Cabe o essencial: celular, chaves e documentos.",
+            "price": 179.99,
+            "category": "clutch",
+            "material": "Fio Náutico Premium com paetês",
+            "colors": [
+                "dourado",
+                "prata"
+            ],
+            "images": [
+                "bag-paete.jpg"
+            ],
+            "dimensions": {
+                "width": 20,
+                "height": 14,
+                "depth": 0
+            },
+            "inStock": true,
+            "featured": false,
+            "tags": [
+                "artesanal",
+                "clutch",
+                "festa",
+                "brilho"
+            ]
         }
     ]
 }

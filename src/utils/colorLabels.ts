@@ -24,6 +24,7 @@ const COLOR_HEX: Record<string, string> = {
   palha: '#d6a556',
   cafe: '#5a2e2a',
   vinho: '#7a1f2b',
+  prata: '#b9bcc2',
   // Versões listradas da Emy (Emy Colors): amostra em fatias  /* taste-skill-ignore */
   colorsvibrante: 'conic-gradient(#e0287f 0 25%, #f26b1d 0 50%, #2ec4d6 0 75%, #8cc63f 0)', /* taste-skill-ignore */
   colorsterra: 'conic-gradient(#b5652a 0 34%, #ece0cb 0 67%, #cfcac2 0)', /* taste-skill-ignore */
