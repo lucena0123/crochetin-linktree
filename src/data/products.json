@@ -432,6 +432,36 @@
                 "festa",
                 "clássica"
             ]
+        },
+        {
+            "id": "bolsa-012",
+            "slug": "bag-lila",
+            "name": "Bag Lila",
+            "description": "Bolsa tiracolo de design clássico, em fio de malha e viscose premium, com detalhes em metal dourado ou prata e alça de corrente regulável e removível. Cabe o essencial: celular, chaves e documentos.",
+            "price": 179.99,
+            "category": "bolsa-classica",
+            "material": "Fio de Malha e Viscose Premium",
+            "colors": [
+                "preta",
+                "caramelo",
+                "offwhite"
+            ],
+            "images": [
+                "bag-lila.jpg"
+            ],
+            "dimensions": {
+                "width": 27,
+                "height": 22,
+                "depth": 0
+            },
+            "inStock": true,
+            "featured": false,
+            "tags": [
+                "artesanal",
+                "tiracolo",
+                "corrente",
+                "dia a dia"
+            ]
         }
     ]
 }
