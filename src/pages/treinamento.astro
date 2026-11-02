@@ -166,7 +166,6 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
             <Image src={c} alt={`Mensagem de cliente elogiando uma bolsa Crochetin (${i + 1})`} widths={[260, 420]} sizes="(max-width: 700px) 45vw, 20vw" />
           </figure>
         ))}
-        <p class="proof-tile proof-pending pending">Depoimentos de alunas do Treinamento, com autorização, a incluir.</p>
       </div>
     </section>
 
@@ -445,12 +444,11 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
 
   /* Prova */
   .proof-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .proof-head { grid-column: span 2; background: var(--accent); padding: 28px; display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; }
+  .proof-head { grid-column: span 2; grid-row: span 2; background: var(--accent); padding: 28px; display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; }
   
   .proof-head p { max-width: 34ch; }
   .proof-tile { margin: 0; background: var(--sand); display: flex; align-items: center; justify-content: center; padding: 24px 12px; }
   .proof-tile :global(img) { width: 100%; height: auto; max-height: 420px; object-fit: contain; }
-  .proof-pending { grid-column: span 2; margin: 0; }
 
   /* Sobre */
   .about { padding: 0 !important; }
@@ -568,7 +566,7 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     .stage-body :global(img) { width: 140px; height: 140px; }
 
     .proof-board { grid-template-columns: 1fr 1fr; gap: 6px; }
-    .proof-head, .proof-pending { grid-column: 1 / -1; min-height: 0; gap: 16px; }
+    .proof-head { grid-column: 1 / -1; grid-row: auto; min-height: 0; gap: 16px; }
 
     .about-panel { margin: 0 10px; grid-template-columns: 1fr; min-height: 0; padding-bottom: 72vw; }
     .about-left { padding: 32px 20px 0; position: static; }
