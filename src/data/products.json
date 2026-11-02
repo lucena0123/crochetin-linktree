@@ -293,8 +293,8 @@
                 "pink"
             ],
             "dimensions": {
-                "width": 0,
-                "height": 0,
+                "width": 24,
+                "height": 15,
                 "depth": 0
             },
             "benefits": [],
@@ -305,7 +305,8 @@
                 "colorida",
                 "corrente"
             ],
-            "lessons": 6
+            "lessons": 6,
+            "material": "Fio de Malha Premium com barbante ou fio de viscose"
         }
     ]
 }
