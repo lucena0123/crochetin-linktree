@@ -2,3 +2,7 @@
 <Files ".ftp-deploy-sync-state.json">
   Require all denied
 </Files>
+
+# Link curto da bio do Instagram: crochetin.com.br/ig -> página inicial com UTM
+RewriteEngine On
+RewriteRule ^ig/?$ /?utm_source=instagram&utm_medium=bio [R=302,L,NE]
