@@ -8,7 +8,8 @@
         {
             "title": "Treinamento Crochetin",
             "description": "9 bolsas de alto padrão para fazer e vender",
-            "url": "https://crochetin.hotmart.host/treinamento-crochetin",
+            "url": "/treinamento",
+            "internal": true,
             "icon": "/images/treinamento.png",
             "isImage": true
         },

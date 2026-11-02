@@ -1,0 +1,649 @@
+---
+/**
+ * Página de vendas do Treinamento Crochetin (v3, layout aprovado em 02/11/2026).
+ * Direção de arte: taste-skill v2, direção "One motif" (seed 1971043266), paleta e tipos da marca.
+ * Ideia: o arco da alça de uma bolsa Crochetin vira a máscara das fotos, o botão,
+ * o marcador das listas e a faixa que divide a página.
+ * Imagens: as da página de vendas atual no Hotmart Pages (próprias da Crochetin).
+ * class="pending" marca, se reaparecer, conteúdo que ainda aguarda material da Crochetin.
+ * Upgrade (R$ 160) é pedido pelo WhatsApp: a Marília confere a compra da aula avulsa e envia o link.
+ */
+import { Image, getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withHotmartSource } from '../utils/tracking';
+
+import marilia from '../assets/treinamento/marilia-bolsas.png';
+import mariliaVerde from '../assets/treinamento/marilia-bolsa-verde.png';
+import nivel1 from '../assets/treinamento/nivel-1.png';
+import nivel2 from '../assets/treinamento/nivel-2.png';
+import nivel3 from '../assets/treinamento/nivel-3.png';
+import garantia from '../assets/treinamento/garantia-7-dias.png';
+import cliente1 from '../assets/treinamento/cliente-1.png';
+import cliente2 from '../assets/treinamento/cliente-2.png';
+import cliente3 from '../assets/treinamento/cliente-3.png';
+import cliente4 from '../assets/treinamento/cliente-4.png';
+import lieta from '../assets/treinamento/bolsa-lieta-caramelo.png';
+import cherry from '../assets/treinamento/bolsa-cherry-caramelo.png';
+import mari from '../assets/treinamento/bolsa-mari-dourada.png';
+import atena from '../assets/treinamento/bolsa-atena-vermelha.png';
+import ariel from '../assets/treinamento/bolsa-ariel-turquesa.png';
+import tati from '../assets/treinamento/bolsa-tati.png';
+import emy from '../assets/treinamento/bolsa-emy-colors.png';
+import rosalia from '../assets/treinamento/bolsa-rosalia.png';
+import pochete from '../assets/treinamento/bolsa-pochete-copa.png';
+
+const CHECKOUT = 'https://pay.hotmart.com/T101474588W?off=dliwfsqx';
+const checkout = (sck: string) => withHotmartSource(CHECKOUT, `treinamento_${sck}`);
+const whatsapp =
+  'https://wa.me/5582996927755?text=' +
+  encodeURIComponent('Olá! Tenho uma dúvida sobre o Treinamento Crochetin.');
+
+// Aulas por bolsa = páginas de cada módulo na área de membros (Hotmart, 01/11/2026)
+const bagList = [
+  { name: 'Liêta', lessons: 5, img: lieta, tone: '#c09a6b' },
+  { name: 'Cherry', lessons: 4, img: cherry, tone: '#a67d4f' },
+  { name: 'Mari', lessons: 5, img: mari, tone: '#d9c7ad' },
+  { name: 'Atena', lessons: 4, img: atena, tone: '#c09a6b' },
+  { name: 'Ariel', lessons: 3, img: ariel, tone: '#d9c7ad' },
+  { name: 'Tati', lessons: 3, img: tati, tone: '#a67d4f' },
+  { name: 'Emy Colors', lessons: 6, img: emy, tone: '#c09a6b' },
+  { name: 'Rosália', lessons: 6, img: rosalia, tone: '#d9c7ad' },
+  { name: 'Pochete Copa', lessons: 9, img: pochete, tone: '#a67d4f' },
+];
+const bags = await Promise.all(
+  bagList.map(async (b) => ({
+    ...b,
+    src: b.img ? (await getImage({ src: b.img, width: 900, format: 'webp' })).src : null,
+  })),
+);
+const totalLessons = bags.reduce((s, b) => s + b.lessons, 0);
+const first = bags[0];
+
+const stages = [
+  { name: 'Pete-Repete', img: nivel1, text: 'Nível 1. A repetição é a sua aliada: firmeza nas mãos, a estrutura das tramas e as primeiras bolsas feitas com confiança e ritmo.' },
+  { name: 'Firme e Forte', img: nivel2, text: 'Nível 2. Hora de evoluir o acabamento: dar forma e firmeza à peça e deixar cada detalhe mais preciso.' },
+  { name: 'Crochetin', img: nivel3, text: 'Nível 3. Você replica os modelos com perfeição e chega ao padrão Crochetin: técnica impecável, estrutura sólida, acabamento de luxo.' },
+  { name: 'Do ateliê à venda', img: null, text: 'Como precificar o seu crochê, embalar com capricho e enviar para todo o Brasil. É o que transforma a bolsa pronta em venda.' },
+];
+
+const chats = [cliente1, cliente2, cliente3, cliente4];
+
+const faq = [
+  { q: 'Quantos modelos vou aprender?', a: 'Hoje são 9 bolsas: Liêta, Cherry, Mari, Atena, Ariel, Tati, Emy Colors, Rosália e Pochete Copa. O curso recebe novos modelos com o tempo.' },
+  { q: 'Preciso saber crochê para começar?', a: 'Sim. O Treinamento é para quem já sabe os pontos básicos do crochê. O “do zero” é da bolsa: você parte do fio de malha e chega a uma bolsa de verdade, com estrutura e acabamento de alto padrão.' },
+  { q: 'Qual a diferença para as aulas avulsas?', a: 'As aulas avulsas são as mesmas do Treinamento, vendidas uma bolsa por vez. No Treinamento você leva as 9 bolsas, o Método Crochetin e todos os bônus.' },
+  { q: 'O que vem junto com as aulas?', a: 'E-books com a receita escrita de cada bolsa, os módulos de precificação, embalagem e envio, suporte pelo WhatsApp direto com a Marília e certificado digital ao concluir.' },
+  { q: 'Por quanto tempo terei acesso?', a: 'Você tem 1 ano de acesso a todas as aulas e bônus, contado a partir da data da compra.' },
+  { q: 'E se eu não gostar?', a: 'Você tem 7 dias para pedir o reembolso pela Hotmart.' },
+];
+const upgradeWhatsapp =
+  'https://wa.me/5582996927755?text=' +
+  encodeURIComponent('Olá! Já comprei uma aula avulsa da Crochetin e quero fazer o upgrade para o Treinamento completo por R$ 160.');
+const wordmark = 'Crochetin'.split('');
+const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
+---
+
+<BaseLayout
+  title="Treinamento Crochetin — aprenda a fazer as 9 bolsas da Crochetin"
+  description="Curso online com 45 aulas: 9 bolsas de crochê de alto padrão, do acabamento à venda."
+  wide
+>
+  <main class="tr">
+    <!-- Topo: cartão listrado ao lado da foto -->
+    <header class="hero" id="topo">
+      <div class="hero-card">
+        <div class="stitch" aria-hidden="true">{Array.from({ length: 24 }).map(() => <span />)}</div>
+        <div class="hero-card-body">
+          <img class="hero-logo" src="/images/logo-crochetin.png" alt="Crochetin" width="96" height="96" />
+          <h1>As 9 bolsas da Crochetin</h1>
+          <p class="hero-sub">
+            Aprenda a fazer cada uma em {totalLessons} aulas online: das primeiras carreiras ao acabamento de luxo, e como precificar, embalar e enviar para vender.
+          </p>
+          <a class="arch-btn" href={checkout('topo')} target="_blank" rel="noopener">Quero o Treinamento</a>
+          <p class="hero-price">R$ 197 à vista ou 12x de R$ 20,37</p>
+        </div>
+        <nav class="hero-links" aria-label="Nesta página">
+          <a href="#bolsas">As bolsas</a>
+          <a href="#metodo">O método</a>
+          <a href="#preco">Preço</a>
+        </nav>
+      </div>
+      <div class="hero-photo">
+        <div class="hero-arch">
+          <Image class="fade is-on" src={marilia} alt="Marília Lucena segurando várias bolsas Crochetin coloridas" widths={[500, 800, 1100]} sizes="(max-width: 860px) 90vw, 46vw" loading="eager" />
+          <Image class="fade" src={mariliaVerde} alt="Marília Lucena segurando a bolsa verde-militar" widths={[500, 800, 1100]} sizes="(max-width: 860px) 90vw, 46vw" />
+        </div>
+      </div>
+    </header>
+
+    <!-- Vídeo da Marília (o mesmo da página atual na Hotmart); carrega só no clique -->
+    <section class="video" aria-labelledby="video-h">
+      <div class="video-text reveal">
+        <h2 id="video-h">Assista antes de decidir</h2>
+        <p>A Marília mostra as bolsas e como o crochê vira faturamento.</p>
+      </div>
+      <div class="video-frame">
+        <button type="button" class="video-play" data-id="uR5hVjrdMW4" aria-label="Assistir ao vídeo da Marília sobre o Treinamento">
+          <img src="https://i.ytimg.com/vi/uR5hVjrdMW4/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" />
+          <span class="video-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Vitrine: escolha uma bolsa -->
+    <section class="showcase" id="bolsas" aria-labelledby="bolsas-h">
+      <div class="showcase-stage">
+        <div class="showcase-arch" style={`--tone:${first.tone}`}>
+          {bags.map((b, i) => b.src ? (
+            <img class={`bag-img${i === 0 ? ' is-on' : ''}`} data-i={i} src={b.src} alt={`Bolsa ${b.name}`} width="900" height="506" loading="lazy" />
+          ) : (
+            <p class="bag-img bag-missing pending" data-i={i}>Foto da {b.name} a enviar</p>
+          ))}
+        </div>
+        <p class="showcase-fact" aria-live="polite"><strong>{first.name}</strong><br />{first.lessons} aulas e a receita em e-book</p>
+      </div>
+      <div class="showcase-list">
+        <h2 id="bolsas-h">Escolha uma bolsa</h2>
+        <ul role="list">
+          {bags.map((b, i) => (
+            <li><button type="button" class={`bag-name${i === 0 ? ' is-on' : ''}`} data-i={i} data-name={b.name} data-lessons={b.lessons} data-tone={b.tone} aria-pressed={i === 0 ? 'true' : 'false'}>{b.name}</button></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Método: acordeão de painéis -->
+    <section class="method" id="metodo" aria-labelledby="metodo-h">
+      <div class="method-intro reveal">
+        <h2 id="metodo-h">Método Crochetin</h2>
+        <p>Três níveis até o acabamento que a Crochetin vende, e uma etapa final para transformar a bolsa pronta em venda.</p>
+      </div>
+      <div class="stages">
+        {stages.map((s, i) => (
+          <details class="stage" name="stage" open={i === 0} style={`--i:${i}`}>
+            <summary><span>{s.name}</span></summary>
+            <div class="stage-body">
+              <p>{s.text}</p>
+              {s.img && <Image src={s.img} alt="" widths={[220, 360]} sizes="200px" />}
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    <!-- Prova: o que as clientes falam -->
+    <section class="proof" aria-labelledby="clientes-h">
+      <div class="proof-board">
+        <div class="proof-head reveal">
+          <h2 id="clientes-h">As clientes falam</h2>
+          <p>Mensagens reais de quem comprou bolsas Crochetin. É esse padrão que o Treinamento ensina.</p>
+        </div>
+        {chats.map((c, i) => (
+          <figure class="proof-tile reveal">
+            <Image src={c} alt={`Mensagem de cliente elogiando uma bolsa Crochetin (${i + 1})`} widths={[260, 420]} sizes="(max-width: 700px) 45vw, 20vw" />
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <!-- Sobre: painel escuro com retrato em arco -->
+    <section class="about" aria-labelledby="sobre-h">
+      <div class="about-panel">
+        <div class="about-left">
+          <h2 id="sobre-h">Da arquitetura ao crochê</h2>
+          <div class="about-portrait">
+            <Image src={mariliaVerde} alt="Marília Lucena, fundadora da Crochetin" widths={[400, 700]} sizes="(max-width: 860px) 86vw, 38vw" />
+          </div>
+        </div>
+        <div class="about-right reveal">
+          <div>
+            <h3>Quem é a Marília</h3>
+            <p>Formada em Arquitetura e Urbanismo, Marília Lucena encontrou no crochê a sua paixão e fundou a Crochetin, marca de bolsas de crochê de alto padrão.</p>
+          </div>
+          <div>
+            <h3>O que ela ensina</h3>
+            <p>As mesmas bolsas que a Crochetin vende, com o processo do ateliê: estrutura, forma, acabamento e o que fazer para vender cada peça.</p>
+          </div>
+          <a class="arch-btn arch-btn-accent" href={checkout('sobre')} target="_blank" rel="noopener">Quero o Treinamento</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preço: planos em degraus -->
+    <section class="pricing" id="preco" aria-labelledby="preco-h">
+      <div class="plans">
+        <h2 id="preco-h">Por onde começar</h2>
+        <article class="plan plan-1 reveal">
+          <div class="plan-top">
+            <h3>Aula avulsa</h3>
+            <p class="plan-price">R$ 37</p>
+            <ul role="list"><li>Uma bolsa à sua escolha</li><li>Receita em e-book</li></ul>
+          </div>
+          <a class="plan-btn" href="/aulas-avulsas">Ver as aulas avulsas</a>
+        </article>
+        <article class="plan plan-2 reveal">
+          <div class="plan-top">
+            <h3>Já tem uma aula</h3>
+            <p class="plan-price">R$ 160</p>
+            <ul role="list"><li>O Treinamento completo pagando só a diferença</li><li>Para quem já comprou uma aula avulsa</li></ul>
+          </div>
+          <a class="plan-btn" href={upgradeWhatsapp} target="_blank" rel="noopener">Pedir pelo WhatsApp</a>
+        </article>
+        <article class="plan plan-3 reveal">
+          <div class="plan-top">
+            <h3>Treinamento completo</h3>
+            <p class="plan-price">R$ 197</p>
+            <p class="plan-note">ou 12x de R$ 20,37</p>
+            <ul role="list">
+              <li>9 bolsas em {totalLessons} aulas</li>
+              <li>Método Crochetin em 3 níveis</li>
+              <li>E-books com todas as receitas</li>
+              <li>Precificação, embalagem e envio</li>
+              <li>Suporte pelo WhatsApp com a Marília</li>
+              <li>Certificado e novos modelos</li>
+            </ul>
+          </div>
+          <a class="plan-btn" href={checkout('preco')} target="_blank" rel="noopener">Quero o Treinamento</a>
+        </article>
+      </div>
+      <div class="guarantee reveal">
+        <Image src={garantia} alt="Selo de garantia de 7 dias" widths={[140, 240]} sizes="120px" />
+        <p><strong>7 dias para testar.</strong> Assista às aulas e comece a sua primeira bolsa. Se não for para você, peça o reembolso pela Hotmart dentro de 7 dias.</p>
+      </div>
+    </section>
+
+    <!-- Dúvidas -->
+    <section class="faq" aria-labelledby="faq-h">
+      <h2 id="faq-h">Dúvidas comuns</h2>
+      <div class="faq-list">
+        {faq.map((f) => (
+          <details name="faq" class="faq-item">
+            <summary><span>{f.q}</span><i aria-hidden="true"></i></summary>
+            {f.a ? <p>{f.a}</p> : <p class="pending">Resposta a confirmar com a Marília.</p>}
+          </details>
+        ))}
+        <p class="faq-help">Ficou outra dúvida? <a href={whatsapp} target="_blank" rel="noopener">Fale com a Crochetin no WhatsApp</a>.</p>
+      </div>
+    </section>
+
+    <!-- Fechamento: as bolsas voltam -->
+    <section class="cta" aria-labelledby="cta-h">
+      <div class="cta-object" aria-hidden="true">
+        <Image src={marilia} alt="" widths={[700, 1200]} sizes="(max-width: 860px) 130vw, 66vw" />
+      </div>
+      <div class="cta-text reveal">
+        <h2 id="cta-h">Sua primeira bolsa, hoje</h2>
+        <p>Acesso imediato às {totalLessons} aulas, no celular ou no computador.</p>
+        <p class="cta-price">R$ 197 ou 12x de R$ 20,37</p>
+        <a class="arch-btn" href={checkout('final')} target="_blank" rel="noopener">Quero o Treinamento</a>
+      </div>
+    </section>
+
+    <!-- Rodapé: a marca em blocos -->
+    <footer class="foot">
+      <div class="foot-mark" aria-label="Crochetin" role="img">
+        {wordmark.map((l, i) => (
+          <span style={`--h:${[100, 78, 92, 66, 100, 84, 70, 96, 88][i]}%;--c:${blockTones[i % blockTones.length]};--fc:${i % blockTones.length === 2 ? '#3e2f25' : '#f4efe7'}`}>{l}</span>
+        ))}
+      </div>
+      <div class="foot-cols">
+        <nav aria-label="Rodapé">
+          <a href="/catalogo">Bolsas prontas</a>
+          <a href="/aulas-avulsas">Aulas avulsas</a>
+          <a href="https://instagram.com/crochetinatelie" target="_blank" rel="noopener">Instagram</a>
+          <a href={whatsapp} target="_blank" rel="noopener">WhatsApp</a>
+        </nav>
+        <p class="foot-legal">Crochetin · CNPJ 61.929.288/0001-78<br />Maceió/AL · <a href="mailto:crochetin@hotmail.com">crochetin@hotmail.com</a></p>
+      </div>
+      <div class="foot-last">
+        <p>Reembolso em até 7 dias pela Hotmart</p>
+        <a class="arch-btn arch-btn-small" href="#topo">Voltar ao topo</a>
+      </div>
+    </footer>
+  </main>
+</BaseLayout>
+
+<script is:inline>
+  const root = document.querySelector('.tr');
+  if (root) {
+    root.classList.add('js');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Vitrine: escolher uma bolsa troca a foto, a cor do arco e o fato
+    const names = root.querySelectorAll('.bag-name');
+    const imgs = root.querySelectorAll('.bag-img');
+    const arch = root.querySelector('.showcase-arch');
+    const fact = root.querySelector('.showcase-fact');
+    names.forEach((btn) => btn.addEventListener('click', () => {
+      const i = btn.dataset.i;
+      names.forEach((n) => { n.classList.toggle('is-on', n === btn); n.setAttribute('aria-pressed', String(n === btn)); });
+      imgs.forEach((im) => im.classList.toggle('is-on', im.dataset.i === i));
+      if (arch) arch.style.setProperty('--tone', btn.dataset.tone || '#c09a6b');
+      if (fact) fact.innerHTML = `<strong>${btn.dataset.name}</strong><br>${btn.dataset.lessons} aulas e a receita em e-book`;
+    }));
+
+    // Vídeo: troca a capa pelo player do YouTube (modo de privacidade) só quando a pessoa clica
+    const play = root.querySelector('.video-play');
+    if (play) play.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = 'https://www.youtube-nocookie.com/embed/' + play.dataset.id + '?autoplay=1&rel=0&playsinline=1';
+      f.title = 'Vídeo da Marília sobre o Treinamento Crochetin';
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      play.replaceWith(f);
+      if (typeof window.gtag === 'function') window.gtag('event', 'play_video', { video_id: play.dataset.id });
+    });
+
+    // Movimento de assinatura: troca lenta das fotos do topo
+    const fades = root.querySelectorAll('.hero-arch .fade');
+    if (!reduce && fades.length > 1) {
+      let k = 0;
+      setInterval(() => {
+        if (document.hidden) return;
+        fades[k].classList.remove('is-on');
+        k = (k + 1) % fades.length;
+        fades[k].classList.add('is-on');
+      }, 5600);
+    }
+
+    // Entradas por seção (uma vez), com conteúdo visível sem script
+    if (!reduce && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      }), { rootMargin: '0px 0px -12% 0px' });
+      root.querySelectorAll('.reveal, .stage, .bag-name, .faq-item, .foot-mark span').forEach((el, i) => {
+        el.style.setProperty('--d', `${(i % 6) * 75}ms`);
+        el.classList.add('will-in');
+        io.observe(el);
+      });
+    }
+  }
+</script>
+
+<style>
+  :global(body:has(.tr)) { background: #f4efe7; }
+  :global(body:has(.tr))::before { display: none; }
+  :global(.container:has(> .tr)) { max-width: none; padding: 0; }
+
+  .tr {
+    --ground: #f4efe7;
+    --ink: #3e2f25;
+    --muted: #5e4a3a;
+    --accent: #c09a6b;
+    --deep: #a67d4f;
+    --sand: #e8dfd2;
+    --pale: #d9c7ad;
+    --m: clamp(16px, 2.4vw, 32px);
+    --t-s: 15px;
+    --t-b: 18px;
+    --t-m: clamp(20px, 1.8vw, 26px);
+    --t-l: clamp(32px, 3.6vw, 56px);
+    --t-xl: clamp(40px, 4.6vw, 72px);
+    --ease: cubic-bezier(.16, 1, .3, 1);
+    color: var(--ink);
+    background: var(--ground);
+    font-family: var(--font-sans);
+    font-size: var(--t-b);
+    line-height: 1.55;
+  }
+  .tr h1, .tr h2 { font-family: var(--font-serif); font-weight: 700; letter-spacing: -0.02em; line-height: 1.04; }
+  .tr h2 { font-size: var(--t-l); }
+  .tr h3 { font-size: var(--t-m); font-weight: 600; line-height: 1.2; }
+  .tr p, .tr li { font-size: var(--t-b); }
+  .tr a { color: inherit; }
+  .tr :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .tr section { margin-top: clamp(96px, 12vw, 200px); padding-left: var(--m); padding-right: var(--m); }
+
+  /* O motivo: o arco da alça */
+  .arch-btn {
+    display: inline-block; background: var(--ink); color: var(--ground) !important; text-decoration: none;
+    font-weight: 600; font-size: var(--t-b); padding: 18px 34px 16px;
+    border-radius: 999px 999px 0 0;
+    transition: transform .3s var(--ease), background-color .25s ease;
+  }
+  .arch-btn:hover { background: #2b2019; transform: translateY(-3px); }
+  .arch-btn:active { transform: translateY(0) scale(.98); }
+  .arch-btn-accent { background: var(--accent); color: var(--ink) !important; }
+  .arch-btn-accent:hover { background: var(--pale); }
+  .arch-btn-small { padding: 12px 22px 10px; font-size: var(--t-s); white-space: nowrap; flex: none; }
+  .tr ul[role="list"] { list-style: none; padding: 0; }
+  .plan ul li, .about-right li { position: relative; padding-left: 22px; }
+  .plan ul li::before {
+    content: ''; position: absolute; left: 0; top: .5em; width: 11px; height: 12px;
+    background: currentColor; border-radius: 999px 999px 0 0;
+  }
+  .pending { background: rgba(166, 125, 79, .16); color: var(--ink); padding: 14px 16px; font-size: var(--t-s) !important; }
+
+  /* Topo */
+  .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px var(--m); min-height: 100svh; }
+  .hero-card { background: var(--sand); display: flex; flex-direction: column; }
+  .stitch { display: flex; height: 56px; overflow: hidden; }
+  .stitch span { flex: 0 0 28px; height: 100%; background: var(--ink); }
+  .stitch span:nth-child(2n) { background: var(--sand); }
+  .hero-card-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 48px clamp(20px, 4vw, 64px); gap: 0; }
+  .hero-logo { width: 96px; height: 96px; border-radius: 999px; margin-bottom: 28px; }
+  .hero h1 { font-size: var(--t-xl); max-width: 14ch; margin-bottom: 36px; }
+  .hero-sub { max-width: 40ch; margin-bottom: 36px; }
+  .hero-price { margin-top: 18px; font-weight: 600; }
+  .hero-links { display: flex; justify-content: center; gap: 28px; padding: 0 0 28px; }
+  .hero-links a { font-size: var(--t-s); font-weight: 600; text-decoration: none; }
+  .hero-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .hero-photo { position: sticky; top: 12px; height: calc(100svh - 24px); background: var(--accent); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+  .hero-arch { position: relative; width: 82%; height: 88%; background: var(--deep); border-radius: 999px 999px 0 0; overflow: hidden; }
+  .hero-arch :global(img) { position: absolute; inset: auto 0 0 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; opacity: 0; transition: opacity 1.6s ease; }
+  .hero-arch :global(img.is-on) { opacity: 1; animation: drift 14s ease-in-out infinite alternate; }
+  @keyframes drift { from { transform: scale(1); } to { transform: scale(1.045); } }
+
+  /* Vídeo */
+  .video { display: grid; grid-template-columns: 4fr 8fr; gap: var(--m); align-items: end; }
+  .video-text h2 { margin-bottom: 16px; }
+  .video-text p { max-width: 30ch; }
+  .video-frame { position: relative; aspect-ratio: 16 / 9; background: var(--ink); overflow: hidden; }
+  .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-play { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; cursor: pointer; background: var(--ink); }
+  .video-play img { width: 100%; height: 100%; object-fit: cover; opacity: .85; transition: opacity .3s ease, transform .6s var(--ease); }
+  .video-play:hover img { opacity: 1; transform: scale(1.02); }
+  .video-icon { position: absolute; left: 32px; bottom: 0; width: 112px; height: 84px; background: var(--accent); border-radius: 999px 999px 0 0; transition: background-color .25s ease, transform .3s var(--ease); }
+  .video-icon::after { content: ''; position: absolute; left: 50%; top: 56%; transform: translate(-38%, -50%); border-style: solid; border-width: 14px 0 14px 24px; border-color: transparent transparent transparent var(--ink); }
+  .video-play:hover .video-icon { background: var(--pale); transform: translateY(-4px); }
+
+  /* Vitrine */
+  .showcase { display: grid; grid-template-columns: 5fr 7fr; gap: var(--m); align-items: end; min-height: 90svh; }
+  .showcase-stage { grid-column: 2; grid-row: 1; position: relative; display: flex; flex-direction: column; align-items: center; }
+  .showcase-arch { --tone: #c09a6b; position: relative; width: min(100%, 64vh); aspect-ratio: 4 / 5; background: var(--tone); border-radius: 999px 999px 0 0; overflow: hidden; transition: background-color .3s ease; }
+  .bag-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s ease; margin: 0; }
+  .bag-img.is-on { opacity: 1; }
+  .bag-missing { display: grid; place-items: center; text-align: center; }
+  .showcase-fact { align-self: flex-end; margin-top: 16px; font-size: var(--t-b); }
+  .showcase-list { grid-column: 1; grid-row: 1; padding-bottom: 8px; }
+  .showcase-list h2 { color: var(--deep); font-size: var(--t-m); font-family: var(--font-sans); margin-bottom: 12px; }
+  .bag-name {
+    font: 600 var(--t-l)/1.12 var(--font-serif); color: var(--muted); background: none; border: 0; padding: 2px 0; cursor: pointer; text-align: left;
+    transition: color .25s ease, transform .3s var(--ease);
+  }
+  .bag-name:hover { color: var(--ink); transform: translateX(6px); }
+  .bag-name.is-on { color: var(--ink); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 8px; text-decoration-color: var(--accent); }
+
+  /* Método */
+  .method-intro { display: grid; grid-template-columns: 5fr 1fr 6fr; margin-bottom: 64px; }
+  .method-intro h2 { grid-column: 1; }
+  .method-intro p { grid-column: 3; max-width: 46ch; align-self: end; }
+  .stages { display: flex; height: 520px; }
+  .stage { flex: 1 1 0; min-width: 72px; transition: flex-grow .45s var(--ease); position: relative; overflow: hidden; }
+  .stage[open] { flex-grow: 6; }
+  .stage:nth-child(1) { background: var(--ink); color: var(--ground); }
+  .stage:nth-child(2) { background: #6b5642; color: var(--ground); }
+  .stage:nth-child(3) { background: var(--accent); color: var(--ink); }
+  .stage:nth-child(4) { background: var(--pale); color: var(--ink); }
+  .stage summary { list-style: none; cursor: pointer; height: 100%; position: absolute; inset: 0; }
+  .stage summary::-webkit-details-marker { display: none; }
+  .stage summary span { position: absolute; left: 24px; bottom: 24px; transform-origin: left bottom; transform: rotate(-90deg) translateY(100%); white-space: nowrap; font-weight: 700; font-size: var(--t-m); }
+  .stage[open] summary { position: static; height: auto; padding: 32px 32px 0; }
+  .stage[open] summary span { position: static; transform: none; font: 700 var(--t-l)/1.1 var(--font-serif); }
+  .stage-body { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; padding: 24px 32px 32px; position: absolute; left: 0; right: 0; bottom: 0; }
+  .stage-body p { max-width: 36ch; }
+  .stage-body :global(img) { width: 200px; height: 200px; border-radius: 999px 999px 0 0; background: var(--ground); }
+
+  /* Prova */
+  .proof-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .proof-head { grid-column: span 2; grid-row: span 2; background: var(--accent); padding: 28px; display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; }
+  
+  .proof-head p { max-width: 34ch; }
+  .proof-tile { margin: 0; background: var(--sand); display: flex; align-items: center; justify-content: center; padding: 24px 12px; }
+  .proof-tile :global(img) { width: 100%; height: auto; max-height: 420px; object-fit: contain; }
+
+  /* Sobre */
+  .about { padding: 0 !important; }
+  .about-panel { margin: 0 var(--m); background: var(--ink); color: var(--ground); min-height: 110svh; position: relative; overflow: hidden; display: grid; grid-template-columns: 63% 37%; }
+  .about-left { padding: 56px; position: relative; }
+  .about-left h2 { color: var(--pale); max-width: 12ch; }
+  .about-portrait { position: absolute; left: 56px; bottom: -8%; width: 38vw; aspect-ratio: 4 / 5; background: var(--accent); border-radius: 999px 999px 0 0; overflow: hidden; }
+  .about-portrait :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 10%; }
+  .about-right { padding: 56px 56px 56px 0; display: flex; flex-direction: column; gap: 64px; align-items: flex-start; }
+  .about-right > div { max-width: 320px; }
+  .about-right h3 { margin-bottom: 12px; color: var(--pale); }
+  
+
+  /* Preço */
+  .plans h2 { grid-column: 1; grid-row: 1; align-self: start; }
+  .plan { grid-row: 1; }
+  .plan-1 { grid-column: 1; } .plan-2 { grid-column: 2; } .plan-3 { grid-column: 3; }
+  .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-items: end; }
+  .plan { display: flex; flex-direction: column; justify-content: space-between; }
+  .plan-1 { background: var(--sand); min-height: 380px; }
+  .plan-2 { background: var(--pale); min-height: 480px; }
+  .plan-3 { background: var(--accent); min-height: 640px; }
+  .plan-top { padding: 28px; }
+  .plan h3 { font-size: var(--t-m); font-weight: 700; margin-bottom: 8px; }
+  .plan-price { font: 700 var(--t-l)/1 var(--font-serif) !important; margin-bottom: 8px; }
+  .plan-note { margin-bottom: 18px; font-weight: 600; }
+  .plan ul { margin-top: 18px; display: grid; gap: 6px; }
+  .plan-btn { display: flex; align-items: center; min-height: 64px; padding: 0 28px; font-weight: 600; text-decoration: none; margin: 0; transition: background-color .25s ease; }
+  .plan-1 .plan-btn { background: #ddd2c2; }
+  .plan-1 .plan-btn:hover { background: #d0c3b0; }
+  .plan-2 .plan-btn { background: #cbb596; }
+  .plan-2 .plan-btn:hover { background: #bfa683; }
+  .plan-3 .plan-btn { background: var(--ink); color: var(--ground); }
+  .plan-3 .plan-btn:hover { background: #2b2019; }
+  .guarantee { display: flex; align-items: center; gap: 28px; margin-top: 48px; max-width: 760px; }
+  .guarantee :global(img) { width: 120px; height: 120px; flex: none; }
+
+  /* Dúvidas */
+  .faq { display: grid; grid-template-columns: 4fr 8fr; gap: var(--m); align-items: start; }
+  .faq h2 { position: sticky; top: 96px; }
+  .faq-list { display: grid; gap: 8px; }
+  .faq-item { background: var(--sand); transition: background-color .25s ease; }
+  .faq-item[open] { background: var(--accent); }
+  .faq-item summary { list-style: none; cursor: pointer; min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; font-size: var(--t-b); font-weight: 600; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { background: rgba(62, 47, 37, .05); }
+  .faq-item i { position: relative; width: 16px; height: 16px; flex: none; }
+  .faq-item i::before, .faq-item i::after { content: ''; position: absolute; left: 0; top: 6.5px; width: 16px; height: 3px; background: var(--ink); transition: transform .3s var(--ease); }
+  .faq-item i::after { transform: rotate(90deg); }
+  .faq-item[open] i::after { transform: rotate(0deg); }
+  .faq-item p { padding: 0 24px 24px; max-width: 52ch; }
+  .faq-item .pending { margin: 0 24px 24px; }
+  .faq-help { margin-top: 16px; }
+
+  /* Fechamento */
+  .cta { position: relative; min-height: 90svh; background: var(--accent); display: grid; grid-template-columns: repeat(12, 1fr); overflow: hidden; padding: 0 !important; margin-left: var(--m); margin-right: var(--m); }
+  .cta-object { grid-column: 1 / span 7; position: relative; overflow: hidden; }
+  .cta-object :global(img) { position: absolute; left: -6%; bottom: -14%; width: 120%; height: auto; max-width: none; }
+  .cta-text { grid-column: 8 / span 5; align-self: center; padding: 0 48px; position: relative; z-index: 1; }
+  .cta-text h2 { margin-bottom: 16px; }
+  .cta-text p { margin-bottom: 12px; }
+  .cta-price { font-size: var(--t-m) !important; font-weight: 700; margin-bottom: 24px !important; }
+
+  /* Rodapé */
+  .foot { margin-top: clamp(96px, 12vw, 200px); padding: 0 var(--m) 32px; }
+  .foot-mark { display: flex; gap: 4px; align-items: flex-end; height: 34svh; min-height: 180px; }
+  .foot-mark span {
+    flex: 1; height: var(--h); background: var(--c); color: var(--fc);
+    display: flex; align-items: flex-end; justify-content: center;
+    font: 700 clamp(36px, 8vw, 140px)/0.85 var(--font-serif); padding-bottom: 8px; overflow: hidden;
+  }
+  .foot-cols { display: grid; grid-template-columns: 8fr 4fr; gap: var(--m); margin-top: 56px; }
+  .foot-cols nav { display: grid; grid-template-columns: repeat(4, auto); justify-content: start; gap: 12px 40px; }
+  .foot-cols nav a { font-size: var(--t-s); font-weight: 600; text-decoration: none; }
+  .foot-cols nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .foot-last { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
+  .tr .foot-last p, .tr .foot-legal { font-size: var(--t-s); }
+  .foot-legal a { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Entradas (só com script e sem redução de movimento) */
+  .js .will-in { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease) var(--d, 0ms), transform .8s var(--ease) var(--d, 0ms); }
+  .js .will-in.in { opacity: 1; transform: none; }
+  .js .foot-mark span.will-in { transform: translateY(40%); }
+  .js .foot-mark span.will-in.in { transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tr *, .tr *::before, .tr *::after { transition: none !important; animation: none !important; }
+  }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    .hero-photo { position: relative; order: -1; height: 38svh; top: 0; }
+    .hero-logo { display: none; }
+    .hero-card-body { padding: 32px 20px; }
+    .hero h1, .hero-sub { margin-bottom: 24px; }
+    .hero-card { margin-top: -24px; position: relative; }
+    .stitch { height: 40px; }
+    .hero h1 { font-size: 9vw; }
+    .hero-links { flex-wrap: wrap; gap: 0 20px; padding-bottom: 12px; }
+    .hero-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; }
+
+    .video { grid-template-columns: minmax(0, 1fr); }
+    .tr section { margin-top: 72px; }
+    .foot { margin-top: 72px; }
+    .video-icon { width: 84px; height: 64px; left: 16px; }
+    .showcase { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    .showcase-stage, .showcase-list { grid-column: 1; grid-row: auto; }
+    .showcase-arch { width: 86vw; }
+    .showcase-list ul { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+    .bag-name { font-size: var(--t-m); white-space: nowrap; min-height: 44px; }
+    .showcase-list ul { gap: 0 20px; }
+    .showcase-fact { align-self: flex-start; }
+
+    .method-intro { grid-template-columns: 1fr; gap: 16px; }
+    .method-intro p { grid-column: 1; }
+    .stages { flex-direction: column; height: auto; }
+    .stage { min-width: 0; flex: none; }
+    .stage summary { position: static; height: auto; min-height: 64px; display: flex; align-items: center; padding: 0 20px; }
+    .stage summary span { position: static; transform: none; }
+    .stage[open] summary { padding: 24px 20px 0; }
+    .stage-body { position: static; grid-template-columns: 1fr; padding: 16px 20px 24px; }
+    
+    .stage-body :global(img) { width: 140px; height: 140px; }
+
+    .proof-board { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .proof-head { grid-column: 1 / -1; grid-row: auto; min-height: 0; gap: 16px; }
+
+    .about-panel { margin: 0 10px; grid-template-columns: 1fr; min-height: 0; padding-bottom: 96vw; }
+    .about-left { padding: 32px 20px 0; position: static; }
+    
+    .about-right { padding: 32px 20px; gap: 32px; }
+    .about-portrait { left: 50%; transform: translateX(-50%); width: 86vw; bottom: -22vw; }
+
+    .plans h2 { margin-bottom: 16px; }
+    .plan, .plans h2 { grid-column: 1 !important; grid-row: auto !important; }
+    .plans { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+    .plan-1, .plan-2, .plan-3 { min-height: 0; }
+    .plan-price { font-size: 44px !important; }
+
+    .faq { grid-template-columns: 1fr; }
+    .faq h2 { position: static; }
+    .faq-item summary { min-height: 64px; padding: 12px 20px; }
+
+    .cta { display: flex; flex-direction: column; min-height: 0; margin-left: 0; margin-right: 0; }
+    .cta-text { order: -1; padding: 40px 20px 0; }
+    
+    .cta-text .arch-btn { display: block; text-align: center; }
+    .cta-object { height: 55svh; }
+    .cta-object :global(img) { width: 130vw; left: -10vw; bottom: -18%; }
+
+    .foot-mark { height: 22svh; }
+    .foot-cols { grid-template-columns: 1fr; }
+    .foot-cols nav { grid-template-columns: 1fr 1fr; gap: 0 24px; }
+    .foot-cols nav a { display: flex; align-items: center; min-height: 44px; }
+  }
+</style>
