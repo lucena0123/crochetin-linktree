@@ -1,6 +1,7 @@
 const COLOR_LABELS: Record<string, string> = {
   verdemilitar: 'verde militar',
-  offwhite: 'off-white'
+  offwhite: 'off-white',
+  cafe: 'café'
 };
 
 /** Tom aproximado de cada cor de fio, para as amostras do catálogo. */
@@ -15,7 +16,10 @@ const COLOR_HEX: Record<string, string> = {
   offwhite: '#f5f0e8',
   pink: '#e8789a',
   verdemilitar: '#4a5e3a',
-  vermelha: '#a8322a'
+  vermelha: '#a8322a',
+  palha: '#d6a556',
+  cafe: '#5a2e2a',
+  vinho: '#7a1f2b'
 };
 
 const formatColor = (color: string) => COLOR_LABELS[color] ?? color;

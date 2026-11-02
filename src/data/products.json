@@ -235,25 +235,35 @@
             "id": "bolsa-006",
             "slug": "bag-tati",
             "name": "Bag Tati",
-            "description": "Bolsa artesanal em crochê — disponível como aula avulsa",
+            "description": "Bolsa de ombro com textura canelada e alça trançada presa por mosquetões. Leve e prática para o dia a dia.",
             "price": 80.0,
             "lessonUrl": "https://pay.hotmart.com/M103664998T?bid=1767571051716",
             "category": "bolsa-casual",
             "images": [
-                "bag-tati.png"
+                "bag-tati-areia.png"
             ],
-            "colors": [],
-            "material": "Crochê",
+            "colors": [
+                "areia",
+                "preta",
+                "caramelo",
+                "palha",
+                "offwhite",
+                "cafe",
+                "vinho",
+                "pink"
+            ],
             "dimensions": {
-                "width": 0,
-                "height": 0,
+                "width": 24,
+                "height": 15,
                 "depth": 0
             },
             "benefits": [],
-            "inStock": false,
+            "inStock": true,
             "featured": false,
             "tags": [
-                "aula-avulsa"
+                "artesanal",
+                "casual",
+                "dia a dia"
             ],
             "lessons": 3
         },

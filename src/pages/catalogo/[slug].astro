@@ -45,7 +45,10 @@ const waHref = waBase + encodeURIComponent(waMessage(firstColor));
 
 const d = product.dimensions;
 const fmt = (n: number) => n.toLocaleString('pt-BR');
-const measures = d && d.width ? `${fmt(d.width)} × ${fmt(d.height)} × ${fmt(d.depth)} cm` : null;
+const measures = d && d.width
+  ? (d.depth ? `${fmt(d.width)} × ${fmt(d.height)} × ${fmt(d.depth)} cm` : `${fmt(d.width)} × ${fmt(d.height)} cm (aproximado)`)
+  : null;
+const measuresHint = d && d.depth ? '(largura × altura × profundidade)' : '(largura × altura)';
 
 const others = all.filter((p) => p.slug !== product.slug).slice(0, 4);
 
@@ -127,7 +130,7 @@ const jsonLd = {
         <p class="pd-desc">{product.description}</p>
 
         <dl class="pd-specs">
-          {measures && <div><dt>Medidas</dt><dd>{measures} <small>(largura × altura × profundidade)</small></dd></div>}
+          {measures && <div><dt>Medidas</dt><dd>{measures} <small>{measuresHint}</small></dd></div>}
           {product.material && <div><dt>Material</dt><dd>{product.material}</dd></div>}
           <div><dt>Feita</dt><dd>100% à mão, no ateliê da Crochetin</dd></div>
           <div><dt>Troca</dt><dd>7 dias para troca ou devolução</dd></div>
