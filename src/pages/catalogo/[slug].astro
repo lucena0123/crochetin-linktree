@@ -91,6 +91,9 @@ const jsonLd = {
             />
           ))}
         </div>
+        {images[0]?.color && (
+          <p class="pd-photo-note" data-photo-note aria-live="polite">Foto na cor {formatColor(images[0].color)}</p>
+        )}
       </div>
 
       <div class="pd-info">
@@ -202,6 +205,14 @@ const jsonLd = {
           var match = null;
           imgs.forEach(function (im) { if (im.dataset.color === color) match = im; });
           if (match) imgs.forEach(function (im) { im.classList.toggle('is-on', im === match); });
+          var note = root.querySelector('[data-photo-note]');
+          if (note) {
+            var shown = root.querySelector('.pd-arch img.is-on');
+            var shownBtn = shown && root.querySelector('.pd-swatch[data-color="' + shown.dataset.color + '"]');
+            note.textContent = match
+              ? 'Foto na cor ' + btn.dataset.label
+              : 'Ainda sem foto na cor ' + btn.dataset.label + '. A foto mostra a cor ' + (shownBtn ? shownBtn.dataset.label : '') + '.';
+          }
           if (cta) {
             var msg = 'Olá! Tenho interesse na *' + cta.dataset.waName + '* (' + cta.dataset.waPrice + '), na cor *' + btn.dataset.label + '*.';
             cta.href = cta.dataset.waBase + encodeURIComponent(msg);
@@ -226,6 +237,7 @@ const jsonLd = {
   .pd-arch { position: relative; aspect-ratio: 1 / 1; background: var(--sand); border-radius: 999px 999px 0 0; overflow: hidden; }
   .pd-arch :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s ease; }
   .pd-arch :global(img.is-on) { opacity: 1; }
+  .pd-photo-note { margin-top: 12px; font-size: var(--t-s); color: var(--muted); }
 
   .pd-info { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding-top: 8px; }
   .pd-price { font: 700 var(--t-m)/1.2 var(--font-sans); }

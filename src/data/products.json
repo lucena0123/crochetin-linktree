@@ -272,25 +272,38 @@
             "id": "bolsa-007",
             "slug": "bag-emy",
             "name": "Bag Emy",
-            "description": "Bolsa artesanal em crochê — disponível como aula avulsa",
+            "description": "Bolsa com aba arredondada, textura canelada, pingente de franjas e alça de corrente dourada. Disponível em cor única ou nas versões Colors, com listras coloridas.",
             "price": 179.99,
             "lessonUrl": "https://pay.hotmart.com/N103794966L?bid=1768094794890",
             "category": "bolsa-casual",
             "images": [
-                "bag-emy.png"
+                "bag-emy-colorsvibrante.png",
+                "bag-emy-colorsterra.jpg"
             ],
-            "colors": [],
-            "material": "Crochê",
+            "colors": [
+                "colorsvibrante",
+                "colorsterra",
+                "areia",
+                "preta",
+                "caramelo",
+                "palha",
+                "offwhite",
+                "cafe",
+                "vinho",
+                "pink"
+            ],
             "dimensions": {
                 "width": 0,
                 "height": 0,
                 "depth": 0
             },
             "benefits": [],
-            "inStock": false,
+            "inStock": true,
             "featured": false,
             "tags": [
-                "aula-avulsa"
+                "artesanal",
+                "colorida",
+                "corrente"
             ],
             "lessons": 6
         }
