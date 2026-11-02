@@ -276,10 +276,10 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
           <a href="https://instagram.com/crochetinatelie" target="_blank" rel="noopener">Instagram</a>
           <a href={whatsapp} target="_blank" rel="noopener">WhatsApp</a>
         </nav>
-        <p class="pending">CNPJ, razão social e endereço a incluir · Política de privacidade · Política de reembolso</p>
+        <p class="foot-legal">Crochetin · CNPJ 61.929.288/0001-78<br />Maceió/AL · <a href="mailto:crochetin@hotmail.com">crochetin@hotmail.com</a></p>
       </div>
       <div class="foot-last">
-        <p>Crochetin · Maceió</p>
+        <p>Reembolso em até 7 dias pela Hotmart</p>
         <a class="arch-btn arch-btn-small" href="#topo">Voltar ao topo</a>
       </div>
     </footer>
@@ -376,7 +376,7 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
   .arch-btn:active { transform: translateY(0) scale(.98); }
   .arch-btn-accent { background: var(--accent); color: var(--ink) !important; }
   .arch-btn-accent:hover { background: var(--pale); }
-  .arch-btn-small { padding: 12px 22px 10px; font-size: var(--t-s); }
+  .arch-btn-small { padding: 12px 22px 10px; font-size: var(--t-s); white-space: nowrap; flex: none; }
   .tr ul[role="list"] { list-style: none; padding: 0; }
   .plan ul li, .about-right li { position: relative; padding-left: 22px; }
   .plan ul li::before {
@@ -524,7 +524,8 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
   .foot-cols nav a { font-size: var(--t-s); font-weight: 600; text-decoration: none; }
   .foot-cols nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
   .foot-last { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
-  .foot-last p { font-size: var(--t-s); }
+  .tr .foot-last p, .tr .foot-legal { font-size: var(--t-s); }
+  .foot-legal a { text-decoration: underline; text-underline-offset: 3px; }
 
   /* Entradas (só com script e sem redução de movimento) */
   .js .will-in { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease) var(--d, 0ms), transform .8s var(--ease) var(--d, 0ms); }
