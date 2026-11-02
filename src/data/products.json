@@ -403,6 +403,35 @@
                 "festa",
                 "brilho"
             ]
+        },
+        {
+            "id": "bolsa-011",
+            "slug": "bag-maira",
+            "name": "Bag Maíra",
+            "description": "Bolsa de design clássico, de crochê moderno em fio náutico premium com brilho, detalhes em metal dourado ou prata e alça de crochê removível. Cabe o essencial: celular e chaves.",
+            "price": 179.99,
+            "category": "bolsa-classica",
+            "material": "Fio Náutico Premium com brilho",
+            "colors": [
+                "dourado",
+                "prata"
+            ],
+            "images": [
+                "bag-maira-dourado.jpg"
+            ],
+            "dimensions": {
+                "width": 22,
+                "height": 13,
+                "depth": 0
+            },
+            "inStock": true,
+            "featured": false,
+            "tags": [
+                "artesanal",
+                "brilho",
+                "festa",
+                "clássica"
+            ]
         }
     ]
 }
