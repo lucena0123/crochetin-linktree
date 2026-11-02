@@ -28,6 +28,7 @@ import atena from '../assets/treinamento/bolsa-atena-vermelha.png';
 import ariel from '../assets/treinamento/bolsa-ariel-turquesa.png';
 import tati from '../assets/treinamento/bolsa-tati.png';
 import emy from '../assets/treinamento/bolsa-emy-colors.png';
+import rosalia from '../assets/treinamento/bolsa-rosalia.png';
 
 const CHECKOUT = 'https://pay.hotmart.com/T101474588W?off=dliwfsqx';
 const checkout = (sck: string) => withHotmartSource(CHECKOUT, `treinamento_${sck}`);
@@ -44,7 +45,7 @@ const bagList = [
   { name: 'Ariel', lessons: 3, img: ariel, tone: '#d9c7ad' },
   { name: 'Tati', lessons: 3, img: tati, tone: '#a67d4f' },
   { name: 'Emy Colors', lessons: 6, img: emy, tone: '#c09a6b' },
-  { name: 'Rosália', lessons: 6, img: null, tone: '#d9c7ad' },
+  { name: 'Rosália', lessons: 6, img: rosalia, tone: '#d9c7ad' },
   { name: 'Pochete Copa', lessons: 9, img: null, tone: '#a67d4f' },
 ];
 const bags = await Promise.all(
