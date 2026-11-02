@@ -141,13 +141,12 @@ const jsonLd = {
       </div>
     </div>
 
+    {product.lessons && (
     <section class="pd-learn reveal" aria-labelledby="learn-h">
       <div class="pd-learn-text">
         <h2 id="learn-h">Aprenda a fazer a {product.name.replace(/^Bag /, '')}</h2>
         <p>
-          {product.lessons
-            ? `Ela tem ${product.lessons} aulas no Treinamento Crochetin, do início ao acabamento.`
-            : 'Ela faz parte do Treinamento Crochetin, do início ao acabamento.'}
+          {`Ela tem ${product.lessons} aulas no Treinamento Crochetin, do início ao acabamento.`}
         </p>
       </div>
       <div class="pd-learn-options">
@@ -163,6 +162,7 @@ const jsonLd = {
         </a>
       </div>
     </section>
+    )}
 
     <section class="pd-more" aria-labelledby="more-h">
       <h2 id="more-h">Outras bolsas</h2>

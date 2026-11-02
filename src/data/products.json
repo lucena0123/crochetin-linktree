@@ -345,6 +345,35 @@
             "lessons": 6,
             "lessonPrice": 47,
             "lessonUrl": "https://pay.hotmart.com/E104901037Q"
+        },
+        {
+            "id": "bolsa-009",
+            "slug": "bag-pri",
+            "name": "Bag Pri",
+            "description": "Clutch clássica em fio de malha e viscose premium, com detalhes em metal dourado ou prata e alça de corrente regulável e removível. Cabe o essencial: celular, chaves e documentos.",
+            "price": 179.99,
+            "category": "clutch",
+            "material": "Fio de Malha e Viscose Premium",
+            "colors": [
+                "offwhite",
+                "preta"
+            ],
+            "images": [
+                "bag-pri-offwhite.jpg"
+            ],
+            "dimensions": {
+                "width": 25,
+                "height": 13,
+                "depth": 0
+            },
+            "inStock": true,
+            "featured": false,
+            "tags": [
+                "artesanal",
+                "clutch",
+                "festa",
+                "corrente"
+            ]
         }
     ]
 }
