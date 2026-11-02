@@ -43,7 +43,8 @@
                 "festa",
                 "corrente"
             ],
-            "lessons": 5
+            "lessons": 5,
+            "lessonPrice": 57
         },
         {
             "id": "bolsa-002",
@@ -92,7 +93,8 @@
                 "verão",
                 "casual"
             ],
-            "lessons": 3
+            "lessons": 3,
+            "lessonPrice": 47
         },
         {
             "id": "bolsa-003",
@@ -139,7 +141,8 @@
                 "envelope",
                 "noite"
             ],
-            "lessons": 4
+            "lessons": 4,
+            "lessonPrice": 47
         },
         {
             "id": "bolsa-004",
@@ -266,7 +269,8 @@
                 "dia a dia"
             ],
             "lessons": 3,
-            "material": "Fio de Malha Premium"
+            "material": "Fio de Malha Premium",
+            "lessonPrice": 37
         },
         {
             "id": "bolsa-007",
@@ -306,7 +310,41 @@
                 "corrente"
             ],
             "lessons": 6,
-            "material": "Fio de Malha Premium com barbante ou fio de viscose"
+            "material": "Fio de Malha Premium com barbante ou fio de viscose",
+            "lessonPrice": 37
+        },
+        {
+            "id": "bolsa-008",
+            "slug": "bag-rosalia",
+            "name": "Bag Rosália",
+            "description": "Bolsa em formato de rosa, de crochê moderno em fio náutico premium, com alça de mão em metal e alça de ombro removível. Detalhes em metal dourado ou prata. Cabe celular, chaves, maquiagem e documentos.",
+            "price": 499.99,
+            "category": "bolsa-fashionista",
+            "material": "Fio Náutico Premium",
+            "colors": [
+                "dourado",
+                "nude"
+            ],
+            "images": [
+                "bag-rosalia-dourado.jpg",
+                "bag-rosalia-nude.jpg"
+            ],
+            "dimensions": {
+                "width": 0,
+                "height": 0,
+                "depth": 0
+            },
+            "inStock": true,
+            "featured": true,
+            "tags": [
+                "artesanal",
+                "rosa",
+                "festa",
+                "elegante"
+            ],
+            "lessons": 6,
+            "lessonPrice": 47,
+            "lessonUrl": "https://pay.hotmart.com/E104901037Q"
         }
     ]
 }

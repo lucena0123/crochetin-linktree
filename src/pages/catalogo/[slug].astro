@@ -154,7 +154,7 @@ const jsonLd = {
         {product.lessonUrl && (
           <a class="pd-option" href={withHotmartSource(product.lessonUrl, `produto_${product.slug}`)} target="_blank" rel="noopener">
             <span class="pd-option-name">Só esta aula</span>
-            <span class="pd-option-price">R$ 37</span>
+            <span class="pd-option-price">{product.lessonPrice ? brl(product.lessonPrice).replace(",00", "") : ""}</span>
           </a>
         )}
         <a class="pd-option is-main" href="/treinamento">
