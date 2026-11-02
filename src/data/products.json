@@ -442,12 +442,13 @@
             "category": "bolsa-classica",
             "material": "Fio de Malha e Viscose Premium",
             "colors": [
+                "menta",
                 "preta",
                 "caramelo",
                 "offwhite"
             ],
             "images": [
-                "bag-lila.jpg"
+                "bag-lila-menta.jpg"
             ],
             "dimensions": {
                 "width": 27,
