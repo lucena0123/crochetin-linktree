@@ -6,7 +6,9 @@
  * o marcador das listas e a faixa que divide a página.
  * Imagens: as da página de vendas atual no Hotmart Pages (próprias da Crochetin).
  * class="pending" marca, se reaparecer, conteúdo que ainda aguarda material da Crochetin.
- * Upgrade (R$ 160) é pedido pelo WhatsApp: a Marília confere a compra da aula avulsa e envia o link.
+ * Upgrade é pedido pelo WhatsApp: a Marília confere qual aula avulsa a cliente comprou e cobra
+ * R$ 197 menos o valor pago. Aulas na Hotmart (02/11/2026): Tati e Emy R$ 37, Pochete Copa R$ 39,
+ * Ariel, Atena e Rosália R$ 47, Mari R$ 57 → upgrade de R$ 140 a R$ 160.
  */
 import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -78,7 +80,7 @@ const faq = [
 ];
 const upgradeWhatsapp =
   'https://wa.me/5582996927755?text=' +
-  encodeURIComponent('Olá! Já comprei uma aula avulsa da Crochetin e quero fazer o upgrade para o Treinamento completo por R$ 160.');
+  encodeURIComponent('Olá! Já comprei uma aula avulsa da Crochetin e quero fazer o upgrade para o Treinamento completo, descontando o valor da aula.');
 const wordmark = 'Crochetin'.split('');
 const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
 ---
@@ -216,16 +218,18 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
         <article class="plan plan-1 reveal">
           <div class="plan-top">
             <h3>Aula avulsa</h3>
+            <p class="plan-from">a partir de</p>
             <p class="plan-price">R$ 37</p>
-            <ul role="list"><li>Uma bolsa à sua escolha</li><li>Receita em e-book</li></ul>
+            <ul role="list"><li>Uma bolsa à sua escolha</li><li>Receita em e-book</li><li>O preço varia conforme a bolsa</li></ul>
           </div>
           <a class="plan-btn" href="/aulas-avulsas">Ver as aulas avulsas</a>
         </article>
         <article class="plan plan-2 reveal">
           <div class="plan-top">
             <h3>Já tem uma aula</h3>
-            <p class="plan-price">R$ 160</p>
-            <ul role="list"><li>O Treinamento completo pagando só a diferença</li><li>Para quem já comprou uma aula avulsa</li></ul>
+            <p class="plan-from">a partir de</p>
+            <p class="plan-price">R$ 140</p>
+            <ul role="list"><li>O Treinamento completo descontando o valor da aula que você já comprou</li><li>Para quem já comprou uma aula avulsa</li></ul>
           </div>
           <a class="plan-btn" href={upgradeWhatsapp} target="_blank" rel="noopener">Pedir pelo WhatsApp</a>
         </article>
@@ -517,6 +521,7 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
   .plan h3 { font-size: var(--t-m); font-weight: 700; margin-bottom: 8px; }
   .plan-price { font: 700 var(--t-l)/1 var(--font-serif) !important; margin-bottom: 8px; }
   .plan-note { margin-bottom: 18px; font-weight: 600; }
+  .plan-from { font-size: var(--t-s) !important; font-weight: 600; margin-bottom: 2px; }
   .plan ul { margin-top: 18px; display: grid; gap: 6px; }
   .plan-btn { display: flex; align-items: center; min-height: 64px; padding: 0 28px; font-weight: 600; text-decoration: none; margin: 0; transition: background-color .25s ease; }
   .plan-1 .plan-btn { background: #ddd2c2; }
