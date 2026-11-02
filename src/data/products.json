@@ -4,8 +4,8 @@
             "id": "bolsa-001",
             "slug": "bag-mari",
             "name": "Bag Mari",
-            "description": "Totalmente feita à mão\nDesign sofisticado\nConfeccionada com a técnica do crochê moderno\nMaterial da estrutura da bolsa: fio náutico premium\nDetalhes em metal dourado ou prateado\nCrochê exclusivo na alça de ombro\nTamanho perfeito para o essencial: celular, chaves e documentos\nAlça removível",
-            "price": 279.9,
+            "description": "Bolsa de crochê moderno em fio náutico premium, com design sofisticado e detalhes em metal dourado ou prateado. A alça de ombro em crochê é removível, e o tamanho é o certo para o essencial: celular, chaves e documentos.",
+            "price": 349.99,
             "lessonUrl": "https://pay.hotmart.com/R102977095X",
             "category": "bolsa-fashionista",
             "images": [
@@ -42,14 +42,16 @@
                 "elegante",
                 "festa",
                 "corrente"
-            ]
+            ],
+            "lessons": 5,
+            "lessonPrice": 57
         },
         {
             "id": "bolsa-002",
             "slug": "bag-ariel",
             "name": "Bag Ariel",
-            "description": "Bolsa vibrante em turquesa com pingente decorativo. Fio grosso e textura marcante, ideal para looks despojados.",
-            "price": 149.9,
+            "description": "Bolsa com pingente decorativo, fio grosso e textura marcante. Ideal para looks despojados.",
+            "price": 149.99,
             "lessonUrl": "https://pay.hotmart.com/C102900214P",
             "category": "casual",
             "images": [
@@ -90,14 +92,16 @@
                 "colorida",
                 "verão",
                 "casual"
-            ]
+            ],
+            "lessons": 3,
+            "lessonPrice": 47
         },
         {
             "id": "bolsa-003",
             "slug": "bag-atena",
             "name": "Bag Atena",
-            "description": "Bolsa estilo envelope em tom vinho elegante. Alça de crochê trançada e design moderno, perfeita para eventos noturnos.",
-            "price": 259.9,
+            "description": "Bolsa estilo envelope, com alça de crochê trançada e design moderno. Perfeita para eventos à noite.",
+            "price": 259.99,
             "lessonUrl": "https://pay.hotmart.com/G102895388T",
             "category": "bolsa-fashionista",
             "images": [
@@ -136,14 +140,16 @@
                 "elegante",
                 "envelope",
                 "noite"
-            ]
+            ],
+            "lessons": 4,
+            "lessonPrice": 47
         },
         {
             "id": "bolsa-004",
             "slug": "bag-lieta",
-            "name": "Bag Lieta",
-            "description": "Bolsa em tom caramelo com trançado sofisticado e alça de mão. Acabamento premium com pingente e fecho dourado.",
-            "price": 279.9,
+            "name": "Bag Liêta",
+            "description": "Bolsa com trançado sofisticado e alça de mão. Acabamento premium, com pingente e fecho dourado.",
+            "price": 299.99,
             "category": "bolsa-casual",
             "images": [
                 "bag-lieta-areia.jpg",
@@ -183,14 +189,15 @@
                 "trançada",
                 "premium",
                 "sofisticada"
-            ]
+            ],
+            "lessons": 5
         },
         {
             "id": "bolsa-005",
             "slug": "bag-cherry",
             "name": "Bag Cherry",
-            "description": "Bolsa clássica em terracota com textura uniforme e alça de mão. Design atemporal e versátil para o dia a dia.",
-            "price": 299.9,
+            "description": "Bolsa clássica de textura uniforme e alça de mão. Design atemporal e versátil para o dia a dia.",
+            "price": 349.99,
             "category": "bolsa-classica",
             "images": [
                 "bag-cherry-nude.jpg",
@@ -224,56 +231,237 @@
                 "clássica",
                 "versátil",
                 "trabalho"
-            ]
+            ],
+            "lessons": 4
         },
         {
             "id": "bolsa-006",
             "slug": "bag-tati",
             "name": "Bag Tati",
-            "description": "Bolsa artesanal em crochê — disponível como aula avulsa",
-            "price": 0,
+            "description": "Bolsa de ombro com textura canelada e alça trançada presa por mosquetões. Leve e prática para o dia a dia.",
+            "price": 80.0,
             "lessonUrl": "https://pay.hotmart.com/M103664998T?bid=1767571051716",
             "category": "bolsa-casual",
             "images": [
-                "bag-tati.png"
+                "bag-tati-areia.png"
             ],
-            "colors": [],
-            "material": "Crochê",
+            "colors": [
+                "areia",
+                "preta",
+                "caramelo",
+                "palha",
+                "offwhite",
+                "cafe",
+                "vinho",
+                "pink"
+            ],
             "dimensions": {
-                "width": 0,
-                "height": 0,
+                "width": 24,
+                "height": 15,
                 "depth": 0
             },
             "benefits": [],
-            "inStock": false,
+            "inStock": true,
             "featured": false,
             "tags": [
-                "aula-avulsa"
-            ]
+                "artesanal",
+                "casual",
+                "dia a dia"
+            ],
+            "lessons": 3,
+            "material": "Fio de Malha Premium",
+            "lessonPrice": 37
         },
         {
             "id": "bolsa-007",
             "slug": "bag-emy",
             "name": "Bag Emy",
-            "description": "Bolsa artesanal em crochê — disponível como aula avulsa",
-            "price": 0,
+            "description": "Bolsa com aba arredondada, textura canelada, pingente de franjas e alça de corrente dourada. Disponível em cor única ou nas versões Colors, com listras coloridas.",
+            "price": 179.99,
             "lessonUrl": "https://pay.hotmart.com/N103794966L?bid=1768094794890",
             "category": "bolsa-casual",
             "images": [
-                "bag-emy.png"
+                "bag-emy-colorsvibrante.png",
+                "bag-emy-colorsterra.jpg"
             ],
-            "colors": [],
-            "material": "Crochê",
+            "colors": [
+                "colorsvibrante",
+                "colorsterra",
+                "areia",
+                "preta",
+                "caramelo",
+                "palha",
+                "offwhite",
+                "cafe",
+                "vinho",
+                "pink"
+            ],
             "dimensions": {
-                "width": 0,
-                "height": 0,
+                "width": 24,
+                "height": 15,
                 "depth": 0
             },
             "benefits": [],
-            "inStock": false,
+            "inStock": true,
             "featured": false,
             "tags": [
-                "aula-avulsa"
+                "artesanal",
+                "colorida",
+                "corrente"
+            ],
+            "lessons": 6,
+            "material": "Fio de Malha Premium com barbante ou fio de viscose",
+            "lessonPrice": 37
+        },
+        {
+            "id": "bolsa-008",
+            "slug": "bag-rosalia",
+            "name": "Bag Rosália",
+            "description": "Bolsa em formato de rosa, de crochê moderno em fio náutico premium, com alça de mão em metal e alça de ombro removível. Detalhes em metal dourado ou prata. Cabe celular, chaves, maquiagem e documentos.",
+            "price": 499.99,
+            "category": "bolsa-fashionista",
+            "material": "Fio Náutico Premium",
+            "colors": [
+                "dourado",
+                "nude"
+            ],
+            "images": [
+                "bag-rosalia-dourado.jpg",
+                "bag-rosalia-nude.jpg"
+            ],
+            "dimensions": {
+                "width": 23,
+                "height": 23,
+                "depth": 0
+            },
+            "inStock": true,
+            "featured": true,
+            "tags": [
+                "artesanal",
+                "rosa",
+                "festa",
+                "elegante"
+            ],
+            "lessons": 6,
+            "lessonPrice": 47,
+            "lessonUrl": "https://pay.hotmart.com/E104901037Q"
+        },
+        {
+            "id": "bolsa-009",
+            "slug": "bag-pri",
+            "name": "Bag Pri",
+            "description": "Clutch clássica em fio de malha e viscose premium, com detalhes em metal dourado ou prata e alça de corrente regulável e removível. Cabe o essencial: celular, chaves e documentos.",
+            "price": 179.99,
+            "category": "clutch",
+            "material": "Fio de Malha e Viscose Premium",
+            "colors": [
+                "offwhitedourado",
+                "pretadourado"
+            ],
+            "images": [
+                "bag-pri-offwhitedourado.jpg"
+            ],
+            "dimensions": {
+                "width": 25,
+                "height": 13,
+                "depth": 0
+            },
+            "inStock": true,
+            "featured": false,
+            "tags": [
+                "artesanal",
+                "clutch",
+                "festa",
+                "corrente"
+            ]
+        },
+        {
+            "id": "bolsa-010",
+            "slug": "bag-paete",
+            "name": "Bag Paetê",
+            "description": "Clutch coberta de paetês, de crochê moderno em fio náutico premium, com detalhes em metal dourado ou prata e alça de corrente regulável e removível. Cabe o essencial: celular, chaves e documentos.",
+            "price": 179.99,
+            "category": "clutch",
+            "material": "Fio Náutico Premium com paetês",
+            "colors": [
+                "dourado",
+                "prata"
+            ],
+            "images": [
+                "bag-paete.jpg"
+            ],
+            "dimensions": {
+                "width": 20,
+                "height": 14,
+                "depth": 0
+            },
+            "inStock": true,
+            "featured": false,
+            "tags": [
+                "artesanal",
+                "clutch",
+                "festa",
+                "brilho"
+            ]
+        },
+        {
+            "id": "bolsa-011",
+            "slug": "bag-maira",
+            "name": "Bag Maíra",
+            "description": "Bolsa de design clássico, de crochê moderno em fio náutico premium com brilho, detalhes em metal dourado ou prata e alça de crochê removível. Cabe o essencial: celular e chaves.",
+            "price": 179.99,
+            "category": "bolsa-classica",
+            "material": "Fio Náutico Premium com brilho",
+            "colors": [
+                "dourado",
+                "prata"
+            ],
+            "images": [
+                "bag-maira-dourado.jpg"
+            ],
+            "dimensions": {
+                "width": 22,
+                "height": 13,
+                "depth": 0
+            },
+            "inStock": true,
+            "featured": false,
+            "tags": [
+                "artesanal",
+                "brilho",
+                "festa",
+                "clássica"
+            ]
+        },
+        {
+            "id": "bolsa-012",
+            "slug": "bag-lila",
+            "name": "Bag Lila",
+            "description": "Bolsa tiracolo de design clássico, em fio de malha e viscose premium, com detalhes em metal dourado ou prata e alça de corrente regulável e removível. Cabe o essencial: celular, chaves e documentos.",
+            "price": 179.99,
+            "category": "bolsa-classica",
+            "material": "Fio de Malha e Viscose Premium",
+            "colors": [
+                "menta",
+                "preta",
+                "caramelo",
+                "offwhite"
+            ],
+            "images": [
+                "bag-lila-menta.jpg"
+            ],
+            "dimensions": {
+                "width": 27,
+                "height": 22,
+                "depth": 0
+            },
+            "inStock": true,
+            "featured": false,
+            "tags": [
+                "artesanal",
+                "tiracolo",
+                "corrente",
+                "dia a dia"
             ]
         }
     ]

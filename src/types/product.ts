@@ -11,6 +11,10 @@ export interface Product {
     description: string;
     price: number;
     lessonUrl?: string;
+    /** Número de aulas desta bolsa no Treinamento */
+    lessons?: number;
+    /** Preço da aula avulsa na Hotmart (R$) */
+    lessonPrice?: number;
     category: string;
     images: string[];
     colors: string[];

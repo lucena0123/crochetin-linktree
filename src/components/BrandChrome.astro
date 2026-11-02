@@ -1,0 +1,36 @@
+---
+/**
+ * Topo e rodapé no estilo da marca (v2), usados no catálogo e nas páginas de bolsa.
+ * <BrandChrome part="top" current="catalogo" />  ·  <BrandChrome part="foot" />
+ */
+interface Props {
+  part: 'top' | 'foot';
+  current?: 'catalogo' | 'treinamento';
+}
+const { part, current } = Astro.props;
+const whatsapp = 'https://wa.me/5582996927755';
+---
+{part === 'top' ? (
+  <header class="b-top">
+    <a class="b-top-home" href="/" aria-label="Crochetin, página inicial">
+      <img src="/images/logo-crochetin.png" alt="" width="40" height="40" />
+      <span>Crochetin</span>
+    </a>
+    <nav aria-label="Principal">
+      <a href="/catalogo" aria-current={current === 'catalogo' ? 'page' : undefined}>Bolsas prontas</a>
+      <a href="/treinamento" aria-current={current === 'treinamento' ? 'page' : undefined}>Treinamento</a>
+    </nav>
+  </header>
+) : (
+  <footer class="b-foot">
+    <div>
+      <nav aria-label="Rodapé">
+        <a href="/catalogo">Bolsas prontas</a>
+        <a href="/treinamento">Treinamento</a>
+        <a href="https://instagram.com/crochetinatelie" target="_blank" rel="noopener">Instagram</a>
+        <a href={whatsapp} target="_blank" rel="noopener">WhatsApp</a>
+      </nav>
+    </div>
+    <p>Crochetin · CNPJ 61.929.288/0001-78<br />Maceió/AL · <a href="mailto:crochetin@hotmail.com">crochetin@hotmail.com</a></p>
+  </footer>
+)}
