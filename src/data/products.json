@@ -5,7 +5,7 @@
             "slug": "bag-mari",
             "name": "Bag Mari",
             "description": "Bolsa de crochê moderno em fio náutico premium, com design sofisticado e detalhes em metal dourado ou prateado. A alça de ombro em crochê é removível, e o tamanho é o certo para o essencial: celular, chaves e documentos.",
-            "price": 279.9,
+            "price": 349.99,
             "lessonUrl": "https://pay.hotmart.com/R102977095X",
             "category": "bolsa-fashionista",
             "images": [
@@ -50,7 +50,7 @@
             "slug": "bag-ariel",
             "name": "Bag Ariel",
             "description": "Bolsa com pingente decorativo, fio grosso e textura marcante. Ideal para looks despojados.",
-            "price": 149.9,
+            "price": 149.99,
             "lessonUrl": "https://pay.hotmart.com/C102900214P",
             "category": "casual",
             "images": [
@@ -99,7 +99,7 @@
             "slug": "bag-atena",
             "name": "Bag Atena",
             "description": "Bolsa estilo envelope, com alça de crochê trançada e design moderno. Perfeita para eventos à noite.",
-            "price": 259.9,
+            "price": 259.99,
             "lessonUrl": "https://pay.hotmart.com/G102895388T",
             "category": "bolsa-fashionista",
             "images": [
@@ -146,7 +146,7 @@
             "slug": "bag-lieta",
             "name": "Bag Liêta",
             "description": "Bolsa com trançado sofisticado e alça de mão. Acabamento premium, com pingente e fecho dourado.",
-            "price": 279.9,
+            "price": 299.99,
             "category": "bolsa-casual",
             "images": [
                 "bag-lieta-areia.jpg",
@@ -194,7 +194,7 @@
             "slug": "bag-cherry",
             "name": "Bag Cherry",
             "description": "Bolsa clássica de textura uniforme e alça de mão. Design atemporal e versátil para o dia a dia.",
-            "price": 299.9,
+            "price": 349.99,
             "category": "bolsa-classica",
             "images": [
                 "bag-cherry-nude.jpg",
@@ -236,7 +236,7 @@
             "slug": "bag-tati",
             "name": "Bag Tati",
             "description": "Bolsa artesanal em crochê — disponível como aula avulsa",
-            "price": 0,
+            "price": 80.0,
             "lessonUrl": "https://pay.hotmart.com/M103664998T?bid=1767571051716",
             "category": "bolsa-casual",
             "images": [
@@ -262,7 +262,7 @@
             "slug": "bag-emy",
             "name": "Bag Emy",
             "description": "Bolsa artesanal em crochê — disponível como aula avulsa",
-            "price": 0,
+            "price": 179.99,
             "lessonUrl": "https://pay.hotmart.com/N103794966L?bid=1768094794890",
             "category": "bolsa-casual",
             "images": [
