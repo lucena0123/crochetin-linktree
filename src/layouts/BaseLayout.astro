@@ -24,22 +24,6 @@ const imageUrl = image
   : new URL('/images/logo-crochetin.png', siteUrl).toString();
 const analyticsId = config.analytics?.googleAnalyticsId;
 const shouldLoadAnalytics = Boolean(config.analytics?.enabled && analyticsId && analyticsId !== 'G-XXXXXXXXXX');
-const analyticsScript = shouldLoadAnalytics
-  ? `window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${analyticsId}', { anonymize_ip: true });
-document.addEventListener('click', function (e) {
-  var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-  if (!a) return;
-  var href = a.href || '';
-  var name = /wa\\.me|whatsapp\\.com/.test(href) ? 'click_whatsapp'
-    : /hotmart\\.(com|host)/.test(href) ? 'click_hotmart'
-    : /instagram\\.com/.test(href) ? 'click_instagram' : null;
-  if (name) gtag('event', name, { link_url: href.split('?')[0], page_path: location.pathname, transport_type: 'beacon' });
-}, true);`
-  : '';
-
 const metaPixelId = config.analytics?.metaPixelId;
 const shouldLoadPixel = Boolean(config.analytics?.enabled && metaPixelId && metaPixelId !== 'SEU_PIXEL_ID_AQUI');
 
@@ -82,33 +66,52 @@ const shouldLoadPixel = Boolean(config.analytics?.enabled && metaPixelId && meta
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="/images/logo-crochetin.png">
 
-  {shouldLoadAnalytics && (
-    <>
-      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${analyticsId}`}></script>
-      <script is:inline set:html={analyticsScript}></script>
-    </>
+  {(shouldLoadAnalytics || shouldLoadPixel) && (
+    <script is:inline set:html={`
+      /* Consentimento (LGPD): GA4 e Pixel só carregam depois do "Aceitar".
+         Até lá, gtag() e fbq() só guardam os eventos numa fila. */
+      (function (w, d) {
+        var GA = ${JSON.stringify(shouldLoadAnalytics ? analyticsId : '')};
+        var PX = ${JSON.stringify(shouldLoadPixel ? metaPixelId : '')};
+        var KEY = 'crochetin_consent';
+        if (GA) {
+          w.dataLayer = w.dataLayer || [];
+          w.gtag = function () { w.dataLayer.push(arguments); };
+          w.gtag('js', new Date());
+          w.gtag('config', GA, { anonymize_ip: true });
+        }
+        if (PX && !w.fbq) {
+          var n = w.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+          if (!w._fbq) w._fbq = n; n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+          w.fbq('init', PX);
+          w.fbq('track', 'PageView');
+        }
+        function add(src) { var t = d.createElement('script'); t.async = true; t.src = src; d.head.appendChild(t); }
+        var loaded = false;
+        w.crochetinLoadTracking = function () {
+          if (loaded) return; loaded = true;
+          if (GA) add('https://www.googletagmanager.com/gtag/js?id=' + GA);
+          if (PX) add('https://connect.facebook.net/en_US/fbevents.js');
+        };
+        var choice = null;
+        try { choice = w.localStorage.getItem(KEY); } catch (e) {}
+        w.crochetinConsent = choice;
+        if (choice === 'granted') w.crochetinLoadTracking();
+      })(window, document);
+    `} />
   )}
-
-  {shouldLoadPixel && (
-    <>
-      <script is:inline set:html={`
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '${metaPixelId}');
-        fbq('track', 'PageView');
-      `} />
-      <noscript>
-        <img height="1" width="1" style="display:none"
-          src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
-        />
-      </noscript>
-    </>
+  {shouldLoadAnalytics && (
+    <script is:inline set:html={`
+      document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+        if (!a || typeof gtag !== 'function') return;
+        var href = a.href || '';
+        var name = /wa\\.me|whatsapp\\.com/.test(href) ? 'click_whatsapp'
+          : /hotmart\\.(com|host)/.test(href) ? 'click_hotmart'
+          : /instagram\\.com/.test(href) ? 'click_instagram' : null;
+        if (name) gtag('event', name, { link_url: href.split('?')[0], page_path: location.pathname, transport_type: 'beacon' });
+      }, true);
+    `} />
   )}
 
   <slot name="head" />
@@ -117,5 +120,52 @@ const shouldLoadPixel = Boolean(config.analytics?.enabled && metaPixelId && meta
   <div class={`container ${wide ? 'wide' : ''}`}>
     <slot />
   </div>
+  {(shouldLoadAnalytics || shouldLoadPixel) && (
+    <>
+      <div class="cookie-bar" id="cookie-bar" role="region" aria-label="Aviso de cookies" hidden>
+        <p>Usamos cookies do Google Analytics e da Meta para medir as visitas e mostrar anúncios. Eles só são ativados se você aceitar. <a href="/privacidade">Política de privacidade</a></p>
+        <div class="cookie-actions">
+          <button type="button" class="cookie-no" data-consent="denied">Recusar</button>
+          <button type="button" class="cookie-yes" data-consent="granted">Aceitar</button>
+        </div>
+      </div>
+      <script is:inline>
+        (function () {
+          var bar = document.getElementById('cookie-bar');
+          if (!bar) return;
+          function show() { bar.hidden = false; }
+          if (window.crochetinConsent !== 'granted' && window.crochetinConsent !== 'denied') show();
+          bar.addEventListener('click', function (e) {
+            var b = e.target.closest('[data-consent]');
+            if (!b) return;
+            var v = b.getAttribute('data-consent');
+            try { localStorage.setItem('crochetin_consent', v); } catch (err) {}
+            window.crochetinConsent = v;
+            bar.hidden = true;
+            if (v === 'granted' && window.crochetinLoadTracking) window.crochetinLoadTracking();
+          });
+          document.addEventListener('click', function (e) {
+            var a = e.target.closest && e.target.closest('[data-cookie-prefs]');
+            if (!a) return;
+            e.preventDefault();
+            show();
+            var first = bar.querySelector('button');
+            if (first) first.focus();
+          });
+        })();
+      </script>
+    </>
+  )}
 </body>
+<style is:global>
+  .cookie-bar { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 50; max-width: 720px; margin: 0 auto; background: #3e2f25; color: #f4efe7; padding: 16px 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; font: 15px/1.5 var(--font-sans); }
+  .cookie-bar[hidden] { display: none; }
+  .cookie-bar p { margin: 0; flex: 1 1 300px; }
+  .cookie-bar a { color: #f4efe7; text-decoration: underline; text-underline-offset: 3px; }
+  .cookie-actions { display: flex; gap: 8px; }
+  .cookie-bar button { min-height: 44px; padding: 0 20px; border: 0; cursor: pointer; font: 600 15px/1 var(--font-sans); border-radius: 999px 999px 0 0; }
+  .cookie-no { background: transparent; color: #f4efe7; outline: 1px solid rgba(244, 239, 231, .45); outline-offset: -1px; }
+  .cookie-yes { background: #c09a6b; color: #3e2f25; }
+  .cookie-bar button:focus-visible, .cookie-bar a:focus-visible { outline: 3px solid #f4efe7; outline-offset: 2px; }
+</style>
 </html>

@@ -1,0 +1,68 @@
+---
+/**
+ * Política de privacidade (LGPD). Texto de referência preparado com apoio de IA;
+ * não é parecer jurídico — revisar com profissional quando possível.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BrandChrome from '../components/BrandChrome.astro';
+import '../styles/brand.css';
+const updated = '07/11/2026';
+---
+
+<BaseLayout
+  title="Política de privacidade | Crochetin"
+  description="Como a Crochetin trata os dados de quem visita o site, fala pelo WhatsApp ou compra bolsas e cursos."
+  wide
+>
+  <main class="b pv">
+    <BrandChrome part="top" />
+
+    <article class="pv-body">
+      <h1>Política de privacidade</h1>
+      <p class="pv-date">Atualizada em {updated}</p>
+
+      <h2>Quem somos</h2>
+      <p>A Crochetin (CNPJ 61.929.288/0001-78, Maceió/AL) é responsável pelos dados tratados neste site, crochetin.com.br. Para qualquer assunto sobre os seus dados, escreva para <a href="mailto:crochetin@hotmail.com">crochetin@hotmail.com</a>.</p>
+
+      <h2>Quais dados tratamos</h2>
+      <ul>
+        <li><strong>Navegação no site, só se você aceitar os cookies:</strong> o Google Analytics registra páginas visitadas, cliques, tipo de aparelho e cidade aproximada, com o endereço IP anonimizado. O Pixel da Meta registra visitas e interesse em produtos, para medir os anúncios e mostrá-los a quem já conhece a Crochetin.</li>
+        <li><strong>Conversas pelo WhatsApp:</strong> nome, número e o que você escrever, para responder dúvidas e combinar pedidos.</li>
+        <li><strong>Pedidos de bolsas:</strong> nome, endereço de entrega e contato, para fazer e enviar a bolsa. O pagamento é feito por Pix ou link de cartão.</li>
+        <li><strong>Cursos e aulas:</strong> a compra é feita na Hotmart, que trata os seus dados de pagamento e de acesso conforme a política dela.</li>
+        <li><strong>Materiais:</strong> a compra é feita na Shopee, conforme a política dela. A Crochetin recebe uma comissão de afiliada e não recebe os seus dados de pagamento.</li>
+      </ul>
+
+      <h2>Para que usamos</h2>
+      <p>Para responder você, produzir e entregar os pedidos, dar acesso aos cursos, entender como o site é usado e anunciar para pessoas interessadas. Não vendemos os seus dados.</p>
+
+      <h2>Com quem compartilhamos</h2>
+      <p>Apenas com os serviços necessários para isso: Google (Analytics), Meta (Pixel e WhatsApp), Hotmart (cursos), Shopee (materiais) e os Correios ou a transportadora que leva o seu pedido.</p>
+
+      <h2>Cookies</h2>
+      <p>Os cookies de medição (<code>_ga</code>, <code>_ga_*</code>) e de anúncios (<code>_fbp</code>) só são ativados depois que você clica em "Aceitar". A sua escolha fica salva no seu navegador. Você pode mudar de ideia a qualquer momento em <a href="#" data-cookie-prefs>Preferências de cookies</a>.</p>
+
+      <h2>Por quanto tempo</h2>
+      <p>Guardamos os dados enquanto forem necessários para o atendimento, a entrega e as obrigações legais (por exemplo, fiscais). Os dados de navegação seguem os prazos do Google Analytics e da Meta.</p>
+
+      <h2>Seus direitos</h2>
+      <p>Pela Lei Geral de Proteção de Dados (LGPD), você pode pedir para confirmar se tratamos os seus dados, acessá-los, corrigi-los, apagá-los, saber com quem foram compartilhados e retirar o consentimento. Basta escrever para <a href="mailto:crochetin@hotmail.com">crochetin@hotmail.com</a>.</p>
+
+      <h2>Mudanças</h2>
+      <p>Se esta política mudar, a data no topo da página é atualizada.</p>
+    </article>
+
+    <BrandChrome part="foot" />
+  </main>
+</BaseLayout>
+
+<style>
+  .pv-body { max-width: 68ch; padding: clamp(24px, 4vw, 56px) 0 0; }
+  .pv-body h1 { margin-bottom: 8px; }
+  .pv-date { color: var(--muted); font-size: var(--t-s); margin-bottom: 40px !important; }
+  .pv-body h2 { font-size: var(--t-m); font-family: var(--font-serif); margin: 36px 0 10px; }
+  .pv-body p, .pv-body li { font-size: 17px; }
+  .pv-body ul { padding-left: 20px; display: grid; gap: 12px; }
+  .pv-body a { text-underline-offset: 3px; }
+  .pv-body code { font: inherit; font-weight: 600; }
+</style>
