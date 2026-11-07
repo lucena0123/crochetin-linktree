@@ -1,74 +1,126 @@
 ---
+/**
+ * Página inicial (v2, estilo da marca). É onde o link da bio (/ig) leva,
+ * então é pensada primeiro para o celular: o Treinamento em destaque e os
+ * outros caminhos logo abaixo.
+ */
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import BrandChrome from '../components/BrandChrome.astro';
 import LeadCapture from '../components/LeadCapture.astro';
 import config from '../data/config.json';
+import marilia from '../assets/treinamento/marilia-bolsas.png';
+import mariliaVerde from '../assets/treinamento/marilia-bolsa-verde.png';
+import lieta from '../assets/products/bag-lieta-caramelo.jpg';
+import productsData from '../data/products.json';
+import '../styles/brand.css';
 
-const { profile, links, social } = config;
-import { withHotmartSource } from '../utils/tracking';
+const { profile, social } = config;
+const bagCount = productsData.products.filter((p) => p.inStock !== false).length;
+
+const paths = [
+  { title: 'Bolsas prontas', text: `${bagCount} modelos feitos à mão, para pedir pelo WhatsApp`, href: '/catalogo', img: lieta, fit: 'cover', tone: '#e8dfd2' },
+  { title: 'Aulas avulsas', text: 'Aprenda uma bolsa por vez, a partir de R$ 37', href: '/aulas-avulsas', img: mariliaVerde, fit: 'contain', tone: '#c09a6b' },
+  { title: 'Materiais', text: 'Fios, alças e acessórios para as suas bolsas', href: '/materiais', img: null, fit: 'cover', tone: '#d9c7ad' },
+];
 ---
 
 <BaseLayout
-  title="Crochetin - Links Oficiais | @crochetinatelie"
+  title="Crochetin | Bolsas de crochê, Treinamento e aulas"
   description={profile.bio}
   image={profile.image}
+  wide
 >
-  <!-- Profile Section -->
-  <div class="profile-section">
-    <div class="profile-image-wrapper">
-      <img src={profile.image} alt={`Foto de perfil de ${profile.name}`} class="profile-image" loading="eager">
+  <main class="b home">
+    <header class="home-profile">
+      <img class="home-logo" src={profile.image} alt="Crochetin" width="88" height="88" />
+      <h1>{profile.name}</h1>
+      <p>{profile.bio}</p>
+    </header>
+
+    <LeadCapture />
+
+    <a class="home-feature" href="/treinamento">
+      <div class="home-feature-text">
+        <h2>Treinamento Crochetin</h2>
+        <p>9 bolsas de alto padrão para fazer e vender, em 45 aulas.</p>
+        <p class="home-feature-price">R$ 197 ou 12x de R$ 20,37</p>
+        <span class="b-arch-btn">Conhecer o Treinamento</span>
+      </div>
+      <div class="home-feature-photo" aria-hidden="true">
+        <Image src={marilia} alt="" widths={[360, 600]} sizes="(max-width: 700px) 60vw, 300px" loading="eager" />
+      </div>
+    </a>
+
+    <ul class="home-paths" role="list">
+      {paths.map((p) => (
+        <li>
+          <a class="home-path" href={p.href}>
+            <span class="home-path-arch" style={`--tone:${p.tone}`} aria-hidden="true">
+              {p.img
+                ? <Image src={p.img} alt="" widths={[160, 240]} sizes="96px" class={`is-${p.fit}`} />
+                : <img src="/images/materiais.png" alt="" width="96" height="96" class="is-top" loading="lazy" />}
+            </span>
+            <span class="home-path-text">
+              <span class="home-path-title">{p.title}</span>
+              <span class="home-path-sub">{p.text}</span>
+            </span>
+            <span class="home-path-go" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="home-social">
+      <a href={social.instagram} target="_blank" rel="noopener">Instagram @crochetinatelie</a>
+      <a href={social.whatsapp} target="_blank" rel="noopener">Falar no WhatsApp</a>
     </div>
-    <h1 class="profile-name">{profile.name}</h1>
-    <p class="profile-bio">{profile.bio}</p>
-  </div>
 
-  <!-- Lead Capture -->
-  <LeadCapture />
-
-  <!-- Links Section -->
-  <div class="links-section">
-    {links.map((link) => (
-      <a 
-        href={withHotmartSource(link.url, 'home')} 
-        class="link-card"
-        target={link.internal ? '_self' : '_blank'}
-        rel={link.internal ? '' : 'noopener noreferrer'}
-      >
-        <div class="link-icon">
-          {link.isImage ? (
-            <img src={link.icon} alt={link.title} loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
-          ) : (
-            <span>{link.icon}</span>
-          )}
-        </div>
-        
-        <div class="link-content">
-          <div class="link-title">{link.title}</div>
-          <div class="link-description">{link.description}</div>
-        </div>
-        
-        <svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 5l7 7-7 7"/>
-        </svg>
-      </a>
-    ))}
-  </div>
-
-  <!-- Social Media Icons -->
-  <div class="social-section">
-    <a href={social.instagram} class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-      </svg>
-    </a>
-    <a href={social.whatsapp} class="social-icon" aria-label="WhatsApp" target="_blank" rel="noopener noreferrer">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-      </svg>
-    </a>
-  </div>
-
-  <!-- Footer -->
-  <div class="footer">
-    <p>Adquira já o seu treinamento!</p>
-  </div>
+    <BrandChrome part="foot" />
+  </main>
 </BaseLayout>
+
+<style>
+  .home { max-width: 640px; margin: 0 auto; }
+  .home-profile { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 40px 0 28px; }
+  .home-logo { width: 88px; height: 88px; border-radius: 999px; }
+  .home-profile h1 { font-size: clamp(28px, 6vw, 36px); }
+  .home-profile p { max-width: 34ch; color: var(--muted); }
+
+  .home-feature { display: grid; grid-template-columns: 1fr 42%; align-items: end; background: var(--accent); text-decoration: none; overflow: hidden; border-radius: 180px 180px 0 0; padding-top: 28px; transition: background-color .25s ease; }
+  .home-feature:hover { background: #c8a477; }
+  .home-feature-text { padding: 48px 0 28px 28px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .home-feature-text h2 { font-size: clamp(28px, 5.4vw, 38px); }
+  .home-feature-text p { font-size: var(--t-s); }
+  .home-feature-price { font-weight: 700; font-size: 17px !important; }
+  .home-feature-text .b-arch-btn { margin-top: 8px; font-size: var(--t-s); padding: 14px 22px 12px; min-height: 48px; }
+  .home-feature:hover .b-arch-btn { background: #2b2019; transform: translateY(-3px); }
+  .home-feature-photo { align-self: end; height: 100%; display: flex; align-items: flex-end; }
+  .home-feature-photo :global(img) { width: 100%; height: auto; display: block; }
+
+  .home-paths { display: grid; gap: 8px; margin-top: 8px !important; }
+  .home-path { display: grid; grid-template-columns: 96px 1fr auto; gap: 16px; align-items: center; background: var(--sand); padding: 12px 20px 0 12px; text-decoration: none; transition: background-color .25s ease; }
+  .home-path:hover { background: var(--pale); }
+  .home-path-arch { width: 96px; height: 108px; background: var(--tone); border-radius: 999px 999px 0 0; overflow: hidden; display: flex; align-items: flex-end; }
+  .home-path-arch :global(img) { width: 100%; height: 100%; }
+  .home-path-arch :global(img.is-cover) { object-fit: cover; }
+  .home-path-arch :global(img.is-contain) { object-fit: contain; object-position: 50% 100%; }
+  .home-path-arch .is-top { object-fit: cover; object-position: 50% 0%; }
+  .home-path-text { display: flex; flex-direction: column; gap: 4px; padding-bottom: 12px; }
+  .home-path-title { font: 700 var(--t-m)/1.15 var(--font-serif); }
+  .home-path-sub { font-size: var(--t-s); color: var(--muted); }
+  .home-path-go { font-size: 22px; padding-bottom: 12px; transition: transform .3s var(--ease); }
+  .home-path:hover .home-path-go { transform: translateX(4px); }
+
+  .home-social { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 28px; margin-top: 32px; }
+  .home-social a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; font-size: var(--t-s); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 5px; }
+
+  .home :global(.b-foot) { margin-top: 56px; }
+
+  @media (max-width: 420px) {
+    .home-feature { grid-template-columns: 1fr 40%; border-radius: 120px 120px 0 0; }
+    .home-feature-text { padding: 40px 0 22px 20px; }
+    .home-path { grid-template-columns: 80px 1fr auto; gap: 12px; padding-right: 14px; }
+    .home-path-arch { width: 80px; height: 92px; }
+  }
+</style>
