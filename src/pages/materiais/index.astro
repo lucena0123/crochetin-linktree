@@ -1,218 +1,124 @@
 ---
+/**
+ * Materiais (v2, estilo da marca). Os materiais são vendidos na vitrine da
+ * Crochetin na Shopee (afiliação): a página leva para lá e avisa da comissão.
+ * As listas de bolsas por fio saem de products.json (campo material).
+ */
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import config from '../../data/config.json';
+import mariliaAgulhas from '../../assets/materiais-marilia.jpg';
+import BrandChrome from '../../components/BrandChrome.astro';
+import productsData from '../../data/products.json';
+import type { Product } from '../../types/product';
+import '../../styles/brand.css';
 
-const collshpUrl = 'https://collshp.com/crochetin?share_channel_code=1&view=storefront';
+const shopeeUrl = 'https://collshp.com/crochetin?share_channel_code=1&view=storefront';
+const bags = (productsData.products as Product[]).filter((p) => p.inStock !== false);
+const names = (test: (m: string) => boolean) =>
+  bags.filter((p) => test((p.material || '').toLowerCase())).map((p) => p.name.replace(/^Bag /, ''));
+const nautico = names((m) => m.includes('náutico'));
+const malha = names((m) => m.includes('malha'));
+const list = (arr: string[]) => (arr.length > 1 ? `${arr.slice(0, -1).join(', ')} e ${arr[arr.length - 1]}` : arr[0] ?? '');
 
-const kits = [
-  {
-    icon: '🧶',
-    title: 'Kit Fio Náutico Premium',
-    description: 'Fio resistente e elegante, ideal para as Bags Mari, Atena e Cherry.',
-  },
-  {
-    icon: '🪡',
-    title: 'Kit Fio de Malha',
-    description: 'Macio e versátil, perfeito para as Bags Ariel e Lieta.',
-  },
-  {
-    icon: '🔗',
-    title: 'Acessórios e Alças',
-    description: 'Argolas, correntes e alças em metal dourado ou prata.',
-  },
-  {
-    icon: '🎁',
-    title: 'Kits Completos',
-    description: 'Tudo que você precisa para começar sua bolsa do zero.',
-  },
+const groups = [
+  { title: 'Fio náutico premium', text: `Firme e com brilho, dá estrutura à bolsa. Usado nas bolsas ${list(nautico)}.`, tone: '#c09a6b' },
+  { title: 'Fio de malha premium', text: `Macio e encorpado, com textura marcante. Usado nas bolsas ${list(malha)}.`, tone: '#d9c7ad' },
+  { title: 'Alças e acessórios', text: 'Correntes, argolas, mosquetões, fechos e alças em metal dourado ou prata.', tone: '#a67d4f' },
+  { title: 'Agulhas e kits', text: 'Agulhas de crochê e kits com o necessário para montar uma bolsa.', tone: '#6b5642' },
 ];
 ---
 
 <BaseLayout
-  title="Materiais Crochetin - Kits e Fios para Crochê"
-  description="Encontre os melhores fios e materiais para fazer suas bolsas de crochê com qualidade profissional."
+  title="Materiais | Crochetin"
+  description="Fios, alças e acessórios para fazer bolsas de crochê como as da Crochetin, na vitrine da Crochetin na Shopee."
+  wide
 >
-  <div class="page-header">
-    <a href="/" class="back-button" aria-label="Voltar ao início">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    </a>
-    <div class="header-text">
-      <h1 class="page-title">Materiais Crochetin</h1>
-      <p class="page-subtitle">Fios e kits selecionados por quem entende</p>
-    </div>
-    <div class="header-spacer" aria-hidden="true"></div>
-  </div>
+  <main class="b mt">
+    <BrandChrome part="top" />
 
-  <div class="kits-grid">
-    {kits.map((kit) => (
-      <div class="kit-card">
-        <span class="kit-icon">{kit.icon}</span>
-        <div class="kit-info">
-          <h3 class="kit-title">{kit.title}</h3>
-          <p class="kit-description">{kit.description}</p>
-        </div>
+    <div class="mt-head">
+      <div class="mt-head-text">
+        <h1>Materiais</h1>
+        <p>Os fios, as alças e os acessórios que aparecem nas bolsas da Crochetin, reunidos numa vitrine na Shopee.</p>
+        <a class="b-arch-btn" href={shopeeUrl} target="_blank" rel="noopener" data-track="materiais_topo">Ver a vitrine na Shopee</a>
       </div>
-    ))}
-  </div>
+      <div class="mt-head-photo" aria-hidden="true">
+        <Image src={mariliaAgulhas} alt="" widths={[400, 674]} sizes="(max-width: 700px) 78vw, 40vw" loading="eager" />
+      </div>
+    </div>
 
-  <div class="cta-section">
-    <p class="cta-text">Todos os materiais disponíveis na loja oficial Crochetin</p>
-    <a
-      href={collshpUrl}
-      class="cta-btn"
-      target="_blank"
-      rel="noopener noreferrer"
-      onclick="if(typeof gtag!=='undefined'){gtag('event','click',{event_category:'materiais',event_label:'collshp_cta'})} if(typeof fbq!=='undefined'){fbq('track','ViewContent',{content_name:'Materiais Crochetin'})}"
-    >
-      Ver todos os materiais →
-    </a>
-  </div>
+    <ul class="mt-groups" role="list">
+      {groups.map((g) => (
+        <li class="mt-group reveal">
+          <span class="mt-mark" style={`--tone:${g.tone}`} aria-hidden="true"></span>
+          <h2>{g.title}</h2>
+          <p>{g.text}</p>
+        </li>
+      ))}
+    </ul>
+
+    <section class="mt-end reveal" aria-labelledby="mt-end-h">
+      <h2 id="mt-end-h">Tudo num lugar só</h2>
+      <p>A compra é feita na Shopee, com o pagamento e a entrega da Shopee. A Crochetin recebe uma comissão de afiliada pelas compras feitas pela vitrine, sem custo extra para você.</p>
+      <div class="mt-end-actions">
+        <a class="b-arch-btn is-light" href={shopeeUrl} target="_blank" rel="noopener" data-track="materiais_final">Ver a vitrine na Shopee</a>
+        <a class="mt-learn" href="/treinamento">Quer aprender a fazer as bolsas? Conheça o Treinamento</a>
+      </div>
+    </section>
+
+    <BrandChrome part="foot" />
+  </main>
 </BaseLayout>
 
+<script is:inline>
+  (function () {
+    var root = document.querySelector('.b');
+    if (!root) return;
+    root.querySelectorAll('[data-track]').forEach(function (a) {
+      a.addEventListener('click', function () {
+        if (typeof gtag === 'function') gtag('event', 'click_materiais', { link_location: a.dataset.track });
+      });
+    });
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+    root.classList.add('js');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -10% 0px' });
+    root.querySelectorAll('.reveal').forEach(function (el, i) {
+      el.style.setProperty('--d', (i % 4) * 80 + 'ms');
+      el.classList.add('will-in');
+      io.observe(el);
+    });
+  })();
+</script>
+
 <style>
-  .page-header {
-    display: grid;
-    grid-template-columns: 48px 1fr 48px;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: var(--spacing-xl);
+  .mt-head { display: grid; grid-template-columns: 7fr 5fr; gap: var(--m); align-items: end; padding-top: clamp(16px, 3vw, 40px); }
+  .mt-head-text { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding-bottom: clamp(16px, 4vw, 56px); }
+  .mt-head-text p { max-width: 42ch; }
+  .mt-head-photo { aspect-ratio: 4 / 5; background: var(--deep); border-radius: 999px 999px 0 0; overflow: hidden; }
+  .mt-head-photo :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+
+  .mt-groups { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: clamp(56px, 8vw, 120px) !important; }
+  .mt-group { background: var(--sand); padding: 24px; display: flex; flex-direction: column; gap: 12px; min-height: 260px; }
+  .mt-mark { width: 40px; height: 46px; background: var(--tone); border-radius: 999px 999px 0 0; }
+  .mt-group h2 { font-size: var(--t-m); margin-top: 8px; }
+  .mt-group p { font-size: var(--t-s); }
+
+  .mt-end { margin-top: clamp(72px, 10vw, 160px); background: var(--ink); color: var(--ground); padding: clamp(32px, 5vw, 72px); display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+  .mt-end h2 { color: var(--pale); }
+  .mt-end p { max-width: 56ch; }
+  .mt-end-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; margin-top: 8px; }
+  .mt-learn { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--t-s); font-weight: 600; text-underline-offset: 4px; color: var(--ground) !important; }
+
+  @media (max-width: 1024px) {
+    .mt-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-
-  .back-button {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-beige), var(--color-taupe));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-normal);
-    border: none;
-  }
-
-  .back-button:hover {
-    transform: scale(1.05);
-    box-shadow: var(--shadow-md);
-    color: white;
-    opacity: 0.95;
-  }
-
-  .header-text {
-    text-align: center;
-  }
-
-  .page-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--color-black);
-    margin: 0 0 0.25rem;
-    line-height: 1.2;
-  }
-
-  .page-subtitle {
-    color: var(--text-secondary);
-    font-size: 1.05rem;
-    margin: 0;
-  }
-
-  .kits-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .kit-card {
-    background: white;
-    border-radius: 1.25rem;
-    padding: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .kit-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-
-  .kit-icon {
-    font-size: 2rem;
-    flex-shrink: 0;
-    width: 48px;
-    text-align: center;
-  }
-
-  .kit-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
-  .kit-title {
-    font-family: var(--font-sans);
-    font-size: 1rem;
-    font-weight: 700;
-    color: #3E2F25;
-    margin: 0;
-  }
-
-  .kit-description {
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    margin: 0;
-    line-height: 1.4;
-  }
-
-  .cta-section {
-    background: linear-gradient(135deg, #3E2F25, #5a4236);
-    border-radius: 1.5rem;
-    padding: 1.5rem 1.25rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    box-shadow: var(--shadow-md);
-  }
-
-  .cta-text {
-    font-family: var(--font-sans);
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.95rem;
-    margin: 0;
-  }
-
-  .cta-btn {
-    display: block;
-    background: #be996f;
-    color: white;
-    text-decoration: none;
-    padding: 1rem 2rem;
-    border-radius: 9999px;
-    font-family: var(--font-sans);
-    font-size: 1rem;
-    font-weight: 600;
-    transition: background 0.2s, transform 0.2s;
-    box-shadow: 0 4px 16px rgba(190, 153, 111, 0.35);
-  }
-
-  .cta-btn:hover {
-    background: #a8845a;
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 640px) {
-    .page-header {
-      grid-template-columns: 40px 1fr 40px;
-    }
-
-    .page-title {
-      font-size: 1.5rem;
-    }
+  @media (max-width: 700px) {
+    .mt-head { grid-template-columns: minmax(0, 1fr); }
+    .mt-head-photo { order: -1; width: 78%; justify-self: center; }
+    .mt-head-text .b-arch-btn, .mt-end .b-arch-btn { align-self: stretch; }
+    .mt-groups { grid-template-columns: minmax(0, 1fr); }
+    .mt-group { min-height: 0; }
   }
 </style>
