@@ -128,6 +128,9 @@ const jsonLd = {
           data-wa-base={waBase}
           data-wa-name={product.name}
           data-wa-price={priceBRL}
+          data-id={product.slug}
+          data-value={product.price}
+          data-color={firstColor ? formatColor(firstColor) : ''}
         >Pedir pelo WhatsApp</a>
         <p class="pd-note">A cor, o prazo e o frete você combina direto com a Marília.</p>
         <p class="pd-desc">{product.description}</p>
@@ -216,6 +219,7 @@ const jsonLd = {
           if (cta) {
             var msg = 'Olá! Tenho interesse na *' + cta.dataset.waName + '* (' + cta.dataset.waPrice + '), na cor *' + btn.dataset.label + '*.';
             cta.href = cta.dataset.waBase + encodeURIComponent(msg);
+            cta.dataset.color = btn.dataset.label;
           }
         });
       });
@@ -225,7 +229,12 @@ const jsonLd = {
         root.querySelectorAll('.reveal').forEach(function (el, i) { el.style.setProperty('--d', (i % 4) * 80 + 'ms'); el.classList.add('will-in'); io.observe(el); });
       }
       if (cta) cta.addEventListener('click', function () {
-        if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout');
+        /* Pedido pelo WhatsApp = AddToCart do catálogo da Meta (o site não tem carrinho).
+           content_ids = slug, o mesmo id do catalogo-meta.csv. */
+        if (typeof fbq !== 'undefined') fbq('track', 'AddToCart', {
+          content_ids: [cta.dataset.id], content_type: 'product', content_name: cta.dataset.waName,
+          value: Number(cta.dataset.value), currency: 'BRL', color: cta.dataset.color || undefined
+        });
       });
     })();
   </script>
