@@ -17,6 +17,7 @@ import '../../styles/brand.css';
 const lessons = (productsData.products as Product[]).filter((p) => p.lessonUrl && p.lessonPrice);
 const brl = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).replace(',00', '');
 const minPrice = Math.min(...lessons.map((p) => p.lessonPrice as number));
+const sumPrice = lessons.reduce((t, p) => t + (p.lessonPrice as number), 0);
 const tones = ['#e8dfd2', '#d9c7ad', '#c09a6b'];
 const upgradeWhatsapp =
   'https://wa.me/5582996927755?text=' +
@@ -48,10 +49,11 @@ const upgradeWhatsapp =
                   src={img}
                   alt={`${p.name} de crochê`}
                   widths={[360, 540, 720]}
-                  sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 30vw"
+                  sizes="(max-width: 700px) 46vw, 30vw"
                   loading={i < 3 ? 'eager' : 'lazy'}
                 />
               )}
+              <span class="aa-tag">Aula em vídeo + e-book</span>
             </div>
             <div class="aa-info">
               <h2>Aula {short}</h2>
@@ -70,6 +72,7 @@ const upgradeWhatsapp =
     <section class="aa-more" aria-labelledby="more-h">
       <div class="aa-more-text reveal">
         <h2 id="more-h">Quer aprender todas?</h2>
+        <p class="aa-compare">Comprando as {lessons.length} aulas separadas, você pagaria <strong>{brl(sumPrice)}</strong>. No Treinamento estão essas {lessons.length} e mais {9 - lessons.length} bolsas, por menos.</p>
         <p>O Treinamento Crochetin tem 9 bolsas em 45 aulas, o Método em 3 níveis, os e-books e o módulo de precificação, embalagem e envio.</p>
         <p class="aa-more-price">R$ 197 ou 12x de R$ 20,37</p>
         <a class="b-arch-btn is-light" href="/treinamento">Conhecer o Treinamento</a>
@@ -105,36 +108,42 @@ const upgradeWhatsapp =
   .aa-head h1 { grid-column: 1; }
   .aa-head p { grid-column: 3; max-width: 46ch; }
 
-  .aa-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(40px, 5vw, 64px) var(--m); }
-  .aa-card { display: flex; flex-direction: column; gap: 12px; }
-  .aa-arch { aspect-ratio: 4 / 5; background: var(--tone); border-radius: 999px 999px 0 0; overflow: hidden; }
-  .aa-arch :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+  .aa-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(36px, 4vw, 56px) clamp(16px, 2.5vw, 36px); }
+  .aa-card { display: flex; flex-direction: column; gap: 10px; }
+  .aa-arch { position: relative; aspect-ratio: 1 / 1; background: var(--tone); border-radius: 999px 999px 0 0; overflow: hidden; }
+  .aa-arch :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
   .aa-card:hover .aa-arch :global(img) { transform: scale(1.04); }
+  .aa-tag { position: absolute; left: 12px; bottom: 12px; padding: 6px 12px; background: var(--ink); color: var(--ground); font-size: 13px; font-weight: 600; line-height: 1.2; }
   .aa-info { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 4px; }
-  .aa-info h2 { font-size: var(--t-m); }
-  .aa-price { font: 700 var(--t-m)/1 var(--font-serif); white-space: nowrap; }
+  .aa-info h2 { font-size: clamp(20px, 1.8vw, 26px); }
+  .aa-price { font: 700 clamp(20px, 1.8vw, 26px)/1 var(--font-serif); white-space: nowrap; }
   .aa-meta { font-size: var(--t-s); color: var(--muted); }
-  .aa-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+  .aa-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
   .aa-bag { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--t-s); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--accent); }
 
   .aa-more { margin-top: clamp(96px, 12vw, 200px); background: var(--ink); color: var(--ground); display: grid; grid-template-columns: 7fr 5fr; align-items: end; overflow: hidden; }
   .aa-more-text { padding: clamp(32px, 5vw, 72px); align-self: center; display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
   .aa-more-text h2 { color: var(--pale); }
   .aa-more-text p { max-width: 42ch; }
+  .aa-compare { color: var(--pale); }
+  .aa-compare strong { color: var(--ground); }
   .aa-more-price { font-weight: 700; font-size: var(--t-m) !important; }
   .aa-upgrade { font-size: var(--t-s); color: var(--pale); }
   .aa-upgrade a { color: var(--ground); text-underline-offset: 3px; }
   .aa-more-photo { align-self: end; background: var(--accent); border-radius: 999px 999px 0 0; margin: 48px 48px 0 0; aspect-ratio: 4 / 5; overflow: hidden; }
   .aa-more-photo :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 10%; }
 
-  @media (max-width: 1024px) {
-    .aa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
   @media (max-width: 700px) {
-    .aa-head { grid-template-columns: 1fr; gap: 16px; }
-    .aa-head p { grid-column: 1; }
-    .aa-grid { grid-template-columns: minmax(0, 1fr); }
-    .aa-actions .b-arch-btn { flex: 1; }
+    .aa-head { grid-template-columns: 1fr; gap: 10px; padding: 8px 0 28px; }
+    .aa-head p { grid-column: 1; font-size: 16px; }
+    .aa-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 14px; }
+    .aa-tag { left: 6px; bottom: 6px; padding: 4px 7px; font-size: 11px; }
+    .aa-info { flex-direction: column; gap: 4px; }
+    .aa-info h2, .aa-price { font-size: 18px; }
+    .aa-meta { font-size: 13px; }
+    .aa-actions { flex-direction: column; align-items: stretch; gap: 2px; }
+    .aa-actions .b-arch-btn { width: 100%; padding-left: 8px; padding-right: 8px; font-size: 15px; justify-content: center; }
+    .aa-bag { font-size: 14px; justify-content: center; }
     .aa-more { grid-template-columns: 1fr; }
     .aa-more-photo { margin: 0 24px; }
   }
