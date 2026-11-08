@@ -13,6 +13,8 @@
 import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { withHotmartSource } from '../utils/tracking';
+import productsData from '../data/products.json';
+import type { Product } from '../types/product';
 
 import marilia from '../assets/treinamento/marilia-bolsas.png';
 import mariliaVerde from '../assets/treinamento/marilia-bolsa-verde.png';
@@ -42,20 +44,24 @@ const whatsapp =
 
 // Aulas por bolsa = páginas de cada módulo na área de membros (Hotmart, 01/11/2026)
 const bagList = [
-  { name: 'Liêta', lessons: 5, img: lieta, tone: '#c09a6b' },
-  { name: 'Cherry', lessons: 4, img: cherry, tone: '#a67d4f' },
-  { name: 'Mari', lessons: 5, img: mari, tone: '#d9c7ad' },
-  { name: 'Atena', lessons: 4, img: atena, tone: '#c09a6b' },
-  { name: 'Ariel', lessons: 3, img: ariel, tone: '#d9c7ad' },
-  { name: 'Tati', lessons: 3, img: tati, tone: '#a67d4f' },
-  { name: 'Emy Colors', lessons: 6, img: emy, tone: '#c09a6b' },
-  { name: 'Rosália', lessons: 6, img: rosalia, tone: '#d9c7ad' },
-  { name: 'Pochete Copa', lessons: 9, img: pochete, tone: '#a67d4f' },
+  { name: 'Liêta', lessons: 5, img: lieta, tone: '#c09a6b', slug: 'bag-lieta' },
+  { name: 'Cherry', lessons: 4, img: cherry, tone: '#a67d4f', slug: 'bag-cherry' },
+  { name: 'Mari', lessons: 5, img: mari, tone: '#d9c7ad', slug: 'bag-mari' },
+  { name: 'Atena', lessons: 4, img: atena, tone: '#c09a6b', slug: 'bag-atena' },
+  { name: 'Ariel', lessons: 3, img: ariel, tone: '#d9c7ad', slug: 'bag-ariel' },
+  { name: 'Tati', lessons: 3, img: tati, tone: '#a67d4f', slug: 'bag-tati' },
+  { name: 'Emy Colors', lessons: 6, img: emy, tone: '#c09a6b', slug: 'bag-emy' },
+  { name: 'Rosália', lessons: 6, img: rosalia, tone: '#d9c7ad', slug: 'bag-rosalia' },
+  { name: 'Pochete Copa', lessons: 9, img: pochete, tone: '#a67d4f', slug: '' },
 ];
+// Bolsa pronta e aula avulsa de cada bolsa, quando existem (products.json)
+const productBySlug = new Map((productsData.products as Product[]).filter((p) => p.inStock !== false).map((p) => [p.slug, p]));
 const bags = await Promise.all(
   bagList.map(async (b) => ({
     ...b,
     src: b.img ? (await getImage({ src: b.img, width: 900, format: 'webp' })).src : null,
+    hasBag: productBySlug.has(b.slug),
+    lessonPrice: productBySlug.get(b.slug)?.lessonPrice ?? null,
   })),
 );
 const totalLessons = bags.reduce((s, b) => s + b.lessons, 0);
@@ -144,7 +150,15 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
 
     <!-- Vitrine: escolha uma bolsa -->
     <section class="showcase" id="bolsas" aria-labelledby="bolsas-h">
-      <div class="showcase-stage">
+      <div class="showcase-list">
+        <h2 id="bolsas-h">Escolha uma bolsa</h2>
+        <ul role="list">
+          {bags.map((b, i) => (
+            <li><button type="button" class={`bag-name${i === 0 ? ' is-on' : ''}`} data-i={i} data-name={b.name} data-lessons={b.lessons} data-tone={b.tone} data-slug={b.hasBag ? b.slug : ''} data-price={b.lessonPrice ?? ''} aria-pressed={i === 0 ? 'true' : 'false'}><span class="bag-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>{b.name}</button></li>
+          ))}
+        </ul>
+      </div>
+      <figure class="showcase-stage">
         <div class="showcase-arch" style={`--tone:${first.tone}`}>
           {bags.map((b, i) => b.src ? (
             <img class={`bag-img${i === 0 ? ' is-on' : ''}`} data-i={i} src={b.src} alt={`Bolsa ${b.name}`} width="900" height="506" loading="lazy" />
@@ -152,16 +166,15 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
             <p class="bag-img bag-missing pending" data-i={i}>Foto da {b.name} a enviar</p>
           ))}
         </div>
-        <p class="showcase-fact" aria-live="polite"><strong>{first.name}</strong><br />{first.lessons} aulas e a receita em e-book</p>
-      </div>
-      <div class="showcase-list">
-        <h2 id="bolsas-h">Escolha uma bolsa</h2>
-        <ul role="list">
-          {bags.map((b, i) => (
-            <li><button type="button" class={`bag-name${i === 0 ? ' is-on' : ''}`} data-i={i} data-name={b.name} data-lessons={b.lessons} data-tone={b.tone} aria-pressed={i === 0 ? 'true' : 'false'}>{b.name}</button></li>
-          ))}
-        </ul>
-      </div>
+        <figcaption class="showcase-fact" aria-live="polite">
+          <strong data-f="name">{first.name}</strong>
+          <span data-f="lessons">{first.lessons} aulas e a receita em e-book, dentro do Treinamento</span>
+          <span class="fact-links">
+            <a data-f="bag" href={first.hasBag ? `/catalogo/${first.slug}` : '/catalogo'} hidden={!first.hasBag}>Ver a bolsa pronta</a>
+            <a data-f="lesson" href="/aulas-avulsas" hidden={!first.lessonPrice}>Aula avulsa {first.lessonPrice ? `R$ ${first.lessonPrice}` : ''}</a>
+          </span>
+        </figcaption>
+      </figure>
     </section>
 
     <!-- Método: acordeão de painéis -->
@@ -363,7 +376,13 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
       names.forEach((n) => { n.classList.toggle('is-on', n === btn); n.setAttribute('aria-pressed', String(n === btn)); });
       imgs.forEach((im) => im.classList.toggle('is-on', im.dataset.i === i));
       if (arch) arch.style.setProperty('--tone', btn.dataset.tone || '#c09a6b');
-      if (fact) fact.innerHTML = `<strong>${btn.dataset.name}</strong><br>${btn.dataset.lessons} aulas e a receita em e-book`;
+      if (fact) {
+        fact.querySelector('[data-f=name]').textContent = btn.dataset.name;
+        fact.querySelector('[data-f=lessons]').textContent = btn.dataset.lessons + ' aulas e a receita em e-book, dentro do Treinamento';
+        const bagA = fact.querySelector('[data-f=bag]'); const lesA = fact.querySelector('[data-f=lesson]');
+        bagA.hidden = !btn.dataset.slug; if (btn.dataset.slug) bagA.href = '/catalogo/' + btn.dataset.slug;
+        lesA.hidden = !btn.dataset.price; lesA.textContent = 'Aula avulsa R$ ' + btn.dataset.price;
+      }
     }));
 
     // Vídeo: troca a capa pelo player do YouTube (modo de privacidade) só quando a pessoa clica
@@ -522,21 +541,31 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
   .video-play:hover .video-icon { background: var(--pale); transform: translateY(-4px); }
 
   /* Vitrine */
-  .showcase { display: grid; grid-template-columns: 5fr 7fr; gap: var(--m); align-items: end; min-height: 90svh; }
-  .showcase-stage { grid-column: 2; grid-row: 1; position: relative; display: flex; flex-direction: column; align-items: center; }
-  .showcase-arch { --tone: #c09a6b; position: relative; width: min(100%, 64vh); aspect-ratio: 4 / 5; background: var(--tone); border-radius: 999px 999px 0 0; overflow: hidden; transition: background-color .3s ease; }
+  .showcase { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(32px, 5vw, 96px); align-items: end; max-width: 1240px; margin-left: auto; margin-right: auto; }
+  .showcase-list { padding-bottom: 96px; }
+  .showcase-list h2 { color: var(--deep); font-size: var(--t-m); font-family: var(--font-sans); margin-bottom: 16px; }
+  .showcase-list ul { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--pale); }
+  .showcase-list li { border-bottom: 1px solid var(--pale); }
+  .bag-name {
+    display: flex; align-items: baseline; gap: 16px; width: 100%; min-height: 44px;
+    font: 600 clamp(24px, 2.3vw, 34px)/1.25 var(--font-serif); color: var(--muted); background: none; border: 0; padding: 6px 0; cursor: pointer; text-align: left;
+    transition: color .25s ease, transform .3s var(--ease);
+  }
+  .bag-n { font: 600 13px/1 var(--font-sans); color: var(--deep); letter-spacing: .04em; min-width: 22px; }
+  .bag-name:hover { color: var(--ink); transform: translateX(6px); }
+  .bag-name.is-on { color: var(--ink); }
+  .bag-name.is-on::after { content: ''; flex: 1; align-self: center; height: 3px; margin-left: 8px; background: var(--accent); }
+  .showcase-stage { margin: 0; justify-self: start; width: min(100%, 56vh); }
+  .showcase-arch { --tone: #c09a6b; position: relative; width: 100%; aspect-ratio: 4 / 5; background: var(--tone); border-radius: 999px 999px 0 0; overflow: hidden; transition: background-color .3s ease; }
   .bag-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s ease; margin: 0; }
   .bag-img.is-on { opacity: 1; }
   .bag-missing { display: grid; place-items: center; text-align: center; }
-  .showcase-fact { align-self: flex-end; margin-top: 16px; font-size: var(--t-b); }
-  .showcase-list { grid-column: 1; grid-row: 1; padding-bottom: 8px; }
-  .showcase-list h2 { color: var(--deep); font-size: var(--t-m); font-family: var(--font-sans); margin-bottom: 12px; }
-  .bag-name {
-    font: 600 var(--t-l)/1.12 var(--font-serif); color: var(--muted); background: none; border: 0; padding: 2px 0; cursor: pointer; text-align: left;
-    transition: color .25s ease, transform .3s var(--ease);
-  }
-  .bag-name:hover { color: var(--ink); transform: translateX(6px); }
-  .bag-name.is-on { color: var(--ink); text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 8px; text-decoration-color: var(--accent); }
+  .showcase-fact { display: flex; flex-direction: column; gap: 4px; padding: 18px 0 0; }
+  .showcase-fact strong { font: 700 var(--t-m)/1.2 var(--font-serif); }
+  .showcase-fact span { font-size: var(--t-s); color: var(--muted); }
+  .fact-links { display: flex; flex-wrap: wrap; gap: 4px 24px; margin-top: 6px; }
+  .fact-links a { display: inline-flex; align-items: center; min-height: 40px; font-weight: 600; color: var(--ink) !important; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 5px; }
+  .fact-links a[hidden] { display: none; }
 
   /* Método */
   .method-intro { display: grid; grid-template-columns: 5fr 1fr 6fr; margin-bottom: 64px; }
@@ -691,13 +720,18 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     .tr section { margin-top: 72px; }
     .foot { margin-top: 72px; }
     .video-icon { width: 84px; height: 64px; left: 16px; }
-    .showcase { grid-template-columns: minmax(0, 1fr); min-height: 0; }
-    .showcase-stage, .showcase-list { grid-column: 1; grid-row: auto; }
-    .showcase-arch { width: 86vw; }
-    .showcase-list ul { display: flex; flex-wrap: wrap; gap: 4px 20px; }
-    .bag-name { font-size: var(--t-m); white-space: nowrap; min-height: 44px; }
-    .showcase-list ul { gap: 0 20px; }
-    .showcase-fact { align-self: flex-start; }
+    .showcase { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .showcase-list { order: 1; padding-bottom: 0; margin-bottom: 16px; }
+    .showcase-list h2 { margin-bottom: 8px; }
+    .tr .showcase-list ul { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--m); border: 0; padding-bottom: 6px; margin: 0 calc(-1 * var(--m)); padding-left: var(--m); padding-right: var(--m); scrollbar-width: none; }
+    .showcase-list ul::-webkit-scrollbar { display: none; }
+    .showcase-list li { border: 0; flex: none; scroll-snap-align: start; }
+    .bag-name { width: auto; gap: 8px; padding: 8px 16px; font-size: 18px; white-space: nowrap; background: var(--sand); border-radius: 999px 999px 0 0; }
+    .bag-name:hover { transform: none; }
+    .bag-name.is-on { background: var(--ink); color: var(--ground); }
+    .bag-name.is-on .bag-n { color: var(--pale); }
+    .bag-name.is-on::after { display: none; }
+    .showcase-stage { order: 2; width: 100%; }
 
     .method-intro { grid-template-columns: 1fr; gap: 16px; }
     .method-intro p { grid-column: 1; }
