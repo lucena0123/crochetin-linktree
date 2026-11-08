@@ -69,6 +69,16 @@ const stages = [
 ];
 
 const chats = [cliente1, cliente2, cliente3, cliente4];
+const chatsBig = await Promise.all(chats.map((c) => getImage({ src: c, width: 900, format: 'webp' })));
+const extras = [
+  ['E-books', 'A receita de todas as bolsas do Treinamento, para consultar enquanto faz.'],
+  ['Precificação', 'Como calcular o preço do seu crochê sem trabalhar de graça.'],
+  ['Embalagem', 'Como embalar com capricho, do jeito que a Crochetin entrega.'],
+  ['Envio', 'Como enviar para todo o Brasil com segurança.'],
+  ['Suporte', 'Tire dúvidas pelo WhatsApp direto com a Marília.'],
+  ['Certificado', 'Certificado digital ao concluir as aulas.'],
+  ['Novos modelos', 'Quando o Treinamento ganha bolsas novas, você recebe.'],
+];
 
 const faq = [
   { q: 'Quantos modelos vou aprender?', a: 'Hoje são 9 bolsas: Liêta, Cherry, Mari, Atena, Ariel, Tati, Emy Colors, Rosália e Pochete Copa. O curso recebe novos modelos com o tempo.' },
@@ -122,7 +132,7 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     <section class="video" aria-labelledby="video-h">
       <div class="video-text reveal">
         <h2 id="video-h">Assista antes de decidir</h2>
-        <p>A Marília mostra as bolsas e como o crochê vira faturamento.</p>
+        <p>Bolsa de crochê virou febre, e ainda são poucas as artesãs com acabamento de luxo. A Marília mostra as bolsas e como o crochê vira faturamento.</p>
       </div>
       <div class="video-frame">
         <button type="button" class="video-play" data-id="uR5hVjrdMW4" aria-label="Assistir ao vídeo da Marília sobre o Treinamento">
@@ -178,14 +188,21 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
       <div class="proof-board">
         <div class="proof-head reveal">
           <h2 id="clientes-h">As clientes falam</h2>
-          <p>Mensagens reais de quem comprou bolsas Crochetin. É esse padrão que o Treinamento ensina.</p>
+          <p>Mensagens reais de quem comprou bolsas Crochetin. É esse padrão que o Treinamento ensina. Toque numa mensagem para ampliar.</p>
         </div>
         {chats.map((c, i) => (
           <figure class="proof-tile reveal">
-            <Image src={c} alt={`Mensagem de cliente elogiando uma bolsa Crochetin (${i + 1})`} widths={[260, 420]} sizes="(max-width: 700px) 45vw, 20vw" />
+            <button type="button" class="proof-zoom" data-big={chatsBig[i].src} aria-label={`Ampliar a mensagem de cliente ${i + 1}`}>
+              <Image src={c} alt={`Mensagem de cliente elogiando uma bolsa Crochetin (${i + 1})`} widths={[260, 420]} sizes="(max-width: 700px) 45vw, 20vw" />
+              <span class="proof-hint" aria-hidden="true">Ampliar</span>
+            </button>
           </figure>
         ))}
       </div>
+      <dialog class="proof-dialog" aria-label="Mensagem de cliente ampliada">
+        <img src="" alt="Mensagem de cliente ampliada" />
+        <button type="button" class="proof-close">Fechar</button>
+      </dialog>
     </section>
 
     <!-- Sobre: painel escuro com retrato em arco -->
@@ -209,6 +226,23 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
           <a class="arch-btn arch-btn-accent" href={checkout('sobre')} target="_blank" rel="noopener">Quero o Treinamento</a>
         </div>
       </div>
+    </section>
+
+    <!-- O que vem junto com as aulas -->
+    <section class="extras" aria-labelledby="extras-h">
+      <div class="extras-head reveal">
+        <h2 id="extras-h">O que vem junto</h2>
+        <p>Além das 9 bolsas em {totalLessons} aulas, o Treinamento traz o que a Marília usa para vender as bolsas dela.</p>
+      </div>
+      <ol class="extras-list" role="list">
+        {extras.map(([t, d], i) => (
+          <li class="extras-item reveal">
+            <span class="extras-n" aria-hidden="true">{i + 1}</span>
+            <h3>{t}</h3>
+            <p>{d}</p>
+          </li>
+        ))}
+      </ol>
     </section>
 
     <!-- Preço: planos em degraus -->
@@ -304,6 +338,12 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
         <a class="arch-btn arch-btn-small" href="#topo">Voltar ao topo</a>
       </div>
     </footer>
+
+    <!-- Barra fixa de compra no celular (aparece depois do topo, some perto do preço e do fechamento) -->
+    <div class="buybar" aria-hidden="true">
+      <p><strong>R$ 197</strong><span>ou 12x de R$ 20,37</span></p>
+      <a class="buybar-btn" href={checkout('barra')} target="_blank" rel="noopener" tabindex="-1">Quero o Treinamento</a>
+    </div>
   </main>
 </BaseLayout>
 
@@ -337,6 +377,36 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
       play.replaceWith(f);
       if (typeof window.gtag === 'function') window.gtag('event', 'play_video', { video_id: play.dataset.id });
     });
+
+    // Prova: tocar numa mensagem abre a versão grande
+    const dlg = root.querySelector('.proof-dialog');
+    if (dlg && typeof dlg.showModal === 'function') {
+      const big = dlg.querySelector('img');
+      root.querySelectorAll('.proof-zoom').forEach((b) => b.addEventListener('click', () => {
+        big.src = b.dataset.big; dlg.showModal();
+      }));
+      dlg.querySelector('.proof-close').addEventListener('click', () => dlg.close());
+      dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    }
+
+    // Barra fixa no celular: só entre o topo e o preço, e nunca por cima do aviso de cookies
+    const bar = root.querySelector('.buybar');
+    const hero = root.querySelector('.hero');
+    const stops = [root.querySelector('#preco'), root.querySelector('.cta'), root.querySelector('.foot')].filter(Boolean);
+    if (bar && hero && 'IntersectionObserver' in window) {
+      let heroOut = false; const seen = new Set();
+      const sync = () => {
+        const cookie = document.getElementById('cookie-bar');
+        const show = heroOut && seen.size === 0 && !(cookie && !cookie.hidden);
+        bar.classList.toggle('is-on', show);
+        bar.setAttribute('aria-hidden', String(!show));
+        bar.querySelector('a').tabIndex = show ? 0 : -1;
+      };
+      new IntersectionObserver(([e]) => { heroOut = !e.isIntersecting; sync(); }).observe(hero);
+      const so = new IntersectionObserver((es) => { es.forEach((e) => e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)); sync(); });
+      stops.forEach((el) => so.observe(el));
+      document.addEventListener('click', () => setTimeout(sync, 50));
+    }
 
     // Movimento de assinatura: troca lenta das fotos do topo
     const fades = root.querySelectorAll('.hero-arch .fade');
@@ -472,7 +542,7 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
   .method-intro { display: grid; grid-template-columns: 5fr 1fr 6fr; margin-bottom: 64px; }
   .method-intro h2 { grid-column: 1; }
   .method-intro p { grid-column: 3; max-width: 46ch; align-self: end; }
-  .stages { display: flex; height: 520px; }
+  .stages { display: flex; height: 440px; }
   .stage { flex: 1 1 0; min-width: 72px; transition: flex-grow .45s var(--ease); position: relative; overflow: hidden; }
   .stage[open] { flex-grow: 6; }
   .stage:nth-child(1) { background: var(--ink); color: var(--ground); }
@@ -490,11 +560,31 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
 
   /* Prova */
   .proof-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  .proof-head { grid-column: span 2; grid-row: span 2; background: var(--accent); padding: 28px; display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; }
+  .proof-head { grid-column: 1 / -1; background: var(--accent); padding: clamp(28px, 3vw, 48px); display: grid; grid-template-columns: 5fr 1fr 6fr; align-items: end; gap: 20px; }
+  .proof-head h2 { grid-column: 1; }
+  .proof-head p { grid-column: 3; }
   
   .proof-head p { max-width: 34ch; }
   .proof-tile { margin: 0; background: var(--sand); display: flex; align-items: center; justify-content: center; padding: 24px 12px; }
   .proof-tile :global(img) { width: 100%; height: auto; max-height: 420px; object-fit: contain; }
+  .proof-zoom { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+  .proof-hint { position: absolute; right: 6px; bottom: 6px; padding: 4px 10px; background: var(--ink); color: var(--ground); font-size: 13px; font-weight: 600; }
+  .proof-dialog { border: 0; padding: 0; background: transparent; max-width: min(92vw, 520px); max-height: 92svh; overflow: visible; }
+  .proof-dialog::backdrop { background: rgba(30, 22, 17, .82); }
+  .proof-dialog img { display: block; width: 100%; height: auto; max-height: 82svh; object-fit: contain; }
+  .proof-close { display: block; margin: 12px auto 0; min-height: 44px; padding: 0 24px; border: 0; border-radius: 999px 999px 0 0; background: var(--ground); color: var(--ink); font: 600 16px/1 var(--font-sans); cursor: pointer; }
+
+  .extras-head { display: grid; grid-template-columns: 5fr 1fr 6fr; align-items: end; margin-bottom: 48px; }
+  .extras-head h2 { grid-column: 1; }
+  .extras-head p { grid-column: 3; max-width: 46ch; }
+  .extras-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; list-style: none; padding: 0; margin: 0; }
+  .extras-item { background: var(--sand); padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+  .extras-item:first-child { grid-column: span 2; background: var(--ink); color: var(--ground); }
+  .extras-item:first-child h3 { color: var(--pale); }
+  .extras-n { display: inline-flex; align-items: flex-end; justify-content: center; width: 40px; height: 46px; padding-bottom: 6px; border-radius: 999px 999px 0 0; background: var(--accent); color: var(--ink); font: 700 18px/1 var(--font-serif); margin-bottom: 8px; }
+  .extras-item p { font-size: var(--t-s); }
+
+  .buybar { display: none; }
 
   /* Sobre */
   .about { padding: 0 !important; }
@@ -619,9 +709,21 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     .stage-body { position: static; grid-template-columns: 1fr; padding: 16px 20px 24px; }
     
     .stage-body :global(img) { width: 140px; height: 140px; }
+    .extras-head { grid-template-columns: 1fr; gap: 12px; margin-bottom: 28px; }
+    .extras-head p { grid-column: 1; }
+    .extras-list { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .extras-item { padding: 18px 16px; }
+    .extras-item h3 { font-size: 18px; }
+    .extras-item:first-child { grid-column: 1 / -1; }
+    .buybar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--ink); color: var(--ground); transform: translateY(110%); transition: transform .35s var(--ease); }
+    .buybar.is-on { transform: none; }
+    .buybar p { display: flex; flex-direction: column; font-size: 13px; margin: 0; line-height: 1.25; white-space: nowrap; }
+    .buybar strong { font-size: 18px; }
+    .buybar-btn { flex: none; display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px 999px 0 0; background: var(--accent); color: var(--ink) !important; font-weight: 700; font-size: 15px; text-decoration: none; }
 
     .proof-board { grid-template-columns: 1fr 1fr; gap: 6px; }
-    .proof-head { grid-column: 1 / -1; grid-row: auto; min-height: 0; gap: 16px; }
+    .proof-head { grid-column: 1 / -1; grid-template-columns: 1fr; min-height: 0; gap: 16px; }
+    .proof-head h2, .proof-head p { grid-column: 1; }
 
     .about-panel { margin: 0 10px; grid-template-columns: 1fr; min-height: 0; padding-bottom: 96vw; }
     .about-left { padding: 32px 20px 0; position: static; }
