@@ -60,6 +60,7 @@ const bags = await Promise.all(
   bagList.map(async (b) => ({
     ...b,
     src: b.img ? (await getImage({ src: b.img, width: 900, format: 'webp' })).src : null,
+    thumb: b.img ? (await getImage({ src: b.img, width: 240, format: 'webp' })).src : null,
     hasBag: productBySlug.has(b.slug),
     lessonPrice: productBySlug.get(b.slug)?.lessonPrice ?? null,
   })),
@@ -150,15 +151,11 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
 
     <!-- Vitrine: escolha uma bolsa -->
     <section class="showcase" id="bolsas" aria-labelledby="bolsas-h">
-      <div class="showcase-list">
-        <h2 id="bolsas-h">Escolha uma bolsa</h2>
-        <ul role="list">
-          {bags.map((b, i) => (
-            <li><button type="button" class={`bag-name${i === 0 ? ' is-on' : ''}`} data-i={i} data-name={b.name} data-lessons={b.lessons} data-tone={b.tone} data-slug={b.hasBag ? b.slug : ''} data-price={b.lessonPrice ?? ''} aria-pressed={i === 0 ? 'true' : 'false'}><span class="bag-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>{b.name}</button></li>
-          ))}
-        </ul>
+      <div class="sc-head reveal">
+        <h2 id="bolsas-h">As 9 bolsas</h2>
+        <p>Toque numa bolsa para ver quantas aulas ela tem e onde encontrar a bolsa pronta.</p>
       </div>
-      <figure class="showcase-stage">
+      <div class="sc-stage">
         <div class="showcase-arch" style={`--tone:${first.tone}`}>
           {bags.map((b, i) => b.src ? (
             <img class={`bag-img${i === 0 ? ' is-on' : ''}`} data-i={i} src={b.src} alt={`Bolsa ${b.name}`} width="900" height="506" loading="lazy" />
@@ -166,15 +163,30 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
             <p class="bag-img bag-missing pending" data-i={i}>Foto da {b.name} a enviar</p>
           ))}
         </div>
-        <figcaption class="showcase-fact" aria-live="polite">
-          <strong data-f="name">{first.name}</strong>
-          <span data-f="lessons">{first.lessons} aulas e a receita em e-book, dentro do Treinamento</span>
-          <span class="fact-links">
+        <div class="showcase-fact" aria-live="polite">
+          <p class="sc-count"><span data-f="n">01</span> / {String(bags.length).padStart(2, '0')}</p>
+          <h3 data-f="name">{first.name}</h3>
+          <p data-f="lessons">{first.lessons} aulas e a receita em e-book, dentro do Treinamento</p>
+          <p class="fact-links">
             <a data-f="bag" href={first.hasBag ? `/catalogo/${first.slug}` : '/catalogo'} hidden={!first.hasBag}>Ver a bolsa pronta</a>
             <a data-f="lesson" href="/aulas-avulsas" hidden={!first.lessonPrice}>Aula avulsa {first.lessonPrice ? `R$ ${first.lessonPrice}` : ''}</a>
-          </span>
-        </figcaption>
-      </figure>
+          </p>
+          <div class="sc-arrows">
+            <button type="button" class="sc-prev" aria-label="Bolsa anterior">←</button>
+            <button type="button" class="sc-next" aria-label="Próxima bolsa">→</button>
+          </div>
+        </div>
+      </div>
+      <ul class="sc-thumbs" role="list">
+        {bags.map((b, i) => (
+          <li>
+            <button type="button" class={`bag-name${i === 0 ? ' is-on' : ''}`} data-i={i} data-name={b.name} data-lessons={b.lessons} data-tone={b.tone} data-slug={b.hasBag ? b.slug : ''} data-price={b.lessonPrice ?? ''} aria-pressed={i === 0 ? 'true' : 'false'} aria-label={b.name}>
+              <span class="sc-thumb" style={`--tone:${b.tone}`}>{b.thumb && <img src={b.thumb} alt="" width="240" height="135" loading="lazy" />}</span>
+              <span class="sc-label">{b.name}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
     </section>
 
     <!-- Método: acordeão de painéis -->
@@ -371,19 +383,28 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     const imgs = root.querySelectorAll('.bag-img');
     const arch = root.querySelector('.showcase-arch');
     const fact = root.querySelector('.showcase-fact');
-    names.forEach((btn) => btn.addEventListener('click', () => {
+    const pick = (btn) => {
       const i = btn.dataset.i;
       names.forEach((n) => { n.classList.toggle('is-on', n === btn); n.setAttribute('aria-pressed', String(n === btn)); });
       imgs.forEach((im) => im.classList.toggle('is-on', im.dataset.i === i));
       if (arch) arch.style.setProperty('--tone', btn.dataset.tone || '#c09a6b');
       if (fact) {
+        fact.querySelector('[data-f=n]').textContent = String(Number(i) + 1).padStart(2, '0');
         fact.querySelector('[data-f=name]').textContent = btn.dataset.name;
         fact.querySelector('[data-f=lessons]').textContent = btn.dataset.lessons + ' aulas e a receita em e-book, dentro do Treinamento';
         const bagA = fact.querySelector('[data-f=bag]'); const lesA = fact.querySelector('[data-f=lesson]');
         bagA.hidden = !btn.dataset.slug; if (btn.dataset.slug) bagA.href = '/catalogo/' + btn.dataset.slug;
         lesA.hidden = !btn.dataset.price; lesA.textContent = 'Aula avulsa R$ ' + btn.dataset.price;
       }
-    }));
+    };
+    names.forEach((btn) => btn.addEventListener('click', () => pick(btn)));
+    const step = (d) => {
+      const cur = [...names].findIndex((n) => n.classList.contains('is-on'));
+      pick(names[(cur + d + names.length) % names.length]);
+    };
+    const prev = root.querySelector('.sc-prev'); const next = root.querySelector('.sc-next');
+    if (prev) prev.addEventListener('click', () => step(-1));
+    if (next) next.addEventListener('click', () => step(1));
 
     // Vídeo: troca a capa pelo player do YouTube (modo de privacidade) só quando a pessoa clica
     const play = root.querySelector('.video-play');
@@ -411,7 +432,7 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     // Barra fixa no celular: só entre o topo e o preço, e nunca por cima do aviso de cookies
     const bar = root.querySelector('.buybar');
     const hero = root.querySelector('.hero');
-    const stops = [root.querySelector('#preco'), root.querySelector('.cta'), root.querySelector('.foot')].filter(Boolean);
+    const stops = [root.querySelector('#bolsas'), root.querySelector('#preco'), root.querySelector('.cta'), root.querySelector('.foot')].filter(Boolean);
     if (bar && hero && 'IntersectionObserver' in window) {
       let heroOut = false; const seen = new Set();
       const sync = () => {
@@ -541,31 +562,33 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
   .video-play:hover .video-icon { background: var(--pale); transform: translateY(-4px); }
 
   /* Vitrine */
-  .showcase { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(32px, 5vw, 96px); align-items: end; max-width: 1240px; margin-left: auto; margin-right: auto; }
-  .showcase-list { padding-bottom: 96px; }
-  .showcase-list h2 { color: var(--deep); font-size: var(--t-m); font-family: var(--font-sans); margin-bottom: 16px; }
-  .showcase-list ul { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--pale); }
-  .showcase-list li { border-bottom: 1px solid var(--pale); }
-  .bag-name {
-    display: flex; align-items: baseline; gap: 16px; width: 100%; min-height: 44px;
-    font: 600 clamp(24px, 2.3vw, 34px)/1.25 var(--font-serif); color: var(--muted); background: none; border: 0; padding: 6px 0; cursor: pointer; text-align: left;
-    transition: color .25s ease, transform .3s var(--ease);
-  }
-  .bag-n { font: 600 13px/1 var(--font-sans); color: var(--deep); letter-spacing: .04em; min-width: 22px; }
-  .bag-name:hover { color: var(--ink); transform: translateX(6px); }
-  .bag-name.is-on { color: var(--ink); }
-  .bag-name.is-on::after { content: ''; flex: 1; align-self: center; height: 3px; margin-left: 8px; background: var(--accent); }
-  .showcase-stage { margin: 0; justify-self: start; width: min(100%, 56vh); }
-  .showcase-arch { --tone: #c09a6b; position: relative; width: 100%; aspect-ratio: 4 / 5; background: var(--tone); border-radius: 999px 999px 0 0; overflow: hidden; transition: background-color .3s ease; }
+  .sc-head { display: grid; grid-template-columns: 5fr 1fr 6fr; align-items: end; margin-bottom: clamp(32px, 4vw, 56px); }
+  .sc-head h2 { grid-column: 1; }
+  .sc-head p { grid-column: 3; max-width: 46ch; }
+  .sc-stage { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(32px, 5vw, 80px); align-items: end; }
+  .showcase-arch { --tone: #c09a6b; position: relative; width: 100%; max-width: 560px; justify-self: end; aspect-ratio: 1 / 1; background: var(--tone); border-radius: 999px 999px 0 0; overflow: hidden; transition: background-color .3s ease; }
   .bag-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .3s ease; margin: 0; }
   .bag-img.is-on { opacity: 1; }
   .bag-missing { display: grid; place-items: center; text-align: center; }
-  .showcase-fact { display: flex; flex-direction: column; gap: 4px; padding: 18px 0 0; }
-  .showcase-fact strong { font: 700 var(--t-m)/1.2 var(--font-serif); }
-  .showcase-fact span { font-size: var(--t-s); color: var(--muted); }
-  .fact-links { display: flex; flex-wrap: wrap; gap: 4px 24px; margin-top: 6px; }
-  .fact-links a { display: inline-flex; align-items: center; min-height: 40px; font-weight: 600; color: var(--ink) !important; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 5px; }
+  .showcase-fact { display: flex; flex-direction: column; gap: 10px; padding-bottom: 8px; }
+  .sc-count { font-weight: 600; font-size: var(--t-s) !important; color: var(--deep); letter-spacing: .06em; }
+  .showcase-fact h3 { font: 700 var(--t-xl)/1 var(--font-serif); letter-spacing: -0.02em; }
+  .showcase-fact p[data-f=lessons] { color: var(--muted); max-width: 32ch; }
+  .fact-links { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+  .fact-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; color: var(--ink) !important; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 5px; }
   .fact-links a[hidden] { display: none; }
+  .sc-arrows { display: flex; gap: 8px; margin-top: 8px; }
+  .sc-arrows button { width: 56px; height: 48px; border: 0; border-radius: 999px 999px 0 0; background: var(--sand); color: var(--ink); font-size: 20px; cursor: pointer; transition: background-color .2s ease; }
+  .sc-arrows button:hover { background: var(--pale); }
+  .tr .sc-thumbs { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 10px; margin-top: clamp(32px, 4vw, 48px); padding: 0; }
+  .bag-name { display: flex; flex-direction: column; align-items: stretch; gap: 8px; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; text-align: left; color: var(--muted); font-family: var(--font-sans); }
+  .sc-thumb { display: block; aspect-ratio: 1 / 1; background: var(--tone); border-radius: 999px 999px 0 0; overflow: hidden; opacity: .55; transition: opacity .25s ease, transform .3s var(--ease); }
+  .sc-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .sc-label { font-size: 14px; font-weight: 600; line-height: 1.2; padding-bottom: 6px; border-bottom: 3px solid transparent; }
+  .bag-name:hover .sc-thumb { opacity: .9; transform: translateY(-3px); }
+  .bag-name.is-on { color: var(--ink); }
+  .bag-name.is-on .sc-thumb { opacity: 1; }
+  .bag-name.is-on .sc-label { border-bottom-color: var(--accent); }
 
   /* Método */
   .method-intro { display: grid; grid-template-columns: 5fr 1fr 6fr; margin-bottom: 64px; }
@@ -720,18 +743,20 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     .tr section { margin-top: 72px; }
     .foot { margin-top: 72px; }
     .video-icon { width: 84px; height: 64px; left: 16px; }
-    .showcase { grid-template-columns: minmax(0, 1fr); gap: 0; }
-    .showcase-list { order: 1; padding-bottom: 0; margin-bottom: 16px; }
-    .showcase-list h2 { margin-bottom: 8px; }
-    .tr .showcase-list ul { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--m); border: 0; padding-bottom: 6px; margin: 0 calc(-1 * var(--m)); padding-left: var(--m); padding-right: var(--m); scrollbar-width: none; }
-    .showcase-list ul::-webkit-scrollbar { display: none; }
-    .showcase-list li { border: 0; flex: none; scroll-snap-align: start; }
-    .bag-name { width: auto; gap: 8px; padding: 8px 16px; font-size: 18px; white-space: nowrap; background: var(--sand); border-radius: 999px 999px 0 0; }
-    .bag-name:hover { transform: none; }
-    .bag-name.is-on { background: var(--ink); color: var(--ground); }
-    .bag-name.is-on .bag-n { color: var(--pale); }
-    .bag-name.is-on::after { display: none; }
-    .showcase-stage { order: 2; width: 100%; }
+    .showcase { display: flex; flex-direction: column; }
+    .sc-head { grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px; order: 1; }
+    .sc-head p { grid-column: 1; font-size: 15px; }
+    .tr .sc-thumbs { order: 2; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px 6px; margin-top: 0; margin-bottom: 20px; }
+    .sc-label { font-size: 11px; text-align: center; padding-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bag-name { gap: 4px; }
+    .sc-stage { order: 3; grid-template-columns: minmax(0, 11fr) minmax(0, 9fr); gap: 14px; align-items: end; }
+    .showcase-arch { justify-self: stretch; max-width: none; }
+    .showcase-fact { gap: 4px; padding-bottom: 0; }
+    .showcase-fact h3 { font-size: 26px; }
+    .showcase-fact p[data-f=lessons] { font-size: 14px; }
+    .fact-links { flex-direction: column; gap: 0; }
+    .fact-links a { min-height: 36px; font-size: 14px; }
+    .sc-arrows button { width: 48px; height: 40px; }
 
     .method-intro { grid-template-columns: 1fr; gap: 16px; }
     .method-intro p { grid-column: 1; }
