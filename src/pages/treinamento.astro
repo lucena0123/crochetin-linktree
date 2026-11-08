@@ -142,9 +142,9 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
         <p>Bolsa de crochê virou febre, e ainda são poucas as artesãs com acabamento de luxo. A Marília mostra as bolsas e como o crochê vira faturamento.</p>
       </div>
       <div class="video-frame">
-        <button type="button" class="video-play" data-id="uR5hVjrdMW4" aria-label="Assistir ao vídeo da Marília sobre o Treinamento">
-          <img src="https://i.ytimg.com/vi/uR5hVjrdMW4/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" />
-          <span class="video-icon" aria-hidden="true"></span>
+        <button type="button" class="video-play" data-id="uR5hVjrdMW4" aria-label="Assistir ao vídeo da Marília sobre o Treinamento, 10 minutos">
+          <img src="https://i.ytimg.com/vi/uR5hVjrdMW4/maxresdefault.jpg" alt="" width="1280" height="720" loading="lazy" />
+          <span class="video-label" aria-hidden="true"><span class="video-icon"></span>Assistir <span class="video-time">· 10 min</span></span>
         </button>
       </div>
     </section>
@@ -553,13 +553,17 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
   .video-text h2 { margin-bottom: 16px; }
   .video-text p { max-width: 30ch; }
   .video-frame { position: relative; aspect-ratio: 16 / 9; background: var(--ink); overflow: hidden; }
-  .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  /* o iframe é criado pelo script depois do clique, sem o atributo de escopo do Astro: precisa de :global */
+  .video-frame :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
   .video-play { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; cursor: pointer; background: var(--ink); }
-  .video-play img { width: 100%; height: 100%; object-fit: cover; opacity: .85; transition: opacity .3s ease, transform .6s var(--ease); }
+  .video-play img { width: 100%; height: 100%; object-fit: cover; opacity: .9; transition: opacity .3s ease, transform .6s var(--ease); }
   .video-play:hover img { opacity: 1; transform: scale(1.02); }
-  .video-icon { position: absolute; left: 32px; bottom: 0; width: 112px; height: 84px; background: var(--accent); border-radius: 999px 999px 0 0; transition: background-color .25s ease, transform .3s var(--ease); }
-  .video-icon::after { content: ''; position: absolute; left: 50%; top: 56%; transform: translate(-38%, -50%); border-style: solid; border-width: 14px 0 14px 24px; border-color: transparent transparent transparent var(--ink); }
-  .video-play:hover .video-icon { background: var(--pale); transform: translateY(-4px); }
+  .video-label { position: absolute; left: 0; bottom: 0; display: inline-flex; align-items: center; gap: 14px; padding: 18px 28px 18px 20px; background: var(--accent); color: var(--ink); border-radius: 0 999px 0 0; font: 700 20px/1 var(--font-sans); box-shadow: 0 -6px 24px rgba(30, 22, 17, .25); transition: background-color .25s ease; }
+  .video-time { font-weight: 500; }
+  .video-icon { position: relative; width: 44px; height: 44px; flex: none; border-radius: 999px 999px 0 0; background: var(--ink); transition: transform .3s var(--ease); }
+  .video-icon::after { content: ''; position: absolute; left: 50%; top: 56%; transform: translate(-38%, -50%); border-style: solid; border-width: 9px 0 9px 15px; border-color: transparent transparent transparent var(--accent); }
+  .video-play:hover .video-label { background: var(--pale); }
+  .video-play:hover .video-icon { transform: scale(1.08); }
 
   /* Vitrine */
   .sc-head { display: grid; grid-template-columns: 5fr 1fr 6fr; align-items: end; margin-bottom: clamp(32px, 4vw, 56px); }
@@ -742,7 +746,9 @@ const blockTones = ['#6b5642', '#a67d4f', '#d9c7ad', '#3e2f25'];
     .video { grid-template-columns: minmax(0, 1fr); }
     .tr section { margin-top: 72px; }
     .foot { margin-top: 72px; }
-    .video-icon { width: 84px; height: 64px; left: 16px; }
+    .video-label { gap: 10px; padding: 10px 18px 10px 12px; font-size: 15px; }
+    .video-icon { width: 32px; height: 32px; }
+    .video-icon::after { border-width: 7px 0 7px 11px; }
     .showcase { display: flex; flex-direction: column; }
     .sc-head { grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px; order: 1; }
     .sc-head p { grid-column: 1; font-size: 15px; }
