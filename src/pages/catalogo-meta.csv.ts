@@ -39,6 +39,7 @@ export const GET: APIRoute = async () => {
       `Cores: ${formatColors(p.colors)}.`,
       size && `Medidas: ${size}.`,
       'Feita à mão em Maceió. Envio para todo o Brasil. Até 3x sem juros no cartão.',
+      'Ao enviar o pedido, me diga a cor que você quer.',
     ].filter(Boolean).join(' ');
     rows.push([
       p.slug,
